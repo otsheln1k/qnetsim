@@ -33,4 +33,49 @@ private slots:
             << QVector<uint8_t>{0x12,0x13,0x14}
             << 0x9bd63be3;
     }
+
+    void testDotQTag() {
+        QFETCH(uint16_t, repr);
+
+        uint8_t r[2] = {
+            (uint8_t)((repr >> 8) & 0xFF),
+            (uint8_t)(repr & 0xFF),
+        };
+
+        EthernetFrame::DotQTag tag {};
+        tag.read(r);
+
+        QTEST((uint8_t)tag.pcp, "pcp");
+        QTEST(tag.dei, "dei");
+        QTEST(tag.vid, "vid");
+
+        uint8_t rr[2];
+        tag.write(rr);
+
+        uint16_t rrepr = (rr[0] << 8) | rr[1];
+        QCOMPARE(rrepr, repr);
+    }
+
+    void testDotQTag_data() {
+        QTest::addColumn<uint16_t>("repr");
+        QTest::addColumn<uint8_t>("pcp");
+        QTest::addColumn<bool>("dei");
+        QTest::addColumn<uint16_t>("vid");
+
+        QTest::newRow("default-001")
+            << (uint16_t)0x0010u
+            << (uint8_t)EthernetFrame::DotQTag::PCP_BEST_EFFORT
+            << false
+            << (uint16_t)0x001u;
+        QTest::newRow("critical-003")
+            << (uint16_t)0x0033u
+            << (uint8_t)EthernetFrame::DotQTag::PCP_CRITICAL
+            << false
+            << (uint16_t)0x003u;
+        QTest::newRow("voice-dei-ea0")
+            << (uint16_t)0xea0du
+            << (uint8_t)EthernetFrame::DotQTag::PCP_VOICE
+            << true
+            << (uint16_t)0xea0u;
+    }
 };

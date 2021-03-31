@@ -12,8 +12,8 @@ static uint8_t *writeUint16(uint8_t *dest, uint16_t v)
 static uint16_t readUint16(const uint8_t *src)
 {
     uint16_t v;
-    v = *src++ << 8;
-    v |= *src++;
+    v = (uint16_t)*src++ << 8;
+    v |= (uint16_t)*src++;
     return v;
 }
 
@@ -62,7 +62,7 @@ uint8_t *EthernetFrame::DotQTag::write(uint8_t *dest) const
 
 const uint8_t *EthernetFrame::DotQTag::read(const uint8_t *src)
 {
-    uint8_t v = readUint16(src);
+    uint16_t v = readUint16(src);
     src += 2;
     decode(v);
     return src;

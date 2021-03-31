@@ -21,13 +21,24 @@ uint32_t crc32Dumb(const uint8_t *data, size_t len);
 class EthernetFrame {
 public:
     struct DotQTag {
-        uint8_t pcp;            // Priority [3]
+        enum PCP {
+            PCP_BEST_EFFORT=0,
+            PCP_BACKGROUND,
+            PCP_EXCELLENT_EFFORT,
+            PCP_CRITICAL,
+            PCP_VIDEO,
+            PCP_VOICE,
+            PCP_INTERNETWORK_CONTROL,
+            PCP_NETWORK_CONTROL,
+        };
+
+        PCP pcp;                // Priority [3]
         bool dei;               // Drop Eligible
         uint16_t vid;           // VLAN ID [12]
 
         void decode(uint16_t v)
         {
-            pcp = v & 0x7;
+            pcp = (PCP)(v & 0x7);
             dei = (v & 0x8) != 0;
             vid = (v >> 4) & 0x0FFF;
         }
