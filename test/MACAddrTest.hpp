@@ -22,6 +22,12 @@ private slots:
         QTEST(a.interfaceID(), "ifaceID");
         QTEST(a.asUint64(), "u64");
 
+        MACAddr a2 {
+            a.organizationID(),
+            a.interfaceID(),
+        };
+        QCOMPARE(a2, a);
+
         uint8_t out[6];
         uint8_t *wend = a.write(out);
 

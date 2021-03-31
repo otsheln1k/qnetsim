@@ -15,6 +15,14 @@ public:
 
     MACAddr() :MACAddr{0, 0, 0, 0, 0, 0} {}
 
+    MACAddr(uint32_t orgID, uint32_t ifaceID)
+        :MACAddr((orgID >> 16) & 0xFF,
+                 (orgID >> 8) & 0xFF,
+                 orgID & 0xFF,
+                 (ifaceID >> 16) & 0xFF,
+                 (ifaceID >> 8) & 0xFF,
+                 ifaceID & 0xFF) {}
+
     bool isMulticast() const
     {
         return (_bs[0] & 0x01) != 0;
@@ -82,6 +90,16 @@ public:
     {
         memcpy(_bs, src, sizeof(_bs));
         return src + sizeof(_bs);
+    }
+
+    bool operator==(const MACAddr &a) const
+    {
+        return !memcmp(_bs, a._bs, sizeof(_bs));
+    }
+
+    bool operator!=(const MACAddr &a) const
+    {
+        return !(*this == a);
     }
 };
 
