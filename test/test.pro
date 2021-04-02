@@ -1,5 +1,5 @@
 TARGET = test
-CONFIG += c++17
+CONFIG += c++17 warn_on
 
 QT += testlib
 CONFIG += testcase no_testcase_installs
