@@ -68,7 +68,13 @@ const uint8_t *EthernetFrame::DotQTag::read(const uint8_t *src)
     return src;
 }
 
-uint8_t *EthernetFrame::write(uint8_t *dest) const
+size_t EthernetFrame::size() const
+{
+    return 6 + 6 + (_dotq ? 4 : 0) + 2
+        + std::max(_payload.size(), ETHERNET_PAYLOAD_MIN) + 4;
+}
+
+uint8_t *EthernetFrame::writeHeader(uint8_t *dest) const
 {
     dest = _adst.write(dest);
     dest = _asrc.write(dest);
@@ -80,6 +86,11 @@ uint8_t *EthernetFrame::write(uint8_t *dest) const
 
     dest = writeUint16(dest, _ethertype.raw);
 
+    return dest;
+}
+
+uint8_t *EthernetFrame::writeBody(uint8_t *dest) const
+{
     memcpy(dest, _payload.data(), _payload.size());
     dest += _payload.size();
     if (_payload.size() < ETHERNET_PAYLOAD_MIN) {
@@ -88,9 +99,24 @@ uint8_t *EthernetFrame::write(uint8_t *dest) const
         dest += n;
     }
 
-    dest = writeUint32(dest, _fcs);
-
     return dest;
+}
+
+uint8_t *EthernetFrame::write(uint8_t *dest) const
+{
+    uint8_t *ptr = writeHeader(dest);
+
+    ptr = writeBody(ptr);
+
+    uint32_t checksum;
+    if (_fcs) {
+        checksum = _fcs.value();
+    } else {
+        checksum = crc32Dumb(dest, ptr - dest);
+    }
+    ptr = writeUint32(ptr, checksum);
+
+    return ptr;
 }
 
 const uint8_t *EthernetFrame::read(const uint8_t *src, size_t len)
@@ -124,7 +150,7 @@ const uint8_t *EthernetFrame::read(const uint8_t *src, size_t len)
     if (ets.isSize()) {
         framelen = ets.raw;
     } else if (ets.isEtherType()) {
-        framelen = len - 4 - (orig - src);
+        framelen = len - 4 - (src - orig);
     } else {
         return nullptr;
     }
@@ -137,4 +163,15 @@ const uint8_t *EthernetFrame::read(const uint8_t *src, size_t len)
     src += 4;
 
     return src;
+}
+
+uint32_t EthernetFrame::calculateChecksum() const
+{
+    std::vector<uint8_t> bytes (size());
+    uint8_t *ptr = bytes.data();
+
+    ptr = writeHeader(ptr);
+    ptr = writeBody(ptr);
+
+    return crc32Dumb(bytes.data(), bytes.size());
 }

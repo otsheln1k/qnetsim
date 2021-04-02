@@ -1,5 +1,9 @@
+#include <string.h>
+#include <utility>
+
 #include <QObject>
 #include <QVector>
+#include <QString>
 #include <QtTest/QtTest>
 
 #include "EthernetFrame.hpp"
@@ -77,5 +81,96 @@ private slots:
             << (uint8_t)EthernetFrame::DotQTag::PCP_VOICE
             << true
             << (uint16_t)0xea0u;
+    }
+
+    void testEthernetFrame() {
+        QFETCH(uint64_t, src);
+        QFETCH(uint64_t, dst);
+        QFETCH(int, etherType);
+        QFETCH(QVector<uint8_t>, payload);
+
+        EthernetFrame frame {};
+        frame.setSrcAddr({src});
+        frame.setDstAddr({dst});
+        frame.setEtherType((EtherType)etherType);
+        frame.payload().insert(frame.payload().begin(),
+                               payload.begin(), payload.end());
+
+        size_t size = frame.size();
+
+        QTEST(size, "size");
+
+        std::vector<uint8_t> bytes (size);
+        uint8_t *p = bytes.data();
+        uint8_t *e = frame.write(p);
+        QCOMPARE(e - p, (ptrdiff_t)size);
+
+        QFETCH(QVector<uint8_t>, expbytes);
+
+        for (size_t i = 0; i < size; ++i) {
+            QVERIFY2(
+                bytes[i] == expbytes[i],
+                qPrintable(
+                    QString("byte %1 doesn't match (%2, expected %3)")
+                    .arg(i).arg(bytes[i]).arg(expbytes[i])));
+        }
+
+        EthernetFrame frame2 {};
+        frame2.read(bytes.data(), bytes.size());
+
+        QTEST(frame2.srcAddr().asUint64(), "src");
+        QTEST(frame2.dstAddr().asUint64(), "dst");
+
+        QVERIFY(frame2.hasEtherType());
+        QTEST((int)frame2.etherType(), "etherType");
+
+        QTEST(frame2.payload().size(), "payloadSize");
+        QVERIFY(!memcmp(frame2.payload().data(),
+                        payload.data(), payload.size()));
+    }
+
+    void testEthernetFrame_data() {
+        QTest::addColumn<uint64_t>("src");
+        QTest::addColumn<uint64_t>("dst");
+        QTest::addColumn<int>("etherType");
+        QTest::addColumn<QVector<uint8_t>>("payload");
+        QTest::addColumn<size_t>("size");
+        QTest::addColumn<QVector<uint8_t>>("expbytes");
+        QTest::addColumn<size_t>("payloadSize");
+
+        QTest::newRow("ectp-reply")
+            << 0x068086000001u
+            << 0x068086000002u
+            << (int)ETHERTYPE_ECTP
+            << QVector<uint8_t>{0,0,1,0,17,0,'a','b','c'} // 9 bytes
+            << (size_t)64                                 // 14+46+4
+            << (QVector<uint8_t>{
+                    0x06, 0x80, 0x86, 0x00, 0x00, 0x02,
+                    0x06, 0x80, 0x86, 0x00, 0x00, 0x01,
+                    0x90, 0x00, 0x00, 0x00, 0x01, 0x00,
+                    0x11, 0x00, 0x61, 0x62, 0x63,
+                } + QVector<uint8_t>(37, 0x00)
+                + QVector<uint8_t>{0xe0, 0xfe, 0x0b, 0x21})
+            << (size_t)46;
+
+        QVector<uint8_t> payload2 {
+            0,0, 2,0, 0x06,0x80,0x86,0x00,0x00,0x02, 1,0, 17,0}; // 14 bytes
+        for (int i = 0; i < 256; ++i) {
+            payload2.append(i);
+        }
+        QCOMPARE(payload2.size(), 270); // just in case
+
+        QTest::newRow("ectp-long")
+            << 0x068086000001u
+            << 0xCF0000000000u
+            << (int)ETHERTYPE_ECTP
+            << payload2
+            << (size_t)288
+            << (QVector<uint8_t>{
+                    0xCF, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x06, 0x80, 0x86, 0x00, 0x00, 0x01,
+                    0x90, 0x00,
+                } + payload2 + QVector<uint8_t>{0xac, 0x6d, 0xe1, 0xc8})
+            << (size_t)270;
     }
 };

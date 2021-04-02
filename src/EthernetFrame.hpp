@@ -13,6 +13,9 @@
 
 enum EtherType: uint16_t {
     ETHERTYPE_INVALID = 0x0000,
+    ETHERTYPE_IPV4 = 0x0800,
+    ETHERTYPE_ARP = 0x0806,
+    ETHERTYPE_ECTP = 0x9000,
     ETHERTYPE_8021Q = 0x8100,
 };
 
@@ -81,16 +84,15 @@ private:
     std::optional<DotQTag> _dotq {};
     EtherTypeOrSize _ethertype {0};
     std::vector<uint8_t> _payload {};
-    uint32_t _fcs {0};
+    std::optional<uint32_t> _fcs {};
 
 public:
     EthernetFrame() {}
 
-    size_t size() const
-    {
-        return 6 + 6 + (_dotq ? 4 : 0) + 2
-            + std::min(_payload.size(), ETHERNET_PAYLOAD_MIN) + 4;
-    }
+    size_t size() const;
+
+    uint8_t *writeHeader(uint8_t *dest) const;
+    uint8_t *writeBody(uint8_t *dest) const;
 
     uint8_t *write(uint8_t *dest) const;
 
@@ -101,9 +103,19 @@ public:
         return _asrc;
     }
 
+    void setSrcAddr(MACAddr a)
+    {
+        _asrc = a;
+    }
+
     const MACAddr &dstAddr() const
     {
         return _adst;
+    }
+
+    void setDstAddr(MACAddr a)
+    {
+        _adst = a;
     }
 
     bool hasSize() const
@@ -126,6 +138,16 @@ public:
         return _ethertype.etherType;
     }
 
+    void setSizeRaw(uint16_t sz)
+    {
+        _ethertype.raw = sz;
+    }
+
+    void setEtherType(EtherType et)
+    {
+        _ethertype.etherType = et;
+    }
+
     bool hasDotQTag() const
     {
         return _dotq.has_value();
@@ -136,16 +158,34 @@ public:
         return _dotq.value();
     }
 
-    const std::vector<uint8_t> &payload() const
+    void setDotQTag(DotQTag tag)
     {
-        return _payload;
+        _dotq.emplace(tag);
     }
 
-    // TODO: calculate checksum
+    void removeDotQTag()
+    {
+        _dotq.reset();
+    }
 
-    uint32_t checksum() const
+    const std::vector<uint8_t> &payload() const { return _payload; }
+    std::vector<uint8_t> &payload() { return _payload; }
+
+    uint32_t calculateChecksum() const;
+
+    std::optional<uint32_t> checksum() const
     {
         return _fcs;
+    }
+
+    void setChecksum(uint32_t fcs)
+    {
+        _fcs.emplace(fcs);
+    }
+
+    void unsetChecksum()
+    {
+        _fcs.reset();
     }
 };
 
