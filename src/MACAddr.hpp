@@ -23,6 +23,10 @@ public:
                  (ifaceID >> 8) & 0xFF,
                  ifaceID & 0xFF) {}
 
+    MACAddr(uint64_t num)
+        :MACAddr((num >> 24) & 0xFFFFFF,
+                 num & 0xFFFFFF) {}
+
     bool isMulticast() const
     {
         return (_bs[0] & 0x01) != 0;

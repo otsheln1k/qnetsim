@@ -28,6 +28,9 @@ private slots:
         };
         QCOMPARE(a2, a);
 
+        MACAddr a3 {a.asUint64()};
+        QCOMPARE(a3, a);
+
         uint8_t out[6];
         uint8_t *wend = a.write(out);
 
