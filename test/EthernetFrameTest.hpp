@@ -88,6 +88,7 @@ private slots:
         QFETCH(uint64_t, dst);
         QFETCH(int, etherType);
         QFETCH(QVector<uint8_t>, payload);
+        QFETCH(uint16_t, vlanTag);
 
         EthernetFrame frame {};
         frame.setSrcAddr({src});
@@ -95,6 +96,14 @@ private slots:
         frame.setEtherType((EtherType)etherType);
         frame.payload().insert(frame.payload().begin(),
                                payload.begin(), payload.end());
+
+        if (vlanTag != 0) {
+            frame.setDotQTag({
+                    EthernetFrame::DotQTag::PCP_BEST_EFFORT,
+                    false,
+                    vlanTag,
+                });
+        }
 
         size_t size = frame.size();
 
@@ -133,6 +142,7 @@ private slots:
         QTest::addColumn<uint64_t>("src");
         QTest::addColumn<uint64_t>("dst");
         QTest::addColumn<int>("etherType");
+        QTest::addColumn<uint16_t>("vlanTag");
         QTest::addColumn<QVector<uint8_t>>("payload");
         QTest::addColumn<size_t>("size");
         QTest::addColumn<QVector<uint8_t>>("expbytes");
@@ -142,6 +152,7 @@ private slots:
             << 0x068086000001u
             << 0x068086000002u
             << (int)ETHERTYPE_ECTP
+            << (uint16_t)0
             << QVector<uint8_t>{0,0,1,0,17,0,'a','b','c'} // 9 bytes
             << (size_t)64                                 // 14+46+4
             << (QVector<uint8_t>{
@@ -164,6 +175,7 @@ private slots:
             << 0x068086000001u
             << 0xCF0000000000u
             << (int)ETHERTYPE_ECTP
+            << (uint16_t)0
             << payload2
             << (size_t)288
             << (QVector<uint8_t>{
@@ -171,6 +183,20 @@ private slots:
                     0x06, 0x80, 0x86, 0x00, 0x00, 0x01,
                     0x90, 0x00,
                 } + payload2 + QVector<uint8_t>{0xac, 0x6d, 0xe1, 0xc8})
+            << (size_t)270;
+
+        QTest::newRow("ectp-long-with-802.1q-tag")
+            << 0x068086000001u
+            << 0xCF0000000000u
+            << (int)ETHERTYPE_ECTP
+            << (uint16_t)0x002
+            << payload2
+            << (size_t)292
+            << (QVector<uint8_t>{
+                    0xCF, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x06, 0x80, 0x86, 0x00, 0x00, 0x01,
+                    0x81, 0x00, 0x00, 0x20, 0x90, 0x00,
+                } + payload2 + QVector<uint8_t>{0x4f, 0x64, 0x53, 0x25})
             << (size_t)270;
     }
 };
