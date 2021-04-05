@@ -204,5 +204,6 @@ public:
 };
 
 Q_DECLARE_METATYPE(EthernetFrame *);
+Q_DECLARE_METATYPE(const EthernetFrame *);
 
 #endif
