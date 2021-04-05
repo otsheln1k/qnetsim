@@ -7,6 +7,8 @@
 #include <vector>
 #include <optional>
 
+#include <QMetaType>
+
 #include "MACAddr.hpp"
 
 #define ETHERNET_PAYLOAD_MIN 46ul
@@ -188,5 +190,7 @@ public:
         _fcs.reset();
     }
 };
+
+Q_DECLARE_METATYPE(EthernetFrame *);
 
 #endif

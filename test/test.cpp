@@ -2,12 +2,14 @@
 
 #include "MACAddrTest.hpp"
 #include "EthernetFrameTest.hpp"
+#include "EthernetInterfaceTest.hpp"
 
 int main(int argc, char **argv)
 {
     QVector<QObject *> tests {
         new MACAddrTest {},
         new EthernetFrameTest {},
+        new EthernetInterfaceTest {},
     };
 
     char **nargv = new char *[argc];
