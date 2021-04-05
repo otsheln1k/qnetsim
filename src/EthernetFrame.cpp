@@ -157,6 +157,8 @@ const uint8_t *EthernetFrame::read(const uint8_t *src, size_t len)
     memcpy(_payload.data(), src, framelen);
     src += framelen;
 
+    _calcfcs = crc32Dumb(orig, src - orig);
+
     _fcs = readUint32(src);
     src += 4;
 

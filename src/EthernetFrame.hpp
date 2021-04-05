@@ -87,6 +87,7 @@ private:
     EtherTypeOrSize _ethertype {0};
     std::vector<uint8_t> _payload {};
     std::optional<uint32_t> _fcs {};
+    uint32_t _calcfcs {0};
 
 public:
     EthernetFrame() {}
@@ -183,6 +184,11 @@ public:
     void setChecksum(uint32_t fcs)
     {
         _fcs.emplace(fcs);
+    }
+
+    bool checksumCorrect() const
+    {
+        return _fcs && _fcs.value() == _calcfcs;
     }
 
     void unsetChecksum()

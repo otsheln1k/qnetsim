@@ -217,6 +217,8 @@ private slots:
         f2.read(bytes.data(), bytes.size());
 
         QCOMPARE(f2.checksum().value(), fcs);
+
+        QVERIFY(f2.checksumCorrect());
     }
 
     void testCalculateChecksum_data() {
@@ -249,5 +251,7 @@ private slots:
 
         QCOMPARE(f2.checksum().value(),
                  frame.checksum().value());
+
+        QVERIFY(!f2.checksumCorrect());
     }
 };
