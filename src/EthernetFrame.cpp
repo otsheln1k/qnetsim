@@ -149,10 +149,8 @@ const uint8_t *EthernetFrame::read(const uint8_t *src, size_t len)
     uint16_t framelen;
     if (ets.isSize()) {
         framelen = ets.raw;
-    } else if (ets.isEtherType()) {
-        framelen = len - 4 - (src - orig);
     } else {
-        return nullptr;
+        framelen = len - 4 - (src - orig);
     }
 
     _payload.resize(framelen);
@@ -173,5 +171,5 @@ uint32_t EthernetFrame::calculateChecksum() const
     ptr = writeHeader(ptr);
     ptr = writeBody(ptr);
 
-    return crc32Dumb(bytes.data(), bytes.size());
+    return crc32Dumb(bytes.data(), ptr - bytes.data());
 }

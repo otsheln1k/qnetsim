@@ -94,8 +94,7 @@ private slots:
         frame.setSrcAddr({src});
         frame.setDstAddr({dst});
         frame.setEtherType((EtherType)etherType);
-        frame.payload().insert(frame.payload().begin(),
-                               payload.begin(), payload.end());
+        frame.payload().assign(payload.begin(), payload.end());
 
         if (vlanTag != 0) {
             frame.setDotQTag({
@@ -198,5 +197,57 @@ private slots:
                     0x81, 0x00, 0x00, 0x20, 0x90, 0x00,
                 } + payload2 + QVector<uint8_t>{0x4f, 0x64, 0x53, 0x25})
             << (size_t)270;
+    }
+
+    void testCalculateChecksum() {
+        QFETCH(QVector<uint8_t>, data);
+
+        EthernetFrame frame {};
+        frame.setSrcAddr(0x101010101010);
+        frame.setDstAddr(0x202020202020);
+        frame.setEtherType(ETHERTYPE_ECTP);
+        frame.payload().assign(data.begin(), data.end());
+
+        uint32_t fcs = frame.calculateChecksum();
+
+        std::vector<uint8_t> bytes (frame.size());
+        frame.write(bytes.data());
+
+        EthernetFrame f2 {};
+        f2.read(bytes.data(), bytes.size());
+
+        QCOMPARE(f2.checksum().value(), fcs);
+    }
+
+    void testCalculateChecksum_data() {
+        QTest::addColumn<QVector<uint8_t>>("data");
+
+        QTest::newRow("small")
+            << QVector<uint8_t>{0,0,1,0,13,0,'a','b','c'};
+
+        QVector<uint8_t> payload2 {};
+        for (int i = 0; i < 256; ++i) {
+            payload2.append(i);
+        }
+
+        QTest::newRow("long") << payload2;
+    }
+
+    void testFakeChecksum() {
+        EthernetFrame frame {};
+        frame.setSrcAddr(0x101010101010);
+        frame.setDstAddr(0x202020202020);
+        frame.setEtherType(ETHERTYPE_ECTP);
+        frame.payload().assign({0,0,1,0,13,0,'a','b','c'});
+        frame.setChecksum(0xDEADBEEF);
+
+        std::vector<uint8_t> bytes (frame.size());
+        frame.write(bytes.data());
+
+        EthernetFrame f2 {};
+        f2.read(bytes.data(), bytes.size());
+
+        QCOMPARE(f2.checksum().value(),
+                 frame.checksum().value());
     }
 };
