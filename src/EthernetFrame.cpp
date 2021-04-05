@@ -119,6 +119,23 @@ uint8_t *EthernetFrame::write(uint8_t *dest) const
     return ptr;
 }
 
+uint8_t *EthernetFrame::writeWithChecksum(uint8_t *dest)
+{
+    uint8_t *ptr = writeHeader(dest);
+
+    ptr = writeBody(ptr);
+
+    uint32_t checksum = crc32Dumb(dest, ptr - dest);
+    _calcfcs = checksum;
+
+    if (_fcs) {
+        checksum = _fcs.value();
+    }
+    ptr = writeUint32(ptr, checksum);
+
+    return ptr;
+}
+
 const uint8_t *EthernetFrame::read(const uint8_t *src, size_t len)
 {
     if (len < 18) {         // NOTE: this is rather liberal

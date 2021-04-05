@@ -98,6 +98,7 @@ public:
     uint8_t *writeBody(uint8_t *dest) const;
 
     uint8_t *write(uint8_t *dest) const;
+    uint8_t *writeWithChecksum(uint8_t *dest);
 
     const uint8_t *read(const uint8_t *src, size_t len);
 
@@ -186,14 +187,19 @@ public:
         _fcs.emplace(fcs);
     }
 
+    void unsetChecksum()
+    {
+        _fcs.reset();
+    }
+
     bool checksumCorrect() const
     {
         return _fcs && _fcs.value() == _calcfcs;
     }
 
-    void unsetChecksum()
+    uint32_t calculatedChecksum() const
     {
-        _fcs.reset();
+        return _calcfcs;
     }
 };
 

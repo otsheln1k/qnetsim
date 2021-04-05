@@ -211,7 +211,9 @@ private slots:
         uint32_t fcs = frame.calculateChecksum();
 
         std::vector<uint8_t> bytes (frame.size());
-        frame.write(bytes.data());
+        frame.writeWithChecksum(bytes.data());
+
+        QCOMPARE(frame.calculatedChecksum(), fcs);
 
         EthernetFrame f2 {};
         f2.read(bytes.data(), bytes.size());
@@ -244,7 +246,11 @@ private slots:
         frame.setChecksum(0xDEADBEEF);
 
         std::vector<uint8_t> bytes (frame.size());
-        frame.write(bytes.data());
+        frame.writeWithChecksum(bytes.data());
+
+        QVERIFY(!frame.checksumCorrect());
+        QCOMPARE(frame.calculatedChecksum(),
+                 frame.calculateChecksum());
 
         EthernetFrame f2 {};
         f2.read(bytes.data(), bytes.size());
