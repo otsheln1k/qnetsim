@@ -10,14 +10,16 @@ class EthernetInterfaceTest : public QObject {
     Q_OBJECT
 
     template<typename Iter>
-    void stepInterfaces(Iter b, Iter e)
+    bool stepInterfaces(Iter b, Iter e)
     {
+        bool res = false;
         for (Iter i = b; i != e; ++i) {
-            (*i)->stepSend();
+            res = (*i)->stepSend() || res;
         }
         for (Iter i = b; i != e; ++i) {
-            (*i)->stepRecv();
+            res = (*i)->stepRecv() || res;
         }
+        return res;
     }
 
     template<typename Iter>

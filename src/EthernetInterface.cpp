@@ -60,21 +60,27 @@ bool EthernetInterface::sendFrame(const EthernetFrame &frame)
     return true;
 }
 
-void EthernetInterface::stepSend()
+bool EthernetInterface::stepSend()
 {
-    while (!_sq.empty()) {
-        if (!_peer) {
-            return;
-        }
+    if (_sq.empty()) {
+        return false;
+    }
 
-        _peer->_bq.emplace(std::move(_sq.front()));
+    while (!_sq.empty()) {
+        if (_peer) {
+            _peer->_bq.emplace(std::move(_sq.front()));
+        }
 
         _sq.pop();
     }
+
+    return true;
 }
 
-void EthernetInterface::stepRecv()
+bool EthernetInterface::stepRecv()
 {
+    bool res = !_rq.empty() || !_bq.empty();
+
     while (!_rq.empty()) {
         const auto &bytes = _rq.front();
 
@@ -87,4 +93,6 @@ void EthernetInterface::stepRecv()
     }
 
     std::swap(_rq, _bq);
+
+    return res;
 }

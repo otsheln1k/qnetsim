@@ -18,8 +18,8 @@ public:
     virtual bool connect(GenericNetworkInterface *iface) override;
     virtual bool disconnect(GenericNetworkInterface *iface) override;
 
-    virtual void stepSend() override;
-    virtual void stepRecv() override;
+    virtual bool stepSend() override;
+    virtual bool stepRecv() override;
 
     bool sendFrame(const EthernetFrame &frame);
 

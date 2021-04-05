@@ -7,12 +7,15 @@
  * lower to higher layers, then step the receiving parts from higher to lower
  * layer. Only start receiving after all nodes in the model have completed the
  * sending part.
+ *
+ * Return value is true if any action was taken during the step. If all steps of
+ * all elements of the model return false, the simulation can be stopped.
  */
 
 class Steppable {
 public:
-    virtual void stepSend() =0;
-    virtual void stepRecv() =0;
+    virtual bool stepSend() =0;
+    virtual bool stepRecv() =0;
 };
 
 #endif
