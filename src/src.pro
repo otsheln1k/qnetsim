@@ -3,7 +3,7 @@ TEMPLATE = app
 QT = core gui widgets
 
 TARGET = qnetsim
-CONFIG += c++17 warn_on
+CONFIG += c++17 strict_c++ warn_on
 
 SOURCES += EthernetFrame.cpp
 SOURCES += EthernetInterface.cpp
