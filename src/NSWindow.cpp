@@ -8,21 +8,9 @@
 NSWindow::NSWindow()
 {
     setupUi(this);
-
-    QObject::connect(clickmeButton, &QPushButton::clicked,
-                     this, &NSWindow::onClickMeClicked);
-    QObject::connect(actionQuit, &QAction::triggered,
-                     this, &NSWindow::onQuitTriggered);
 }
 
-void
-NSWindow::onClickMeClicked()
-{
-    QMessageBox::information(this, "Hello", "Hello world!");
-}
-
-void
-NSWindow::onQuitTriggered()
+void NSWindow::on_actionQuit_triggered()
 {
     emit quit();
 }

@@ -18,6 +18,9 @@ signals:
 
 public:
     NSWindow();
+
+private slots:
+    void on_actionQuit_triggered();
 };
 
 #endif
