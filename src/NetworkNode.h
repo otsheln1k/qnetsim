@@ -17,6 +17,7 @@ public:
     virtual void addInterface(GenericNetworkInterface* iface);
     virtual void removeInterface(GenericNetworkInterface* iface);
     unsigned int interfacesCount();
+    std::set <GenericNetworkInterface*> getInterfaces();
 };
 
 #endif // NETWORKNODE_H

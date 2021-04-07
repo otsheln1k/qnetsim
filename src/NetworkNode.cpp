@@ -21,6 +21,9 @@ unsigned int NetworkNode::interfacesCount()
     return interfaceTable.size();
 }
 
+std::set <GenericNetworkInterface*> NetworkNode::getInterfaces(){
+    return interfaceTable;
+}
 
 
 
