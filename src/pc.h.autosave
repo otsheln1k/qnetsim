@@ -7,7 +7,7 @@
 class pc : public NetworkNode
 {
 private:
-    mac;
+    MACAddr mac;
 public:
     pc();
     virtual void addInterface(GenericNetworkInterface* iface);

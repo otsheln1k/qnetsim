@@ -7,12 +7,12 @@
 #include "EthernetInterface.hpp"
 
 
-class hub : public NetworkNode
+class Hub : public NetworkNode
 {
 private:
     QMetaObject::Connection connection;
 public:
-    hub();
+    Hub();
     virtual void addInterface(GenericNetworkInterface* iface);
     virtual void removeInterface(GenericNetworkInterface* iface);
 };
