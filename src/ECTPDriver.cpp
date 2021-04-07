@@ -23,7 +23,7 @@ void ECTPDriver::handleData(const uint8_t *data, size_t size)
     }
 
     uint16_t skip = data[0] | (data[1] << 8);
-    uint16_t off = skip + 4;
+    uint16_t off = skip + 2;
 
     if (size < off) {
         return;                 // skipCount too large
@@ -58,7 +58,7 @@ void ECTPDriver::handleData(const uint8_t *data, size_t size)
         uint16_t nskip = skip + 8;
         ndata[0] = nskip & 0xFF;
         ndata[1] = (nskip >> 8) & 0xFF;
-        std::copy(data, data + size, ndata.begin()+2);
+        std::copy(data + 2, data + size, ndata.begin()+2);
 
         emit forward(dest, ndata.data(), size);
 

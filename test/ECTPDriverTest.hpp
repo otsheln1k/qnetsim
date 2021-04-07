@@ -10,6 +10,10 @@ private slots:
     void testReplyMessage();
 
     void testLoopbackMessage();
+
+    void testHandleReply();
+
+    void testHandleForward();
 };
 
 #endif
