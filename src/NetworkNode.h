@@ -17,6 +17,9 @@ public:
     virtual void addInterface(GenericNetworkInterface* iface);
     virtual void removeInterface(GenericNetworkInterface* iface);
     unsigned int interfacesCount();
+    
+    virtual bool stepSend() override;
+    virtual bool stepRecv() override;
 };
 
 #endif // NETWORKNODE_H
