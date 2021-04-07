@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <QMetaObject>
+#include <QMetaType>
 
 class MACAddr {
 private:
