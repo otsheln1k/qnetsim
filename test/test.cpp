@@ -4,6 +4,7 @@
 #include "EthernetFrameTest.hpp"
 #include "EthernetInterfaceTest.hpp"
 #include "EthernetDriverTest.hpp"
+#include "SimulationStepperTest.hpp"
 
 int main(int argc, char **argv)
 {
@@ -12,6 +13,7 @@ int main(int argc, char **argv)
         new EthernetFrameTest {},
         new EthernetInterfaceTest {},
         new EthernetDriverTest {},
+        new SimulationStepperTest {},
     };
 
     char **nargv = new char *[argc];
