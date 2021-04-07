@@ -6,6 +6,7 @@
 #include "EthernetDriverTest.hpp"
 #include "SimulationStepperTest.hpp"
 #include "SimulationLoggerTest.hpp"
+#include "ECTPDriverTest.hpp"
 
 int main(int argc, char **argv)
 {
@@ -16,6 +17,7 @@ int main(int argc, char **argv)
         new EthernetDriverTest {},
         new SimulationStepperTest {},
         new SimulationLoggerTest {},
+        new ECTPDriverTest {},
     };
 
     char **nargv = new char *[argc];
