@@ -12,6 +12,10 @@ HEADERS += MACAddrTest.hpp
 HEADERS += EthernetFrameTest.hpp
 HEADERS += EthernetInterfaceTest.hpp
 
+SOURCES += MACAddrTest.cpp
+SOURCES += EthernetFrameTest.cpp
+SOURCES += EthernetInterfaceTest.cpp
+
 HEADERS += ../src/GenericNetworkInterface.hpp
 HEADERS += ../src/EthernetInterface.hpp
 
