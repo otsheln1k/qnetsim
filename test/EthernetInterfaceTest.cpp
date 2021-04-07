@@ -19,6 +19,9 @@ void EthernetInterfaceTest::testConnectDisconnect() {
     QSignalSpy i1_disconn_spy(&i1, &GenericNetworkInterface::disconnected);
     QSignalSpy i2_disconn_spy(&i2, &GenericNetworkInterface::disconnected);
 
+    QCOMPARE(i1.connectionsCount(), 0lu);
+    QCOMPARE(i2.connectionsCount(), 0lu);
+
     QVERIFY(i1.connect(&i2));
 
     QCOMPARE(dynamic_cast<EthernetInterface *>(
@@ -31,6 +34,12 @@ void EthernetInterfaceTest::testConnectDisconnect() {
                      i2_conn_spy.takeFirst().at(0))),
              &i1);
 
+    QCOMPARE(i1.connectionsCount(), 1lu);
+    QCOMPARE(i1.connectionByIndex(0), &i2);
+
+    QCOMPARE(i2.connectionsCount(), 1lu);
+    QCOMPARE(i2.connectionByIndex(0), &i1);
+
     QVERIFY(i1.disconnect(&i2));
 
     QCOMPARE(dynamic_cast<EthernetInterface *>(
@@ -42,6 +51,9 @@ void EthernetInterfaceTest::testConnectDisconnect() {
                  qvariant_cast<GenericNetworkInterface *>(
                      i2_disconn_spy.takeFirst().at(0))),
              &i1);
+
+    QCOMPARE(i1.connectionsCount(), 0lu);
+    QCOMPARE(i2.connectionsCount(), 0lu);
 
     QVERIFY(!i1.disconnect(&i2));
 

@@ -18,6 +18,11 @@ public:
     virtual bool connect(GenericNetworkInterface *iface) override;
     virtual bool disconnect(GenericNetworkInterface *iface) override;
 
+    virtual size_t connectionsCount() const override;
+
+    virtual GenericNetworkInterface *
+    connectionByIndex(size_t index) const override;
+
     virtual bool stepSend() override;
     virtual bool stepRecv() override;
 

@@ -47,6 +47,17 @@ bool EthernetInterface::disconnect(GenericNetworkInterface *iface)
     return true;
 }
 
+size_t EthernetInterface::connectionsCount() const
+{
+    return (_peer != nullptr) ? 1 : 0;
+}
+
+GenericNetworkInterface *
+EthernetInterface::connectionByIndex(size_t index) const
+{
+    return (index == 0) ? _peer : nullptr;
+}
+
 bool EthernetInterface::sendFrame(const EthernetFrame &frame)
 {
     std::vector<uint8_t> bytes;

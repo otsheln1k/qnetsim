@@ -7,11 +7,14 @@
 
 class GenericNetworkInterface : public QObject,
                                 public Steppable {
-    Q_OBJECT
+    Q_OBJECT;
 
 public:
     virtual bool connect(GenericNetworkInterface *iface) =0;
     virtual bool disconnect(GenericNetworkInterface *iface) =0;
+
+    virtual size_t connectionsCount() const =0;
+    virtual GenericNetworkInterface *connectionByIndex(size_t index) const =0;
 
 signals:
     void connected(GenericNetworkInterface *other);
