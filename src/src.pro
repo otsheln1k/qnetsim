@@ -10,6 +10,7 @@ SOURCES += EthernetInterface.cpp
 SOURCES += main.cpp
 SOURCES += NSWindow.cpp
 
+HEADERS += EthernetDriver.hpp
 HEADERS += EthernetFrame.hpp
 HEADERS += EthernetInterface.hpp
 HEADERS += GenericNetworkInterface.hpp

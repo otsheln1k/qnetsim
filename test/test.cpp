@@ -3,6 +3,7 @@
 #include "MACAddrTest.hpp"
 #include "EthernetFrameTest.hpp"
 #include "EthernetInterfaceTest.hpp"
+#include "EthernetDriverTest.hpp"
 
 int main(int argc, char **argv)
 {
@@ -10,6 +11,7 @@ int main(int argc, char **argv)
         new MACAddrTest {},
         new EthernetFrameTest {},
         new EthernetInterfaceTest {},
+        new EthernetDriverTest {},
     };
 
     char **nargv = new char *[argc];

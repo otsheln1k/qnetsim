@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#include <QMetaObject>
+
 class MACAddr {
 private:
     uint8_t _bs[6];
@@ -106,5 +108,7 @@ public:
         return !(*this == a);
     }
 };
+
+Q_DECLARE_METATYPE(MACAddr);
 
 #endif
