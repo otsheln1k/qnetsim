@@ -16,6 +16,8 @@ public:
     virtual size_t connectionsCount() const =0;
     virtual GenericNetworkInterface *connectionByIndex(size_t index) const =0;
 
+    virtual ~GenericNetworkInterface() {}
+
 signals:
     void connected(GenericNetworkInterface *other);
     void disconnected(GenericNetworkInterface *other);

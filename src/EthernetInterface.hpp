@@ -28,6 +28,8 @@ public:
 
     bool sendFrame(const EthernetFrame &frame);
 
+    virtual ~EthernetInterface() override;
+
 signals:
     void receivedFrame(const EthernetFrame *frame);
 };

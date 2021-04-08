@@ -107,3 +107,10 @@ bool EthernetInterface::stepRecv()
 
     return res;
 }
+
+EthernetInterface::~EthernetInterface()
+{
+    if (_peer != nullptr) {
+        disconnect(_peer);
+    }
+}

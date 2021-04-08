@@ -61,6 +61,21 @@ void EthernetInterfaceTest::testConnectDisconnect() {
     QCOMPARE(i2_conn_spy.size(), 0);
 }
 
+void EthernetInterfaceTest::testDisconnectOnDestroy()
+{
+    auto i1 = std::make_unique<EthernetInterface>();
+
+    {
+        auto i2 = std::make_unique<EthernetInterface>();
+
+        i2->connect(&*i1);
+
+        QCOMPARE(i1->connectionsCount(), 1ul);
+    }
+
+    QCOMPARE(i1->connectionsCount(), 0ul);
+}
+
 void EthernetInterfaceTest::testSendFrame() {
     EthernetInterface *is[2] = {
         new EthernetInterface {},

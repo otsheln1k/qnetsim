@@ -30,6 +30,8 @@ class EthernetInterfaceTest : public QObject {
 private slots:
     void testConnectDisconnect();
 
+    void testDisconnectOnDestroy();
+
     void testSendFrame();
 
     void testMultipleFrames();
