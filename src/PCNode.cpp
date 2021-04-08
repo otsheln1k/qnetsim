@@ -24,6 +24,11 @@ void PCNode::addInterface(GenericNetworkInterface *iface){
 }
 
 void PCNode::removeInterface(GenericNetworkInterface *iface){
+    EthernetInterface *eiface = dynamic_cast<EthernetInterface *>(iface);
+    auto driver = interfaces.find(eiface);
+    if(driver != interfaces.end()){
+        interfaces.erase(eiface);
+    }
     NetworkNode::removeInterface(iface);
 }
 
