@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QObject>
+#include <QDebug>
 
 #include "NSWindow.hpp"
 
@@ -8,7 +9,7 @@ main(int argc, char **argv)
 {
     QApplication app {argc, argv};
 
-    NSWindow win {};
+    NSWindow win;
 
     QObject::connect(&win, &NSWindow::quit,
                      &app, &QApplication::quit);

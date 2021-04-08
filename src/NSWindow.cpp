@@ -5,12 +5,31 @@
 
 #include "NSWindow.hpp"
 
-NSWindow::NSWindow()
+NSWindow::NSWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::NSWindow)
 {
-    setupUi(this);
+    this->ui->setupUi(this);
+}
+
+NSWindow::~NSWindow()
+{
+    delete this->ui;
 }
 
 void NSWindow::on_actionQuit_triggered()
 {
     emit quit();
+}
+
+void NSWindow::on_toolButton_2_clicked()
+{
+    ui->graphicsView->setMode(NSGraphicsViewMode::ADD_NODE);
+    ui->graphicsView->setNode(NSGraphicsViewNode::PC);
+    qDebug() << "PC add mode enabled";
+}
+
+void NSWindow::on_toolButton_3_clicked()
+{
+    ui->graphicsView->setMode(NSGraphicsViewMode::ADD_CONNECTION);
 }

@@ -5,6 +5,12 @@
 
 #include "ui_NSWindow.h"
 
+QT_BEGIN_NAMESPACE
+namespace Ui {
+    class NSWindow;
+}
+QT_END_NAMESPACE
+
 class NSWindow : public QMainWindow,
                  private Ui::NSWindow {
     Q_OBJECT
@@ -17,10 +23,16 @@ signals:
     void quit();
 
 public:
-    NSWindow();
+    NSWindow(QWidget *parent=nullptr);
+    ~NSWindow();
+
+private:
+    Ui::NSWindow *ui;
 
 private slots:
     void on_actionQuit_triggered();
+    void on_toolButton_2_clicked();
+    void on_toolButton_3_clicked();
 };
 
 #endif
