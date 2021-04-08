@@ -1,16 +1,18 @@
 #ifndef PC_H
 #define PC_H
 
-#include "NetworkNode.h"
+#include "PCNode.h"
 #include "node.h"
 
 class PC : public Node
 {
-    NetworkNode *node;
+    Q_OBJECT;
+
+    PCNode *node;
 
 public:
     PC(QObject *parent,
-       NetworkNode *node,
+       PCNode *node,
        QPointF position = {0, 0},
        QSize size= {64, 64},
        QString *name= nullptr);
@@ -20,6 +22,7 @@ public:
 
 private slots:
     void onNodeDestroyed();
+    void onSendECTPMessage();
 };
 
 #endif // PC_H

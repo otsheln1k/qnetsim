@@ -37,7 +37,6 @@ EthernetDriver* PCNode::getDriver(EthernetInterface *iface){
     if(driver != interfaces.end()){
         return driver->second;
     }
+
+    return nullptr;
 }
-
-
-

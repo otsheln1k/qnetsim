@@ -1,11 +1,11 @@
-#include <QDebug>
 #include <QMenu>
+#include <QGraphicsScene>
 
 #include "EthernetInterface.hpp"
-
+#include "PCNode.h"
 #include "pc.h"
 
-PC::PC(QObject *parent, NetworkNode *node,
+PC::PC(QObject *parent, PCNode *node,
        QPointF position, QSize size, QString *name)
     : Node(parent, new QPixmap("models/018-monitor screen.png"),
            position, size, name),
@@ -17,7 +17,7 @@ PC::PC(QObject *parent, NetworkNode *node,
 
 void PC::onNodeDestroyed()
 {
-    delete this;
+    scene()->removeItem(this);
 }
 
 void PC::populateMenu(QMenu *menu)
@@ -34,9 +34,39 @@ void PC::populateMenu(QMenu *menu)
                      {
                          node->addInterface(new EthernetInterface {});
                      });
+
+    QMenu *ectpMenu = menu->addMenu("Отправить проверку связи…");
+
+    fillInterfacesMenu(ectpMenu, node);
+
+    for (QAction *action : ectpMenu->actions()) {
+        QObject::connect(action, &QAction::triggered,
+                         this, &PC::onSendECTPMessage);
+    }
 }
 
 NetworkNode *PC::networkNode() const
 {
     return node;
+}
+
+void PC::onSendECTPMessage()
+{
+    auto *iface = dynamic_cast<QAction*>(sender())->data()
+        .value<GenericNetworkInterface *>();
+    auto *drv = node->getDriver(
+        dynamic_cast<EthernetInterface *>(iface));
+
+    QVector<uint8_t> bytes;
+    static const uint8_t str[] = {'a', 'b', 'c'};
+    static const uint16_t seq = 13;
+    ECTPDriver::makeLoopback(drv->address(), seq,
+                             str, &str[sizeof(str)],
+                             std::back_inserter(bytes));
+    drv->sendFrame(0x010203040506, // their MAC
+                   ETHERTYPE_ECTP,
+                   bytes.begin(),
+                   bytes.end());
+
+    (void)bytes;
 }

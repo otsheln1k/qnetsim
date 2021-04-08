@@ -12,6 +12,9 @@
 
 class Node : public QObject,
              public QGraphicsItem {
+    Q_OBJECT;
+    Q_INTERFACES(QGraphicsItem);
+
 public:
     Node(QObject *parent,
          QPixmap *image,
@@ -22,6 +25,8 @@ public:
 
     virtual void populateMenu(QMenu *menu) =0;
     virtual NetworkNode *networkNode() const =0;
+
+    static void fillInterfacesMenu(QMenu *menu, NetworkNode *node);
 
 protected:
     virtual void paint(QPainter *painter,

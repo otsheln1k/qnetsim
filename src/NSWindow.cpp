@@ -32,3 +32,8 @@ void NSWindow::on_toolButton_3_clicked()
 {
     ui->graphicsView->setMode(NSGraphicsViewMode::ADD_CONNECTION);
 }
+
+void NSWindow::on_resetButton_clicked()
+{
+    ui->graphicsView->resetModel();
+}

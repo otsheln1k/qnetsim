@@ -11,8 +11,6 @@ class NetworkModel : public QObject
 {
     Q_OBJECT;
 
-    std::map<NetworkNode*, QMetaObject::Connection> nodeTable;
-
 public:
     NetworkModel();
 
@@ -20,33 +18,10 @@ public:
     void removeNode(NetworkNode* node);
     unsigned int countNodes();
 
-    class iterator {
-        using src_t =
-            std::map<NetworkNode *, QMetaObject::Connection>::const_iterator;
+    using iterator = QObjectList::const_iterator;
 
-        src_t i;
-
-    public:
-        explicit iterator(src_t i) :i{i} {}
-
-        iterator &operator++() { ++i; return *this; }
-        iterator operator++(int) { return iterator {i++}; }
-
-        bool operator==(const iterator &it) { return i == it.i; }
-        bool operator!=(const iterator &it) { return i != it.i; }
-
-        NetworkNode *operator*() { return i->first; }
-        NetworkNode * const *operator->() { return &i->first; }
-
-        using iterator_category = std::input_iterator_tag;
-        using value_type = NetworkNode *;
-        using difference_type = ptrdiff_t;
-        using pointer = NetworkNode * const *;
-        using reference = NetworkNode *;
-    };
-
-    iterator begin() const { return iterator {nodeTable.begin()}; }
-    iterator end() const { return iterator {nodeTable.end()}; }
+    iterator begin() const { return children().begin(); }
+    iterator end() const { return children().end(); }
 
 signals:
     void nodeAdded(NetworkNode *node);

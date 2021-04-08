@@ -21,7 +21,7 @@
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <item>
-       <widget class="QToolButton" name="toolButton">
+       <widget class="QToolButton" name="resetButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
           <horstretch>0</horstretch>

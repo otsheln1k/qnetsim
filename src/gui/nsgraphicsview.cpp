@@ -1,6 +1,6 @@
 #include <QDebug>
 
-#include "NetworkNode.h"
+#include "PCNode.h"
 #include "NetworkModel.h"
 
 #include "nsgraphicsview.h"
@@ -16,8 +16,8 @@ NSGraphicsView::NSGraphicsView(QWidget *parent)
 
 NSGraphicsView::~NSGraphicsView()
 {
-    delete scene;
-    delete model;
+    // delete model;
+    // delete scene;
 }
 
 void NSGraphicsView::resetModel()
@@ -75,36 +75,27 @@ void NSGraphicsView::onConnected(GenericNetworkInterface *other)
     auto *n1 = nodetab.at(dynamic_cast<NetworkNode *>(iface->parent()));
     auto *n2 = nodetab.at(dynamic_cast<NetworkNode *>(other->parent()));
 
-    edgetab[std::make_tuple(iface, other)] = scene->addLine(
+    auto *line = scene->addLine(
         QLineF{n1->pos(), n2->pos()},
         Qt::SolidLine);
+
+    edgetab[std::make_tuple(iface, other)] = line;
 }
 
 void NSGraphicsView::onDisconnected(GenericNetworkInterface *other)
 {
     auto *iface = dynamic_cast<GenericNetworkInterface *>(sender());
 
+    qDebug() << "disconnected " << (void*)iface << " " << (void*)other;
+
     if (other < iface) {
         return;
     }
 
-    auto lineitem = edgetab.extract(std::make_tuple(iface, other)).mapped();
+    qDebug() << "deleting";
+
+    auto *lineitem = edgetab.extract(std::make_tuple(iface, other)).mapped();
     delete lineitem;
-}
-
-QMenu *NSGraphicsView::makeInterfacesMenu(NetworkNode *node)
-{
-    auto *menu = new QMenu {};
-
-    for (GenericNetworkInterface *iface : *node) {
-        auto *action = menu->addAction(
-            QString{"Интерфейс @ 0x%1"}
-            .arg((size_t)iface, sizeof(size_t)*2, 16, QChar{'0'}));
-
-        action->setData(QVariant::fromValue(iface));
-    }
-
-    return menu;
 }
 
 void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
@@ -119,7 +110,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
         switch(mode){
         case NSGraphicsViewMode::ADD_NODE:
             if (node == NSGraphicsViewNode::PC){
-                auto *node = new NetworkNode {};
+                auto *node = new PCNode {};
                 auto *gnode = new class PC(this, node, scn);
 
                 model->addNode(node);
@@ -153,8 +144,8 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
                 break;
             }
 
-            auto menu = std::unique_ptr<QMenu>{
-                makeInterfacesMenu(node->networkNode())};
+            auto menu = std::make_unique<QMenu>();
+            Node::fillInterfacesMenu(&*menu, node->networkNode());
             auto *action = menu->exec(ev->globalPos());
 
             if (action == nullptr) {
