@@ -11,6 +11,8 @@ public:
        QSize size= {64, 64},
        QString *name= nullptr);
 
+    virtual void populateMenu(QMenu *menu) override;
+
 protected:
 
 };

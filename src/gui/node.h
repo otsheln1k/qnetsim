@@ -6,9 +6,10 @@
 #include <QPixmap>
 #include <QGraphicsItem>
 #include <QPainter>
+#include <QMenu>
 
-class Node : public QObject, public QGraphicsItem
-{
+class Node : public QObject,
+             public QGraphicsItem {
 public:
     Node(QObject *parent,
          QPixmap *image,
@@ -17,16 +18,17 @@ public:
          QString *name = nullptr);
     ~Node();
 
+    virtual void populateMenu(QMenu *menu) =0;
 
 protected:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    QRectF boundingRect() const;
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionGraphicsItem *option,
+                       QWidget *widget) override;
+    virtual QRectF boundingRect() const override;
 
     QPixmap *image;
     QSize size;
     QString *name;
-
-    std::list<Node> connections;
 };
 
 #endif // NODE_H

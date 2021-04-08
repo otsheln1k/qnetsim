@@ -41,17 +41,17 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
 
         case NSGraphicsViewMode::ADD_CONNECTION: {
             qDebug() << "Try to select device to connect";
-            auto *item = dynamic_cast<Node *>(itemAt(pos));
-            if (item == nullptr) {
+            auto *node = dynamic_cast<Node *>(itemAt(pos));
+            if (node == nullptr) {
                 qDebug() << "abort connection";
                 mode = NSGraphicsViewMode::NONE;
                 break;
             }
 
             if (connection[0] == nullptr){
-                connection[0] = item;
+                connection[0] = node;
             } else {
-                connection[1] = item;
+                connection[1] = node;
                 if (connection[1] != nullptr){
                     scene->addLine(QLineF{
                             connection[0]->pos(),
@@ -61,16 +61,22 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
                 }
             }
             if (connection[0] != nullptr){
-                qDebug()<< "1st item selected: " << (void*)connection[0];
+                qDebug() << "1st item selected: " << (void*)connection[0];
             }
             if (connection[1] != nullptr){
-                qDebug()<< "2nd item selected: " << (void*)connection[1];
+                qDebug() << "2nd item selected: " << (void*)connection[1];
             }
             break;
         }
 
         default:
             break;
+        }
+    } else if (ev->button() == Qt::MouseButton::RightButton) {
+        if (auto *node = dynamic_cast<Node *>(itemAt(ev->pos()))) {
+            auto *menu = new QMenu(this);
+            node->populateMenu(menu);
+            menu->exec(ev->globalPos());
         }
     }
 }
