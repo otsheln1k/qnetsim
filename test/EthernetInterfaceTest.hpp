@@ -32,6 +32,8 @@ private slots:
 
     void testDisconnectOnDestroy();
 
+    void testStealConnection();
+
     void testSendFrame();
 
     void testMultipleFrames();

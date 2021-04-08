@@ -15,7 +15,7 @@ bool EthernetInterface::connect(GenericNetworkInterface *iface)
         disconnect(_peer);
     }
     if (eiface->_peer) {
-        disconnect(eiface->_peer);
+        eiface->disconnect(eiface->_peer);
     }
 
     _peer = eiface;
