@@ -1,3 +1,4 @@
+#include "SimulationLogger.hpp"
 #include "ECTPDriver.hpp"
 
 bool ECTPDriver::ourFrame(const EthernetFrame *frame)
@@ -41,6 +42,10 @@ void ECTPDriver::handleData(const uint8_t *data, size_t size)
         const uint8_t *payload = &data[off+4];
         size_t payloadSize = size - (off+4);
 
+        SimulationLogger::currentLogger()->log(QString{
+                "Received ECTP reply: seq=%2"}
+            .arg(seq));
+
         emit reply(seq, payload, payloadSize);
 
         break;
@@ -59,6 +64,10 @@ void ECTPDriver::handleData(const uint8_t *data, size_t size)
         ndata[0] = nskip & 0xFF;
         ndata[1] = (nskip >> 8) & 0xFF;
         std::copy(data + 2, data + size, ndata.begin()+2);
+
+        SimulationLogger::currentLogger()->log(QString{
+                "Received ECTP Forward: forwarding to %1"}
+            .arg(dest));
 
         emit forward(dest, ndata.data(), size);
 
