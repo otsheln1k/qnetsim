@@ -15,8 +15,7 @@ namespace Ui {
 }
 QT_END_NAMESPACE
 
-class NSWindow : public QMainWindow,
-                 private Ui::NSWindow {
+class NSWindow : public QMainWindow {
     Q_OBJECT;
 
     NetworkNode __n {};

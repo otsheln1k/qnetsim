@@ -2,25 +2,26 @@
 #include <QGraphicsScene>
 
 #include "EthernetInterface.hpp"
-#include "PCNode.h"
-#include "pc.h"
 
-PC::PC(QObject *parent, PCNode *node,
-       QPointF position, QSize size, QString *name)
-    : Node(parent, new QPixmap("models/018-monitor screen.png"),
-           position, size, name),
+#include "PCNode.h"
+#include "nsgraphicspcnode.h"
+
+NSGraphicsPCNode::NSGraphicsPCNode(QObject *parent, PCNode *node,
+                                   QPointF position, QSize size, QString *name)
+    : NSGraphicsNode(parent, new QPixmap("models/018-monitor screen.png"),
+                     position, size, name),
       node{node}
 {
     QObject::connect(node, &QObject::destroyed,
-                     this, &PC::onNodeDestroyed);
+                     this, &NSGraphicsPCNode::onNodeDestroyed);
 }
 
-void PC::onNodeDestroyed()
+void NSGraphicsPCNode::onNodeDestroyed()
 {
     scene()->removeItem(this);
 }
 
-void PC::populateMenu(QMenu *menu)
+void NSGraphicsPCNode::populateMenu(QMenu *menu)
 {
     QObject::connect(menu->addAction("Удалить"), &QAction::triggered,
                      [this]()
@@ -41,16 +42,16 @@ void PC::populateMenu(QMenu *menu)
 
     for (QAction *action : ectpMenu->actions()) {
         QObject::connect(action, &QAction::triggered,
-                         this, &PC::onSendECTPMessage);
+                         this, &NSGraphicsPCNode::onSendECTPMessage);
     }
 }
 
-NetworkNode *PC::networkNode() const
+NetworkNode *NSGraphicsPCNode::networkNode() const
 {
     return node;
 }
 
-void PC::onSendECTPMessage()
+void NSGraphicsPCNode::onSendECTPMessage()
 {
     auto *iface = dynamic_cast<QAction*>(sender())->data()
         .value<GenericNetworkInterface *>();

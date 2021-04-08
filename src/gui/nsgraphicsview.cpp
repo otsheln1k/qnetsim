@@ -3,6 +3,7 @@
 #include "PCNode.h"
 #include "NetworkModel.h"
 
+#include "nsgraphicspcnode.h"
 #include "nsgraphicsview.h"
 
 NSGraphicsView::NSGraphicsView(QWidget *parent)
@@ -111,7 +112,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
         case NSGraphicsViewMode::ADD_NODE:
             if (node == NSGraphicsViewNode::PC){
                 auto *node = new PCNode {};
-                auto *gnode = new class PC(this, node, scn);
+                auto *gnode = new NSGraphicsPCNode(this, node, scn);
 
                 model->addNode(node);
 
@@ -131,7 +132,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
 
         case NSGraphicsViewMode::ADD_CONNECTION: {
             qDebug() << "Try to select device to connect";
-            auto *node = dynamic_cast<Node *>(itemAt(pos));
+            auto *node = dynamic_cast<NSGraphicsNode *>(itemAt(pos));
             if (node == nullptr) {
                 qDebug() << "abort connection";
                 mode = NSGraphicsViewMode::NONE;
@@ -145,7 +146,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
             }
 
             auto menu = std::make_unique<QMenu>();
-            Node::fillInterfacesMenu(&*menu, node->networkNode());
+            NSGraphicsNode::fillInterfacesMenu(&*menu, node->networkNode());
             auto *action = menu->exec(ev->globalPos());
 
             if (action == nullptr) {
@@ -175,7 +176,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
             break;
         }
     } else if (ev->button() == Qt::MouseButton::RightButton) {
-        if (auto *node = dynamic_cast<Node *>(itemAt(ev->pos()))) {
+        if (auto *node = dynamic_cast<NSGraphicsNode *>(itemAt(ev->pos()))) {
             auto *menu = new QMenu(this);
             node->populateMenu(menu);
             menu->exec(ev->globalPos());
