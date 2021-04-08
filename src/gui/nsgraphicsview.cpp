@@ -54,6 +54,8 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
                 auto *node = new NetworkNode {};
                 auto *gnode = new class PC(this, node, scn);
 
+                model->addNode(node);
+
                 scene->addItem(gnode);
                 scene->update(0,0,width(),height());
                 auto r = sceneRect();
