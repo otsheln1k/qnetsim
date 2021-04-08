@@ -102,7 +102,7 @@ public:
 
     const uint8_t *read(const uint8_t *src, size_t len);
 
-    const MACAddr &srcAddr() const
+    MACAddr srcAddr() const
     {
         return _asrc;
     }
@@ -112,7 +112,7 @@ public:
         _asrc = a;
     }
 
-    const MACAddr &dstAddr() const
+    MACAddr dstAddr() const
     {
         return _adst;
     }
