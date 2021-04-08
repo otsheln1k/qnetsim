@@ -12,6 +12,7 @@ void NetworkModel::addNode(NetworkNode* node)
                                  });
     nodeTable[node] = conn;
     node->setParent(this);
+    emit nodeAdded(node);
 }
 
 
@@ -20,6 +21,7 @@ void NetworkModel::removeNode(NetworkNode* node)
     auto conn = nodeTable.extract(node).mapped();
     QObject::disconnect(conn);
     node->setParent(nullptr);
+    emit nodeRemoved(node);
 }
 
 unsigned int NetworkModel::countNodes()

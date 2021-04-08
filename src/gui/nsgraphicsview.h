@@ -6,6 +6,8 @@
 #include <QGraphicsView>
 
 #include "NetworkModel.h"
+#include "NetworkNode.h"
+#include "GenericNetworkInterface.hpp"
 #include "pc.h"
 
 enum NSGraphicsViewMode{
@@ -42,10 +44,23 @@ private:
     QGraphicsScene *scene;
     NSGraphicsViewMode mode;
     NSGraphicsViewNode node;
-    GenericNetworkInterface *connection[2];
+    GenericNetworkInterface *connSource;
 
-    NetworkModel *model;
+    NetworkModel *model {nullptr};
     std::map<NetworkNode *, Node *> nodetab;
+    std::map<std::tuple<GenericNetworkInterface *,
+                        GenericNetworkInterface *>,
+             QGraphicsLineItem *> edgetab;
+
+private slots:
+    void onNodeAdded(NetworkNode *node);
+    void onNodeRemoved(NetworkNode *node);
+
+    void onInterfaceAdded(GenericNetworkInterface *iface);
+    void onInterfaceRemoved(GenericNetworkInterface *iface);
+
+    void onConnected(GenericNetworkInterface *other);
+    void onDisconnected(GenericNetworkInterface *other);
 
 };
 

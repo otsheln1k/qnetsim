@@ -11,6 +11,8 @@
 class NetworkNode : public QObject,
                     public Steppable
 {
+    Q_OBJECT;
+
 private:
     std::set <GenericNetworkInterface*> interfaceTable;
 
@@ -30,6 +32,10 @@ public:
 
     virtual bool stepSend() override;
     virtual bool stepRecv() override;
+
+signals:
+    void interfaceAdded(GenericNetworkInterface *iface);
+    void interfaceRemoved(GenericNetworkInterface *iface);
 };
 
 #endif // NETWORKNODE_H

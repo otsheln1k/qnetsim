@@ -10,12 +10,14 @@ void NetworkNode::addInterface(GenericNetworkInterface *iface)
 {
     interfaceTable.insert(iface);
     iface->setParent(this);
+    emit interfaceAdded(iface);
 }
 
 void NetworkNode::removeInterface(GenericNetworkInterface* iface)
 {
     interfaceTable.erase(iface);
     iface->setParent(nullptr);
+    emit interfaceRemoved(iface);
 }
 
 unsigned int NetworkNode::interfacesCount()

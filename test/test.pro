@@ -30,9 +30,12 @@ HEADERS += ../src/EthernetDriver.hpp
 HEADERS += ../src/SimulationStepper.hpp
 HEADERS += ../src/SimulationLogger.hpp
 HEADERS += ../src/ECTPDriver.hpp
+HEADERS += ../src/NetworkModel.h
+HEADERS += ../src/NetworkNode.h
 
 SOURCES += ../src/EthernetFrame.cpp
 SOURCES += ../src/EthernetInterface.cpp
+SOURCES += ../src/NetworkModel.cpp
 SOURCES += ../src/NetworkNode.cpp
 SOURCES += ../src/SimulationLogger.cpp
 SOURCES += ../src/ECTPDriver.cpp

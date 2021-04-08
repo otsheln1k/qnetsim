@@ -9,6 +9,8 @@
 
 class NetworkModel : public QObject
 {
+    Q_OBJECT;
+
     std::map<NetworkNode*, QMetaObject::Connection> nodeTable;
 
 public:
@@ -45,6 +47,10 @@ public:
 
     iterator begin() const { return iterator {nodeTable.begin()}; }
     iterator end() const { return iterator {nodeTable.end()}; }
+
+signals:
+    void nodeAdded(NetworkNode *node);
+    void nodeRemoved(NetworkNode *node);
 };
 
 #endif // NETWORKMODEL_H
