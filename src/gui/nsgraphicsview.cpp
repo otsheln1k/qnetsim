@@ -1,17 +1,19 @@
+#include <QDebug>
+
 #include "nsgraphicsview.h"
 
-NSGraphicsView::NSGraphicsView(QWidget *parent) : QGraphicsView(parent)
+NSGraphicsView::NSGraphicsView(QWidget *parent)
+    : QGraphicsView(parent),
+      scene {new QGraphicsScene {}},
+      mode {NSGraphicsViewMode::NONE},
+      connection {nullptr, nullptr}
 {
-    this->connection[0] = this->connection[1] = nullptr;
-    this->mode = NSGraphicsViewMode::NONE;
-    this->scene = new QGraphicsScene();
-    this->setScene(this->scene);
-    qDebug() << this->scene->width()<<" "<<this->scene->height();
+    setScene(scene);
 }
 
 NSGraphicsView::~NSGraphicsView()
 {
-    delete this->scene;
+    delete scene;
 }
 
 void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
@@ -20,44 +22,65 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
     if (ev->button() == Qt::MouseButton::LeftButton){
         qDebug() << "Left button clicked!";
 
-        switch(this->mode){
+        QPoint pos = ev->pos();
+        QPointF scn = mapToScene(pos);
+
+        switch(mode){
         case NSGraphicsViewMode::ADD_NODE:
-            if (this->node == NSGraphicsViewNode::PC){
-                this->scene->addItem(new class PC(this, ev->position()));
-                this->scene->update(0,0,this->width(),this->height());
+            if (node == NSGraphicsViewNode::PC){
+                scene->addItem(new class PC(this, scn));
+                scene->update(0,0,width(),height());
+                auto r = sceneRect();
+                auto pos2 = mapFromScene(scn);
+                r.setX(r.x() - (pos.x() - pos2.x()));
+                r.setY(r.y() - (pos.y() - pos2.y()));
+                setSceneRect(r);
             }
-            this->mode = NSGraphicsViewMode::NONE;
+            mode = NSGraphicsViewMode::NONE;
             break;
 
-        case NSGraphicsViewMode::ADD_CONNECTION:
+        case NSGraphicsViewMode::ADD_CONNECTION: {
             qDebug() << "Try to select device to connect";
-            if (this->connection[0] == nullptr){
-                this->connection[0] = dynamic_cast<Node*>(this->scene->itemAt(ev->position(), QGraphicsView::transform()));
+            auto *item = dynamic_cast<Node *>(itemAt(pos));
+            if (item == nullptr) {
+                qDebug() << "abort connection";
+                mode = NSGraphicsViewMode::NONE;
+                break;
+            }
+
+            if (connection[0] == nullptr){
+                connection[0] = item;
             } else {
-                this->connection[1] = dynamic_cast<Node*>(this->scene->itemAt(ev->position(), QGraphicsView::transform()));
-                if (this->connection[1] != nullptr){
-                    this->scene->addLine(this->connection[0]->pos().x(),this->connection[0]->pos().y(),
-                            this->connection[1]->pos().x(),this->connection[1]->pos().y(), Qt::SolidLine);
-                    this->scene->update(0,0,this->width(),this->height());
+                connection[1] = item;
+                if (connection[1] != nullptr){
+                    scene->addLine(QLineF{
+                            connection[0]->pos(),
+                            connection[1]->pos(),
+                        }, Qt::SolidLine);
+                    scene->update(0,0,width(),height());
                 }
             }
-            if (this->connection[0] != nullptr){
-                qDebug()<< "1st item selected";
+            if (connection[0] != nullptr){
+                qDebug()<< "1st item selected: " << (void*)connection[0];
             }
-            if (this->connection[1] != nullptr){
-                qDebug()<< "2nd item selected";
+            if (connection[1] != nullptr){
+                qDebug()<< "2nd item selected: " << (void*)connection[1];
             }
+            break;
+        }
+
+        default:
             break;
         }
     }
 }
 
-void NSGraphicsView::setMode(NSGraphicsViewMode mode)
+void NSGraphicsView::setMode(NSGraphicsViewMode nmode)
 {
-    this->mode = mode;
+    mode = nmode;
 }
 
-void NSGraphicsView::setNode(NSGraphicsViewNode node)
+void NSGraphicsView::setNode(NSGraphicsViewNode nnode)
 {
-    this->node = node;
+    node = nnode;
 }

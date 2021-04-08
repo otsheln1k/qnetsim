@@ -10,7 +10,11 @@
 class Node : public QObject, public QGraphicsItem
 {
 public:
-    Node(QObject *parent, QPointF position = {0, 0}, QSize size = {64, 64}, QString *name = nullptr);
+    Node(QObject *parent,
+         QPixmap *image,
+         QPointF position = {0, 0},
+         QSize size = {64, 64},
+         QString *name = nullptr);
     ~Node();
 
 
@@ -18,10 +22,9 @@ protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     QRectF boundingRect() const;
 
-    QPointF position;
+    QPixmap *image;
     QSize size;
     QString *name;
-    QPixmap *image;
 
     std::list<Node> connections;
 };

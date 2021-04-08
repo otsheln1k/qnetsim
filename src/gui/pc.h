@@ -6,7 +6,10 @@
 class PC : public Node
 {
 public:
-    PC(QObject *parent, QPointF position = {0, 0}, QSize size= {64, 64}, QString *name= nullptr);
+    PC(QObject *parent,
+       QPointF position = {0, 0},
+       QSize size= {64, 64},
+       QString *name= nullptr);
 
 protected:
 

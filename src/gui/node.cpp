@@ -1,29 +1,33 @@
 #include "node.h"
 
 
-Node::Node(QObject *parent, QPointF position, QSize size, QString *name) : QObject(parent), QGraphicsItem()
+Node::Node(QObject *parent, QPixmap *image,
+           QPointF position, QSize size, QString *name)
+    : QObject(parent), QGraphicsItem(), image{image}, size{size}, name{name}
 {
-    this->size = size;
-    this->name = name;
-    this->position = {position.x() - size.width() / 2, position.y() - size.height() / 2};
-    qDebug() << "Node added to "<< this->position;
+    *image = image->scaled(size);
+    setPos(position);
 }
 
 Node::~Node()
 {
-    delete this->image;
-    delete this->name;
+    delete image;
+    delete name;
 }
 
 void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    qDebug() << "Paint! "<<this->position;
-    painter->drawPixmap(this->position.x(), this->position.y(), *this->image, 0, 0, this->image->width(), this->image->height());
+    painter->drawPixmap(-QPoint{size.width(), size.height()} / 2,
+                        *image,
+                        QRect {{}, size});
     Q_UNUSED(option);
     Q_UNUSED(widget);
 }
 
 QRectF Node::boundingRect() const
 {
-
+    return QRectF{
+        -size.width()/2.0, -size.height()/2.0,
+        (double)size.width(), (double)size.height(),
+    };
 }
