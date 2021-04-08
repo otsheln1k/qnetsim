@@ -19,3 +19,23 @@ unsigned int NetworkModel::countNodes()
 {
     return children().size();
 }
+
+bool NetworkModel::stepSend()
+{
+    bool res = false;
+    for(auto *node : *this){
+        res = node->stepSend() || res;
+    }
+
+    return res;
+}
+
+bool NetworkModel::stepRecv()
+{
+    bool res = false;
+    for(auto *node : *this){
+        res = node->stepRecv() || res;
+    }
+
+    return res;
+}

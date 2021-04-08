@@ -1,6 +1,8 @@
 #include <QMenu>
 #include <QGraphicsScene>
 
+#include "NetworkModel.h"
+#include "SimulationStepper.hpp"
 #include "SimulationLogger.hpp"
 #include "EthernetInterface.hpp"
 #include "PCNode.h"
@@ -78,4 +80,10 @@ void NSGraphicsPCNode::onSendECTPMessage()
                    bytes.end());
 
     SimulationLogger::currentLogger()->unsetCurrentNode();
+
+    auto *model = dynamic_cast<NetworkModel *>(iface->parent()->parent());
+
+    SimulationStepper stepper {(Steppable *)model};
+
+    stepper.run();
 }

@@ -5,9 +5,11 @@
 
 #include <QObject>
 
+#include "Steppable.hpp"
 #include "NetworkNode.h"
 
-class NetworkModel : public QObject
+class NetworkModel : public QObject,
+                     public Steppable
 {
     Q_OBJECT;
 
@@ -18,10 +20,34 @@ public:
     void removeNode(NetworkNode* node);
     unsigned int countNodes();
 
-    using iterator = QObjectList::const_iterator;
+    class iterator {
+        using src_t = QObjectList::const_iterator;
+
+        src_t s;
+
+    public:
+        iterator(src_t s) :s{s} {}
+
+        using iterator_category = std::input_iterator_tag;
+        using value_type = NetworkNode *;
+        using difference_type = ptrdiff_t;
+        using pointer = NetworkNode **;
+        using reference = NetworkNode *;
+
+        iterator &operator++() { ++s; return *this; }
+        iterator operator++(int) { return {s++}; }
+
+        NetworkNode *operator*() { return dynamic_cast<NetworkNode *>(*s); }
+
+        bool operator==(iterator i) { return s == i.s; }
+        bool operator!=(iterator i) { return s != i.s; }
+    };
 
     iterator begin() const { return children().begin(); }
     iterator end() const { return children().end(); }
+
+    virtual bool stepSend() override;
+    virtual bool stepRecv() override;
 
 signals:
     void nodeAdded(NetworkNode *node);
