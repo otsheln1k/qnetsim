@@ -5,6 +5,7 @@
 
 #include "MACAddr.hpp"
 #include "EthernetInterface.hpp"
+#include "ECTPDriver.hpp"
 
 class EthernetDriver : public QObject {
     Q_OBJECT;
@@ -26,18 +27,13 @@ class EthernetDriver : public QObject {
 
     MACAddr _addr;
     EthernetInterface *_iface;
+    ECTPDriver _ectp {};
 
     bool _doVerifyChecksum = true;
     bool _doAcceptBroadcast = true;
 
 public:
-    EthernetDriver(MACAddr a,
-                   EthernetInterface *iface)
-        :_addr{a}, _iface{iface}
-    {
-        QObject::connect(_iface, &EthernetInterface::receivedFrame,
-                         this, &EthernetDriver::handleFrame);
-    }
+    EthernetDriver(MACAddr a, EthernetInterface *iface);
 
     MACAddr address() const { return _addr; }
     void setAddress(MACAddr addr) { _addr = addr; }
@@ -50,10 +46,9 @@ public:
     bool acceptBroadcasts() const { return _doAcceptBroadcast; }
     void setAcceptBroadcasts(bool val) { _doAcceptBroadcast = val; }
 
-    void sendFrame(const EthernetFrame &frame)
-    {
-        _iface->sendFrame(frame);
-    }
+    ECTPDriver *ectpDriver() { return &_ectp; }
+
+    void sendFrame(const EthernetFrame &frame);
 
     template<typename Iter>
     EthernetFrame makeFrame(MACAddr dest, EtherType etherType, Iter b, Iter e)
@@ -73,20 +68,8 @@ public:
     }
 
 private slots:
-    void handleFrame(const EthernetFrame *frame)
-    {
-        if (_doVerifyChecksum
-            && !frame->checksumCorrect()) {
-            return;
-        }
-
-        MACAddr dest = frame->dstAddr();
-        if ((_doAcceptBroadcast
-             && dest.isBroadcast())
-            || dest == _addr) {
-            emit receivedFrame(frame);
-        }
-    }
+    void handleFrame(const EthernetFrame *frame);
+    void handleECTPForward(MACAddr dest, const uint8_t *data, size_t size);
 
 signals:
     void receivedFrame(const EthernetFrame *frame);

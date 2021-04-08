@@ -6,6 +6,7 @@ TARGET = qnetsim
 CONFIG += c++17 strict_c++ warn_on
 
 SOURCES += ECTPDriver.cpp
+SOURCES += EthernetDriver.cpp
 SOURCES += EthernetFrame.cpp
 SOURCES += EthernetInterface.cpp
 SOURCES += gui/node.cpp
