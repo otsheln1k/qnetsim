@@ -1,5 +1,9 @@
 #include "SimulationLogger.hpp"
 
+SimulationLogger SimulationLogger::_defaultLogger {};
+thread_local SimulationLogger *SimulationLogger::_curLogger =
+    &SimulationLogger::_defaultLogger;
+
 void SimulationLogger::flushMsgQueue()
 {
     while (!_mq.empty()
