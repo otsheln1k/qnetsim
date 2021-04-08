@@ -17,7 +17,8 @@ enum NSGraphicsViewMode{
 };
 
 enum NSGraphicsViewNode{
-    PC=1
+    PC=1,
+    HUB=2,
 };
 
 class NSGraphicsView : public QGraphicsView

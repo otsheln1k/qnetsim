@@ -30,7 +30,8 @@ private:
 
 private slots:
     void on_actionQuit_triggered();
-    void on_toolButton_2_clicked();
+    void on_addPCButton_clicked();
+    void on_addHubButton_clicked();
     void on_toolButton_3_clicked();
     void on_resetButton_clicked();
 

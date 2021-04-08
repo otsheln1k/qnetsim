@@ -175,8 +175,8 @@ padding: 3px;</string>
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>274</width>
-              <height>108</height>
+              <width>211</width>
+              <height>140</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
@@ -189,14 +189,35 @@ padding: 3px;</string>
              <property name="spacing">
               <number>3</number>
              </property>
+             <item row="7" column="0">
+              <widget class="QToolButton" name="toolButton_3">
+               <property name="text">
+                <string>Провод</string>
+               </property>
+              </widget>
+             </item>
              <item row="2" column="0">
+              <widget class="QToolButton" name="addPCButton">
+               <property name="text">
+                <string>ПК</string>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>icons/018-monitor screen.svg</normaloff>icons/018-monitor screen.svg</iconset>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0">
               <widget class="Line" name="line_2">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
+             <item row="6" column="0">
               <widget class="QLabel" name="label_2">
                <property name="text">
                 <string>Соединители</string>
@@ -212,28 +233,18 @@ padding: 3px;</string>
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Клиенты</string>
+                <string>Устройства</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="0">
-              <widget class="QToolButton" name="toolButton_2">
+             <item row="3" column="0">
+              <widget class="QToolButton" name="addHubButton">
                <property name="text">
-                <string>ПК</string>
+                <string>Хаб</string>
                </property>
                <property name="icon">
                 <iconset>
-                 <normaloff>icons/018-monitor screen.svg</normaloff>icons/018-monitor screen.svg</iconset>
-               </property>
-               <property name="checked">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QToolButton" name="toolButton_3">
-               <property name="text">
-                <string>Провод</string>
+                 <normaloff>icons/017-hub.svg</normaloff>icons/017-hub.svg</iconset>
                </property>
               </widget>
              </item>
@@ -288,7 +299,7 @@ padding: 3px;</string>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

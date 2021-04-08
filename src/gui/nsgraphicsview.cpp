@@ -1,9 +1,11 @@
 #include <QDebug>
 
 #include "PCNode.h"
+#include "HubNode.h"
 #include "NetworkModel.h"
 
 #include "nsgraphicspcnode.h"
+#include "nsgraphicshubnode.h"
 #include "nsgraphicsview.h"
 
 NSGraphicsView::NSGraphicsView(QWidget *parent)
@@ -109,26 +111,41 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
         QPointF scn = mapToScene(pos);
 
         switch(mode){
-        case NSGraphicsViewMode::ADD_NODE:
-            if (node == NSGraphicsViewNode::PC){
-                auto *node = new PCNode {};
-                auto *gnode = new NSGraphicsPCNode(this, node, scn);
+        case NSGraphicsViewMode::ADD_NODE: {
+            NetworkNode *nd;
+            NSGraphicsNode *gnode;
 
-                model->addNode(node);
-
-                scene->addItem(gnode);
-                scene->update(0,0,width(),height());
-                auto r = sceneRect();
-                auto pos2 = mapFromScene(scn);
-                r.setX(r.x() - (pos.x() - pos2.x()));
-                r.setY(r.y() - (pos.y() - pos2.y()));
-                setSceneRect(r);
-
-                nodetab[node] = gnode;
+            switch (node) {
+            case NSGraphicsViewNode::PC: {
+                auto *pnode = new PCNode {};
+                nd = pnode;
+                gnode = new NSGraphicsPCNode(this, pnode, scn);
+                break;
             }
+
+            case NSGraphicsViewNode::HUB: {
+                auto *hnode = new HubNode {};
+                nd = hnode;
+                gnode = new NSGraphicsHubNode(this, hnode, scn);
+                break;
+            }
+            }
+
+            model->addNode(nd);
+
+            scene->addItem(gnode);
+            scene->update(0,0,width(),height());
+            auto r = sceneRect();
+            auto pos2 = mapFromScene(scn);
+            r.setX(r.x() - (pos.x() - pos2.x()));
+            r.setY(r.y() - (pos.y() - pos2.y()));
+            setSceneRect(r);
+
+            nodetab[nd] = gnode;
 
             mode = NSGraphicsViewMode::NONE;
             break;
+        }
 
         case NSGraphicsViewMode::ADD_CONNECTION: {
             qDebug() << "Try to select device to connect";

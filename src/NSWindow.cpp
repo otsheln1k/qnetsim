@@ -31,10 +31,16 @@ void NSWindow::on_actionQuit_triggered()
     emit quit();
 }
 
-void NSWindow::on_toolButton_2_clicked()
+void NSWindow::on_addPCButton_clicked()
 {
     ui->graphicsView->setMode(NSGraphicsViewMode::ADD_NODE);
     ui->graphicsView->setNode(NSGraphicsViewNode::PC);
+}
+
+void NSWindow::on_addHubButton_clicked()
+{
+    ui->graphicsView->setMode(NSGraphicsViewMode::ADD_NODE);
+    ui->graphicsView->setNode(NSGraphicsViewNode::HUB);
 }
 
 void NSWindow::on_toolButton_3_clicked()
