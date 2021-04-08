@@ -35,6 +35,7 @@ HEADERS += NetworkNode.h
 HEADERS += NSWindow.hpp
 HEADERS += PCNode.h
 HEADERS += SimulationLogger.hpp
+HEADERS += SimulationStepper.hpp
 HEADERS += Steppable.hpp
 
 FORMS += NSWindow.ui

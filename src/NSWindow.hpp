@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 
+#include "SimulationLogger.hpp"
+#include "NetworkNode.h"
+#include "EthernetInterface.hpp"
+
 #include "ui_NSWindow.h"
 
 QT_BEGIN_NAMESPACE
@@ -13,11 +17,11 @@ QT_END_NAMESPACE
 
 class NSWindow : public QMainWindow,
                  private Ui::NSWindow {
-    Q_OBJECT
+    Q_OBJECT;
 
-protected:
-    void onClickMeClicked();
-    void onQuitTriggered();
+    NetworkNode __n {};
+    EthernetInterface __i {};
+    SimulationLogger __l {};
 
 signals:
     void quit();
@@ -34,6 +38,12 @@ private slots:
     void on_toolButton_2_clicked();
     void on_toolButton_3_clicked();
     void on_resetButton_clicked();
+
+    void onLoggerMessage(const SimulationLogger::Message &msg);
+    void onLogClear();
+
+    void on_logTestButton_clicked();
+    void on_logClearButton_clicked();
 };
 
 #endif
