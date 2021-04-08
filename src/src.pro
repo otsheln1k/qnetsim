@@ -5,18 +5,16 @@ QT = core gui widgets
 TARGET = qnetsim
 CONFIG += c++17 strict_c++ warn_on
 
-SOURCES += EthernetFrame.cpp \
-    Hub.cpp
+SOURCES += EthernetFrame.cpp
 SOURCES += EthernetInterface.cpp
 SOURCES += main.cpp
 SOURCES += NSWindow.cpp
 SOURCES += NetworkModel.cpp
 SOURCES += NetworkNode.cpp
-SOURCES += pc.cpp
-SOURCES +=
+SOURCES += HubNode.cpp
+SOURCES += PCNode.cpp
 
-HEADERS += EthernetDriver.hpp \
-    Hub.h
+HEADERS += EthernetDriver.hpp
 HEADERS += EthernetFrame.hpp
 HEADERS += EthernetInterface.hpp
 HEADERS += GenericNetworkInterface.hpp
@@ -25,7 +23,7 @@ HEADERS += NSWindow.hpp
 HEADERS += Steppable.hpp
 HEADERS += NetworkModel.h
 HEADERS += NetworkNode.h
-HEADERS += pc.h
-HEADERS +=
+HEADERS += HubNode.h
+HEADERS += PCNode.h
 
 FORMS += NSWindow.ui

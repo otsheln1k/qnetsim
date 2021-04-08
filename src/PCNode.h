@@ -4,14 +4,13 @@
 #include "NetworkNode.h"
 #include "EthernetDriver.hpp"
 
-class pc : public NetworkNode
+class PCNode : public NetworkNode
 {
-private:
-    mac;
 public:
-    pc();
+    PCNode();
     virtual void addInterface(GenericNetworkInterface* iface);
     virtual void removeInterface(GenericNetworkInterface* iface);
+    MACAddr createMac();
 };
 
 #endif // PC_H

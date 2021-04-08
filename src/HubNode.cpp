@@ -1,8 +1,8 @@
-#include "Hub.h"
+#include "HubNode.h"
 
-Hub::Hub(){}
+HubNode::HubNode(){}
 
-void Hub::addInterface(GenericNetworkInterface* iface){
+void HubNode::addInterface(GenericNetworkInterface* iface){
     EthernetInterface *eiface = dynamic_cast<EthernetInterface *>(iface);
 
     if(eiface == nullptr){
@@ -20,7 +20,7 @@ void Hub::addInterface(GenericNetworkInterface* iface){
     }
 }
 
-void Hub::removeInterface(GenericNetworkInterface *iface){
+void HubNode::removeInterface(GenericNetworkInterface *iface){
     EthernetInterface *eiface = dynamic_cast<EthernetInterface *>(iface);
 
     if(eiface == nullptr){

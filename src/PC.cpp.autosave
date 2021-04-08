@@ -1,0 +1,13 @@
+#include "PC.h"
+
+PC::PC(){}
+
+MACAddr PC::createMac(){
+    const uint32_t orgID = 787458;
+    uint32_t ifaceID;
+    //генерим ifaceID
+        ifaceID = 787458;
+    return *(new MACAddr(orgID, ifaceID));
+}
+
+
