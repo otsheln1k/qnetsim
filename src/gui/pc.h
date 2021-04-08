@@ -16,6 +16,7 @@ public:
        QString *name= nullptr);
 
     virtual void populateMenu(QMenu *menu) override;
+    virtual NetworkNode *networkNode() const override;
 
 protected:
 

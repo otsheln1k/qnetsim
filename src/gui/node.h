@@ -8,6 +8,8 @@
 #include <QPainter>
 #include <QMenu>
 
+#include "NetworkNode.h"
+
 class Node : public QObject,
              public QGraphicsItem {
 public:
@@ -19,6 +21,7 @@ public:
     ~Node();
 
     virtual void populateMenu(QMenu *menu) =0;
+    virtual NetworkNode *networkNode() const =0;
 
 protected:
     virtual void paint(QPainter *painter,

@@ -24,6 +24,21 @@ void NSGraphicsView::resetModel()
     model = new NetworkModel {};
 }
 
+QMenu *NSGraphicsView::makeInterfacesMenu(NetworkNode *node)
+{
+    auto *menu = new QMenu {};
+
+    for (GenericNetworkInterface *iface : *node) {
+        auto *action = menu->addAction(
+            QString{"Интерфейс @ 0x%1"}
+            .arg((size_t)iface, sizeof(size_t)*2, 16, QChar{'0'}));
+
+        action->setData(QVariant::fromValue(iface));
+    }
+
+    return menu;
+}
+
 void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
 {
     qDebug() << "Clicked";
@@ -37,14 +52,22 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
         case NSGraphicsViewMode::ADD_NODE:
             if (node == NSGraphicsViewNode::PC){
                 auto *node = new NetworkNode {};
+                auto *gnode = new class PC(this, node, scn);
 
-                scene->addItem(new class PC(this, node, scn));
+                scene->addItem(gnode);
                 scene->update(0,0,width(),height());
                 auto r = sceneRect();
                 auto pos2 = mapFromScene(scn);
                 r.setX(r.x() - (pos.x() - pos2.x()));
                 r.setY(r.y() - (pos.y() - pos2.y()));
                 setSceneRect(r);
+
+                nodetab[node] = gnode;
+                QObject::connect(gnode, &QObject::destroyed,
+                                 [this, node]()
+                                 {
+                                     nodetab.erase(node);
+                                 });
             }
 
             mode = NSGraphicsViewMode::NONE;
@@ -59,15 +82,35 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
                 break;
             }
 
+            if (node->networkNode()->interfacesCount() == 0) {
+                qDebug() << "empty node";
+                mode = NSGraphicsViewMode::NONE;
+                break;
+            }
+
+            auto *menu = makeInterfacesMenu(node->networkNode());
+            auto *action = menu->exec(ev->globalPos());
+            delete menu;
+
+            auto *iface = action->data().value<GenericNetworkInterface *>();
+            if (iface == nullptr) {
+                qDebug() << "no interface";
+                mode = NSGraphicsViewMode::NONE;
+                break;
+            }
+
             if (connection[0] == nullptr){
-                connection[0] = node;
+                connection[0] = iface;
             } else {
-                connection[1] = node;
+                connection[1] = iface;
                 if (connection[1] != nullptr){
-                    scene->addLine(QLineF{
-                            connection[0]->pos(),
-                            connection[1]->pos(),
-                        }, Qt::SolidLine);
+                    auto *n1 = nodetab.at(dynamic_cast<NetworkNode *>(
+                                              connection[0]->parent()));
+                    auto *n2 = nodetab.at(dynamic_cast<NetworkNode *>(
+                                              connection[1]->parent()));
+
+                    scene->addLine(QLineF{n1->pos(), n2->pos()},
+                                   Qt::SolidLine);
                     scene->update(0,0,width(),height());
                 }
             }
@@ -95,6 +138,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
 void NSGraphicsView::setMode(NSGraphicsViewMode nmode)
 {
     mode = nmode;
+    connection[0] = connection[1] = nullptr;
 }
 
 void NSGraphicsView::setNode(NSGraphicsViewNode nnode)

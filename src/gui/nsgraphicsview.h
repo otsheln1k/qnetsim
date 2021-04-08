@@ -20,7 +20,10 @@ enum NSGraphicsViewNode{
 
 class NSGraphicsView : public QGraphicsView
 {
-    Q_OBJECT
+    Q_OBJECT;
+
+    static QMenu *makeInterfacesMenu(NetworkNode *node);
+
 public:
     NSGraphicsView(QWidget *parent = nullptr);
     ~NSGraphicsView();
@@ -39,9 +42,10 @@ private:
     QGraphicsScene *scene;
     NSGraphicsViewMode mode;
     NSGraphicsViewNode node;
-    Node *connection[2];
+    GenericNetworkInterface *connection[2];
 
     NetworkModel *model;
+    std::map<NetworkNode *, Node *> nodetab;
 
 };
 

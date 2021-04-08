@@ -1,6 +1,8 @@
 #include <QDebug>
 #include <QMenu>
 
+#include "EthernetInterface.hpp"
+
 #include "pc.h"
 
 PC::PC(QObject *parent, NetworkNode *node,
@@ -26,8 +28,14 @@ void PC::populateMenu(QMenu *menu)
 
     QObject::connect(menu->addAction("Добавить порт Ethernet"),
                      &QAction::triggered,
-                     []()
+                     [this]()
                      {
-                         qDebug() << "add ethernet nic!";
+                         node->addInterface(new EthernetInterface {});
+                         // qDebug() << "add ethernet nic!";
                      });
+}
+
+NetworkNode *PC::networkNode() const
+{
+    return node;
 }

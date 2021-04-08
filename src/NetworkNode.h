@@ -20,7 +20,13 @@ public:
 
     virtual void addInterface(GenericNetworkInterface* iface);
     virtual void removeInterface(GenericNetworkInterface* iface);
+
     unsigned int interfacesCount();
+
+    using iterator = std::set<GenericNetworkInterface *>::const_iterator;
+
+    iterator begin() const { return interfaceTable.begin(); }
+    iterator end() const { return interfaceTable.end(); }
 
     virtual bool stepSend() override;
     virtual bool stepRecv() override;
