@@ -18,8 +18,8 @@ public:
     virtual void populateMenu(QMenu *menu) override;
     virtual NetworkNode *networkNode() const override;
 
-protected:
-
+private slots:
+    void onNodeDestroyed();
 };
 
 #endif // PC_H

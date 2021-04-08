@@ -12,10 +12,12 @@ PC::PC(QObject *parent, NetworkNode *node,
       node{node}
 {
     QObject::connect(node, &QObject::destroyed,
-                     [this]()
-                     {
-                         delete this;
-                     });
+                     this, &PC::onNodeDestroyed);
+}
+
+void PC::onNodeDestroyed()
+{
+    delete this;
 }
 
 void PC::populateMenu(QMenu *menu)
@@ -31,7 +33,6 @@ void PC::populateMenu(QMenu *menu)
                      [this]()
                      {
                          node->addInterface(new EthernetInterface {});
-                         // qDebug() << "add ethernet nic!";
                      });
 }
 

@@ -44,6 +44,8 @@ void NSGraphicsView::onNodeRemoved(NetworkNode *node)
                         this, &NSGraphicsView::onInterfaceAdded);
     QObject::disconnect(node, &NetworkNode::interfaceRemoved,
                         this, &NSGraphicsView::onInterfaceRemoved);
+
+    nodetab.erase(node);
 }
 
 void NSGraphicsView::onInterfaceAdded(GenericNetworkInterface *iface)
@@ -131,11 +133,6 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
                 setSceneRect(r);
 
                 nodetab[node] = gnode;
-                QObject::connect(gnode, &QObject::destroyed,
-                                 [this, node]()
-                                 {
-                                     nodetab.erase(node);
-                                 });
             }
 
             mode = NSGraphicsViewMode::NONE;

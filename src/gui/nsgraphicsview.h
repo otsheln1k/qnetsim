@@ -61,7 +61,6 @@ private slots:
 
     void onConnected(GenericNetworkInterface *other);
     void onDisconnected(GenericNetworkInterface *other);
-
 };
 
 #endif // NSGRAPHICSVIEW_H
