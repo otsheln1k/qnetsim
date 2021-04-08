@@ -1,3 +1,4 @@
+#include "SimulationLogger.hpp"
 #include "NetworkNode.h"
 
 NetworkNode::NetworkNode()
@@ -27,18 +28,28 @@ unsigned int NetworkNode::interfacesCount()
 
 bool NetworkNode::stepSend()
 {
+    SimulationLogger::currentLogger()->setCurrentNode(this);
+
     bool res = false;
     for(auto *iface : interfaceTable){
         res = iface->stepSend() || res;
     }
+
+    SimulationLogger::currentLogger()->unsetCurrentNode();
+
     return res;
 }
 
 bool NetworkNode::stepRecv()
 {
+    SimulationLogger::currentLogger()->setCurrentNode(this);
+
     bool res = false;
     for(auto *iface : interfaceTable){
         res = iface->stepRecv() || res;
     }
+
+    SimulationLogger::currentLogger()->unsetCurrentNode();
+
     return res;
 }

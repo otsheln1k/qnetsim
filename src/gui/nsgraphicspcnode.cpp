@@ -1,8 +1,8 @@
 #include <QMenu>
 #include <QGraphicsScene>
 
+#include "SimulationLogger.hpp"
 #include "EthernetInterface.hpp"
-
 #include "PCNode.h"
 #include "nsgraphicspcnode.h"
 
@@ -53,6 +53,8 @@ NetworkNode *NSGraphicsPCNode::networkNode() const
 
 void NSGraphicsPCNode::onSendECTPMessage()
 {
+    SimulationLogger::currentLogger()->setCurrentNode(node);
+
     auto *iface = dynamic_cast<QAction*>(sender())->data()
         .value<GenericNetworkInterface *>();
     auto *drv = node->getDriver(
@@ -64,10 +66,16 @@ void NSGraphicsPCNode::onSendECTPMessage()
     ECTPDriver::makeLoopback(drv->address(), seq,
                              str, &str[sizeof(str)],
                              std::back_inserter(bytes));
+
+    SimulationLogger::currentLogger()->log(
+        QString{"Prepared loopback ECTP message: dest=%1, seq=%2"}
+        .arg(drv->address())
+        .arg(seq));
+
     drv->sendFrame(0x010203040506, // their MAC
                    ETHERTYPE_ECTP,
                    bytes.begin(),
                    bytes.end());
 
-    (void)bytes;
+    SimulationLogger::currentLogger()->unsetCurrentNode();
 }

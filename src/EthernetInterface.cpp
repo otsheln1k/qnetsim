@@ -1,6 +1,7 @@
 #include <vector>
 #include <utility>
 
+#include "SimulationLogger.hpp"
 #include "GenericNetworkInterface.hpp"
 #include "EthernetInterface.hpp"
 
@@ -60,14 +61,18 @@ EthernetInterface::connectionByIndex(size_t index) const
 
 bool EthernetInterface::sendFrame(const EthernetFrame &frame)
 {
+    SimulationLogger::currentLogger()->setCurrentInterface(this);
+
     std::vector<uint8_t> bytes;
     bytes.resize(frame.size());
     if (!frame.write(bytes.data())) {
+        SimulationLogger::currentLogger()->unsetCurrentInterface();
         return false;
     }
 
     _sq.emplace(std::move(bytes));
 
+    SimulationLogger::currentLogger()->unsetCurrentInterface();
     return true;
 }
 
@@ -92,6 +97,8 @@ bool EthernetInterface::stepRecv()
 {
     bool res = !_rq.empty() || !_bq.empty();
 
+    SimulationLogger::currentLogger()->setCurrentInterface(this);
+
     while (!_rq.empty()) {
         const auto &bytes = _rq.front();
 
@@ -102,6 +109,8 @@ bool EthernetInterface::stepRecv()
 
         _rq.pop();
     }
+
+    SimulationLogger::currentLogger()->unsetCurrentInterface();
 
     std::swap(_rq, _bq);
 

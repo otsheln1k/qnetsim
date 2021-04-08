@@ -18,10 +18,6 @@ QT_END_NAMESPACE
 class NSWindow : public QMainWindow {
     Q_OBJECT;
 
-    NetworkNode __n {};
-    EthernetInterface __i {};
-    SimulationLogger __l {};
-
 signals:
     void quit();
 
@@ -41,7 +37,6 @@ private slots:
     void onLoggerMessage(const SimulationLogger::Message &msg);
     void onLogClear();
 
-    void on_logTestButton_clicked();
     void on_logClearButton_clicked();
 };
 

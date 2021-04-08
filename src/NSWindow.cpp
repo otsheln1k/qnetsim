@@ -15,8 +15,9 @@ NSWindow::NSWindow(QWidget *parent)
     ui->logTable->setColumnWidth(1, 300);
     ui->logTable->horizontalHeader()->setStretchLastSection(true);
 
-    __n.addInterface(&__i);
-    QObject::connect(&__l, &SimulationLogger::message,
+    // use default logger
+    QObject::connect(SimulationLogger::currentLogger(),
+                     &SimulationLogger::message,
                      this, &NSWindow::onLoggerMessage);
 }
 
@@ -75,17 +76,6 @@ void NSWindow::onLoggerMessage(const SimulationLogger::Message &msg)
 void NSWindow::onLogClear()
 {
     ui->logTable->setRowCount(0);
-}
-
-void NSWindow::on_logTestButton_clicked()
-{
-    __l.setCurrentNode(&__n);
-    __l.setCurrentInterface(&__i);
-
-    __l.log(QString{"фывап"});
-
-    __l.unsetCurrentInterface();
-    __l.unsetCurrentNode();
 }
 
 void NSWindow::on_logClearButton_clicked()
