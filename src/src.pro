@@ -12,10 +12,12 @@ SOURCES += EthernetInterface.cpp
 SOURCES += gui/node.cpp
 SOURCES += gui/nsgraphicsview.cpp
 SOURCES += gui/pc.cpp
+SOURCES += HubNode.cpp
 SOURCES += main.cpp
 SOURCES += NetworkModel.cpp
 SOURCES += NetworkNode.cpp
 SOURCES += NSWindow.cpp
+SOURCES += PCNode.cpp
 
 HEADERS += ECTPDriver.hpp
 HEADERS += EthernetDriver.hpp
@@ -25,10 +27,12 @@ HEADERS += GenericNetworkInterface.hpp
 HEADERS += gui/node.h
 HEADERS += gui/nsgraphicsview.h
 HEADERS += gui/pc.h
+HEADERS += HubNode.h
 HEADERS += MACAddr.hpp
 HEADERS += NetworkModel.h
 HEADERS += NetworkNode.h
 HEADERS += NSWindow.hpp
+HEADERS += PCNode.h
 HEADERS += Steppable.hpp
 
 FORMS += NSWindow.ui
