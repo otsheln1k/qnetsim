@@ -6,7 +6,8 @@ NSGraphicsView::NSGraphicsView(QWidget *parent)
     : QGraphicsView(parent),
       scene {new QGraphicsScene {}},
       mode {NSGraphicsViewMode::NONE},
-      connection {nullptr, nullptr}
+      connection {nullptr, nullptr},
+      model {new NetworkModel {}}
 {
     setScene(scene);
 }
@@ -14,6 +15,13 @@ NSGraphicsView::NSGraphicsView(QWidget *parent)
 NSGraphicsView::~NSGraphicsView()
 {
     delete scene;
+    delete model;
+}
+
+void NSGraphicsView::resetModel()
+{
+    delete model;
+    model = new NetworkModel {};
 }
 
 void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
@@ -28,7 +36,9 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
         switch(mode){
         case NSGraphicsViewMode::ADD_NODE:
             if (node == NSGraphicsViewNode::PC){
-                scene->addItem(new class PC(this, scn));
+                auto *node = new NetworkNode {};
+
+                scene->addItem(new class PC(this, node, scn));
                 scene->update(0,0,width(),height());
                 auto r = sceneRect();
                 auto pos2 = mapFromScene(scn);
@@ -36,6 +46,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
                 r.setY(r.y() - (pos.y() - pos2.y()));
                 setSceneRect(r);
             }
+
             mode = NSGraphicsViewMode::NONE;
             break;
 

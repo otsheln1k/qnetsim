@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include <QGraphicsView>
+
+#include "NetworkModel.h"
 #include "pc.h"
 
 enum NSGraphicsViewMode{
@@ -28,6 +30,7 @@ public:
     void setMode(NSGraphicsViewMode);
     void setNode(NSGraphicsViewNode);
 
+    void resetModel();
 
 signals:
 
@@ -37,6 +40,8 @@ private:
     NSGraphicsViewMode mode;
     NSGraphicsViewNode node;
     Node *connection[2];
+
+    NetworkModel *model;
 
 };
 

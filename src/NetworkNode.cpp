@@ -9,11 +9,13 @@ NetworkNode::~NetworkNode()
 void NetworkNode::addInterface(GenericNetworkInterface *iface)
 {
     interfaceTable.insert(iface);
+    iface->setParent(this);
 }
 
 void NetworkNode::removeInterface(GenericNetworkInterface* iface)
 {
     interfaceTable.erase(iface);
+    iface->setParent(nullptr);
 }
 
 unsigned int NetworkNode::interfacesCount()
@@ -38,7 +40,3 @@ bool NetworkNode::stepRecv()
     }
     return res;
 }
-
-
-
-

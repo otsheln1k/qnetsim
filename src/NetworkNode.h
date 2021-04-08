@@ -3,9 +3,13 @@
 
 #include <algorithm>
 #include <set>
+
+#include <QObject>
+
 #include "GenericNetworkInterface.hpp"
 
-class NetworkNode : public Steppable
+class NetworkNode : public QObject,
+                    public Steppable
 {
 private:
     std::set <GenericNetworkInterface*> interfaceTable;
@@ -17,7 +21,7 @@ public:
     virtual void addInterface(GenericNetworkInterface* iface);
     virtual void removeInterface(GenericNetworkInterface* iface);
     unsigned int interfacesCount();
-    
+
     virtual bool stepSend() override;
     virtual bool stepRecv() override;
 };

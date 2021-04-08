@@ -5,13 +5,21 @@ NetworkModel::NetworkModel()
 
 void NetworkModel::addNode(NetworkNode* node)
 {
-    nodeTable.insert(node);
+    auto conn = QObject::connect(node, &QObject::destroyed,
+                                 [this, node]()
+                                 {
+                                     removeNode(node);
+                                 });
+    nodeTable[node] = conn;
+    node->setParent(this);
 }
 
 
 void NetworkModel::removeNode(NetworkNode* node)
 {
-    nodeTable.erase(node);
+    auto conn = nodeTable.extract(node).mapped();
+    QObject::disconnect(conn);
+    node->setParent(nullptr);
 }
 
 unsigned int NetworkModel::countNodes()

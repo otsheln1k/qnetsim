@@ -1,12 +1,16 @@
 #ifndef NETWORKMODEL_H
 #define NETWORKMODEL_H
 
-#include <set>
-#include <NetworkNode.h>
+#include <map>
 
-class NetworkModel
+#include <QObject>
+
+#include "NetworkNode.h"
+
+class NetworkModel : public QObject
 {
-    std::set<NetworkNode*> nodeTable;
+    std::map<NetworkNode*, QMetaObject::Connection> nodeTable;
+
 public:
     NetworkModel();
 
@@ -14,10 +18,33 @@ public:
     void removeNode(NetworkNode* node);
     unsigned int countNodes();
 
-    using iterator = std::set<NetworkNode *>::const_iterator;
+    class iterator {
+        using src_t =
+            std::map<NetworkNode *, QMetaObject::Connection>::const_iterator;
 
-    iterator begin() const { return nodeTable.begin(); }
-    iterator end() const { return nodeTable.end(); }
+        src_t i;
+
+    public:
+        explicit iterator(src_t i) :i{i} {}
+
+        iterator &operator++() { ++i; return *this; }
+        iterator operator++(int) { return iterator {i++}; }
+
+        bool operator==(const iterator &it) { return i == it.i; }
+        bool operator!=(const iterator &it) { return i != it.i; }
+
+        NetworkNode *operator*() { return i->first; }
+        NetworkNode * const *operator->() { return &i->first; }
+
+        using iterator_category = std::input_iterator_tag;
+        using value_type = NetworkNode *;
+        using difference_type = ptrdiff_t;
+        using pointer = NetworkNode * const *;
+        using reference = NetworkNode *;
+    };
+
+    iterator begin() const { return iterator {nodeTable.begin()}; }
+    iterator end() const { return iterator {nodeTable.end()}; }
 };
 
 #endif // NETWORKMODEL_H
