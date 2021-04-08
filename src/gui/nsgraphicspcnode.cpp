@@ -38,14 +38,22 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu)
                          node->addInterface(new EthernetInterface {});
                      });
 
-    QMenu *ectpMenu = menu->addMenu("Отправить проверку связи…");
+    QObject::connect(menu->addAction("Отправить проверку связи…"),
+                     &QAction::triggered,
+                     [this]()
+                     {
+                          InterfaceDialog dialog(nullptr, node);
+                          dialog.exec();
+                          if (dialog.result()){
+                              auto res = dialog.getResult();
+                              this->onSendECTPMessage(res.interface, res.res);
+                          }
+                     });
 
-    fillInterfacesMenu(ectpMenu, node);
 
-    for (QAction *action : ectpMenu->actions()) {
-        QObject::connect(action, &QAction::triggered,
-                         this, &NSGraphicsPCNode::onSendECTPMessage);
-    }
+
+
+    //fillInterfacesMenu(ectpMenu, node);
 }
 
 NetworkNode *NSGraphicsPCNode::networkNode() const
@@ -53,20 +61,16 @@ NetworkNode *NSGraphicsPCNode::networkNode() const
     return node;
 }
 
-void NSGraphicsPCNode::onSendECTPMessage()
+void NSGraphicsPCNode::onSendECTPMessage(GenericNetworkInterface *iface,
+                                         uint16_t seq)
 {
-    SimulationLogger::currentLogger()->setCurrentNode(node);
-
-    auto *iface = dynamic_cast<QAction*>(sender())->data()
-        .value<GenericNetworkInterface *>();
     auto *drv = node->getDriver(
         dynamic_cast<EthernetInterface *>(iface));
 
     QVector<uint8_t> bytes;
-    static const uint8_t str[] = {'a', 'b', 'c'};
-    static const uint16_t seq = 13;
+    uint8_t arr[0];
     ECTPDriver::makeLoopback(drv->address(), seq,
-                             str, &str[sizeof(str)],
+                             arr, arr,
                              std::back_inserter(bytes));
 
     SimulationLogger::currentLogger()->log(
