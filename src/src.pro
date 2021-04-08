@@ -5,7 +5,8 @@ QT = core gui widgets
 TARGET = qnetsim
 CONFIG += c++17 strict_c++ warn_on
 
-SOURCES += ECTPDriver.cpp
+SOURCES += ECTPDriver.cpp \
+    gui/interfacedialog.cpp
 SOURCES += EthernetDriver.cpp
 SOURCES += EthernetFrame.cpp
 SOURCES += EthernetInterface.cpp
@@ -20,7 +21,8 @@ SOURCES += NSWindow.cpp
 SOURCES += PCNode.cpp
 SOURCES += SimulationLogger.cpp
 
-HEADERS += ECTPDriver.hpp
+HEADERS += ECTPDriver.hpp \
+    gui/interfacedialog.h
 HEADERS += EthernetDriver.hpp
 HEADERS += EthernetFrame.hpp
 HEADERS += EthernetInterface.hpp
@@ -38,7 +40,8 @@ HEADERS += SimulationLogger.hpp
 HEADERS += SimulationStepper.hpp
 HEADERS += Steppable.hpp
 
-FORMS += NSWindow.ui
+FORMS += NSWindow.ui \
+    gui/interfacedialog.ui
 
 COPIES += icons models
 

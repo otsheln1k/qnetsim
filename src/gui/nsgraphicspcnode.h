@@ -23,7 +23,7 @@ public:
 
 private slots:
     void onNodeDestroyed();
-    void onSendECTPMessage();
+    void onSendECTPMessage(GenericNetworkInterface *iface, uint16_t seq);
 };
 
 #endif // NSGRAPHICSPCNODE_H
