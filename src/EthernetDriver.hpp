@@ -26,7 +26,6 @@ class EthernetDriver : public QObject {
 
     MACAddr _addr;
     EthernetInterface *_iface;
-    QMetaObject::Connection _conn;
 
     bool _doVerifyChecksum = true;
     bool _doAcceptBroadcast = true;
@@ -34,13 +33,10 @@ class EthernetDriver : public QObject {
 public:
     EthernetDriver(MACAddr a,
                    EthernetInterface *iface)
-        :_addr{a}, _iface{iface},
-         _conn{QObject::connect(_iface, &EthernetInterface::receivedFrame,
-                                this, &EthernetDriver::handleFrame)} {}
-
-    ~EthernetDriver()
+        :_addr{a}, _iface{iface}
     {
-        QObject::disconnect(_conn);
+        QObject::connect(_iface, &EthernetInterface::receivedFrame,
+                         this, &EthernetDriver::handleFrame);
     }
 
     MACAddr address() const { return _addr; }
