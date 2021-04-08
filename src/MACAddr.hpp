@@ -107,6 +107,21 @@ public:
     {
         return !(*this == a);
     }
+
+    operator QString()
+    {
+        char buf[] = "__:__:__:__:__:__";
+        uint64_t n = asUint64();
+        char *p = &buf[0];
+        for (int i = 12; i-- > 0;) {
+            uint8_t d = (n >> (4*i)) & 0xF;
+            *p++ = (d < 10) ? (d + '0') : (d + 'A' - 10);
+            if ((i % 2) == 0) {
+                p++;
+            }
+        }
+        return QString{buf};
+    }
 };
 
 Q_DECLARE_METATYPE(MACAddr);

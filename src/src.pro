@@ -18,6 +18,7 @@ SOURCES += NetworkModel.cpp
 SOURCES += NetworkNode.cpp
 SOURCES += NSWindow.cpp
 SOURCES += PCNode.cpp
+SOURCES += SimulationLogger.cpp
 
 HEADERS += ECTPDriver.hpp
 HEADERS += EthernetDriver.hpp
@@ -33,6 +34,7 @@ HEADERS += NetworkModel.h
 HEADERS += NetworkNode.h
 HEADERS += NSWindow.hpp
 HEADERS += PCNode.h
+HEADERS += SimulationLogger.hpp
 HEADERS += Steppable.hpp
 
 FORMS += NSWindow.ui

@@ -77,3 +77,23 @@ void MACAddrTest::testMACAddr_data() {
         << false << true << false
         << false << 0x561415u << 0x161718u << 0x561415161718u;
 }
+
+void MACAddrTest::testToString()
+{
+    QFETCH(MACAddr, addr);
+    QTEST(QString{addr}, "str");
+}
+
+void MACAddrTest::testToString_data()
+{
+    QTest::addColumn<MACAddr>("addr");
+    QTest::addColumn<QString>("str");
+
+    QTest::newRow("10:10:10:01:02:03")
+        << MACAddr{0x101010010203}
+        << QString{"10:10:10:01:02:03"};
+
+    QTest::newRow("FF:FF:FF:FF:FF:FF")
+        << MACAddr{0xFFFFFFFFFFFF}
+        << QString{"FF:FF:FF:FF:FF:FF"};
+}

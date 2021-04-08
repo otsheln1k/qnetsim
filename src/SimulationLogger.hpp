@@ -37,6 +37,9 @@ private:
 
     void flushMsgQueue();
 
+    static thread_local SimulationLogger *_curLogger;
+    static SimulationLogger _defaultLogger;
+
 public:
     void setCurrentNode(NetworkNode *n);
     void unsetCurrentNode();
@@ -45,6 +48,10 @@ public:
     void unsetCurrentInterface();
 
     void log(QString str);
+
+    static SimulationLogger *currentLogger() { return _curLogger; }
+    static void setCurrentLogger(SimulationLogger *l) { _curLogger = l; }
+    void makeCurrent() { _curLogger = this; }
 
 signals:
     void message(const Message &msg);
