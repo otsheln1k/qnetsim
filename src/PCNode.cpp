@@ -19,11 +19,19 @@ void PCNode::addInterface(GenericNetworkInterface *iface){
         NetworkNode::addInterface(iface);
         MACAddr MAC = createMac();
         EthernetDriver* driver = new EthernetDriver(MAC, eiface);
+        interfaces[eiface]=driver;
     }
 }
 
 void PCNode::removeInterface(GenericNetworkInterface *iface){
     NetworkNode::removeInterface(iface);
+}
+
+EthernetDriver* PCNode::getDriver(EthernetInterface *iface){
+    auto driver = interfaces.find(iface);
+    if(driver != interfaces.end()){
+        return driver->second;
+    }
 }
 
 
