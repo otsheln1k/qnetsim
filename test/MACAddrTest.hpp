@@ -9,6 +9,9 @@ class MACAddrTest : public QObject {
 private slots:
     void testMACAddr();
     void testMACAddr_data();
+
+    void testToString();
+    void testToString_data();
 };
 
 #endif
