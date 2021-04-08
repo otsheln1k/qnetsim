@@ -11,7 +11,7 @@ icons.files = $$files(icons/*)
 icons.path = $$OUT_PWD/icons
 
 models.files = $$files(gui/models/*)
-models.path = $$OUT_PWD/models
+models.path = $$OUT_PWD/gui/models
 
 SOURCES += main.cpp \
     gui/node.cpp \

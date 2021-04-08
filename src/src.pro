@@ -8,9 +8,11 @@ CONFIG += c++17 strict_c++ warn_on
 SOURCES += ECTPDriver.cpp
 SOURCES += EthernetFrame.cpp
 SOURCES += EthernetInterface.cpp
-SOURCES += gui/node.cpp
+SOURCES += \
+    gui/nsgraphicsnode.cpp
 SOURCES += gui/nsgraphicsview.cpp
-SOURCES += gui/pc.cpp
+SOURCES += \
+    gui/nsgraphicspcnode.cpp
 SOURCES += main.cpp
 SOURCES += NetworkModel.cpp
 SOURCES += NetworkNode.cpp
@@ -21,9 +23,11 @@ HEADERS += EthernetDriver.hpp
 HEADERS += EthernetFrame.hpp
 HEADERS += EthernetInterface.hpp
 HEADERS += GenericNetworkInterface.hpp
-HEADERS += gui/node.h
+HEADERS += \
+    gui/nsgraphicsnode.h
 HEADERS += gui/nsgraphicsview.h
-HEADERS += gui/pc.h
+HEADERS += \
+    gui/nsgraphicspcnode.h
 HEADERS += MACAddr.hpp
 HEADERS += NetworkModel.h
 HEADERS += NetworkNode.h

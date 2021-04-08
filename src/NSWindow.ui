@@ -174,9 +174,9 @@ padding: 3px;</string>
             <property name="geometry">
              <rect>
               <x>0</x>
-              <y>-20</y>
+              <y>0</y>
               <width>274</width>
-              <height>109</height>
+              <height>108</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
@@ -220,6 +220,10 @@ padding: 3px;</string>
               <widget class="QToolButton" name="toolButton_2">
                <property name="text">
                 <string>ПК</string>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>icons/018-monitor screen.svg</normaloff>icons/018-monitor screen.svg</iconset>
                </property>
                <property name="checked">
                 <bool>false</bool>

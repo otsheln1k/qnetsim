@@ -3,24 +3,24 @@
 
 #include "EthernetInterface.hpp"
 
-#include "pc.h"
+#include "nsgraphicspcnode.h"
 
-PC::PC(QObject *parent, NetworkNode *node,
+NSGraphicsPCNode::NSGraphicsPCNode(QObject *parent, NetworkNode *node,
        QPointF position, QSize size, QString *name)
-    : Node(parent, new QPixmap("models/018-monitor screen.png"),
+    : NSGraphicsNode(parent, new QPixmap("models/018-monitor screen.png"),
            position, size, name),
       node{node}
 {
     QObject::connect(node, &QObject::destroyed,
-                     this, &PC::onNodeDestroyed);
+                     this, &NSGraphicsPCNode::onNodeDestroyed);
 }
 
-void PC::onNodeDestroyed()
+void NSGraphicsPCNode::onNodeDestroyed()
 {
     delete this;
 }
 
-void PC::populateMenu(QMenu *menu)
+void NSGraphicsPCNode::populateMenu(QMenu *menu)
 {
     QObject::connect(menu->addAction("Удалить"), &QAction::triggered,
                      [this]()
@@ -36,7 +36,7 @@ void PC::populateMenu(QMenu *menu)
                      });
 }
 
-NetworkNode *PC::networkNode() const
+NetworkNode *NSGraphicsPCNode::networkNode() const
 {
     return node;
 }

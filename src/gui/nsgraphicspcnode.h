@@ -1,15 +1,15 @@
-#ifndef PC_H
-#define PC_H
+#ifndef NSGRAPHICSPCNODE_H
+#define NSGRAPHICSPCNODE_H
 
 #include "NetworkNode.h"
-#include "node.h"
+#include "nsgraphicsnode.h"
 
-class PC : public Node
+class NSGraphicsPCNode : public NSGraphicsNode
 {
     NetworkNode *node;
 
 public:
-    PC(QObject *parent,
+    NSGraphicsPCNode(QObject *parent,
        NetworkNode *node,
        QPointF position = {0, 0},
        QSize size= {64, 64},
@@ -22,4 +22,4 @@ private slots:
     void onNodeDestroyed();
 };
 
-#endif // PC_H
+#endif // NSGRAPHICSPCNODE_H

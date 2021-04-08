@@ -25,7 +25,7 @@ void NSWindow::on_actionQuit_triggered()
 void NSWindow::on_toolButton_2_clicked()
 {
     ui->graphicsView->setMode(NSGraphicsViewMode::ADD_NODE);
-    ui->graphicsView->setNode(NSGraphicsViewNode::PC);
+    ui->graphicsView->setNode(NSGraphicsViewNode::NSGraphicsPCNode);
 }
 
 void NSWindow::on_toolButton_3_clicked()

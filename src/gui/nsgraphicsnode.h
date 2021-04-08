@@ -1,5 +1,5 @@
-#ifndef NODE_H
-#define NODE_H
+#ifndef NSGRAPHICSNODE_H
+#define NSGRAPHICSNODE_H
 
 #include <QPoint>
 #include <QString>
@@ -10,15 +10,15 @@
 
 #include "NetworkNode.h"
 
-class Node : public QObject,
+class NSGraphicsNode : public QObject,
              public QGraphicsItem {
 public:
-    Node(QObject *parent,
+    NSGraphicsNode(QObject *parent,
          QPixmap *image,
          QPointF position = {0, 0},
          QSize size = {64, 64},
          QString *name = nullptr);
-    ~Node();
+    ~NSGraphicsNode();
 
     virtual void populateMenu(QMenu *menu) =0;
     virtual NetworkNode *networkNode() const =0;
@@ -34,4 +34,4 @@ protected:
     QString *name;
 };
 
-#endif // NODE_H
+#endif // NSGRAPHICSNODE_H

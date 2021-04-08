@@ -1,7 +1,7 @@
-#include "node.h"
+#include "nsgraphicsnode.h"
 
 
-Node::Node(QObject *parent, QPixmap *image,
+NSGraphicsNode::NSGraphicsNode(QObject *parent, QPixmap *image,
            QPointF position, QSize size, QString *name)
     : QObject(parent), QGraphicsItem(), image{image}, size{size}, name{name}
 {
@@ -9,13 +9,13 @@ Node::Node(QObject *parent, QPixmap *image,
     setPos(position);
 }
 
-Node::~Node()
+NSGraphicsNode::~NSGraphicsNode()
 {
     delete image;
     delete name;
 }
 
-void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void NSGraphicsNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->drawPixmap(-QPoint{size.width(), size.height()} / 2,
                         *image,
@@ -24,7 +24,7 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     Q_UNUSED(widget);
 }
 
-QRectF Node::boundingRect() const
+QRectF NSGraphicsNode::boundingRect() const
 {
     return QRectF{
         -size.width()/2.0, -size.height()/2.0,

@@ -8,7 +8,7 @@
 #include "NetworkModel.h"
 #include "NetworkNode.h"
 #include "GenericNetworkInterface.hpp"
-#include "pc.h"
+#include "nsgraphicspcnode.h"
 
 enum NSGraphicsViewMode{
     NONE,
@@ -17,7 +17,7 @@ enum NSGraphicsViewMode{
 };
 
 enum NSGraphicsViewNode{
-    PC=1
+    NSGraphicsPCNode=1
 };
 
 class NSGraphicsView : public QGraphicsView
@@ -47,7 +47,7 @@ private:
     GenericNetworkInterface *connSource;
 
     NetworkModel *model {nullptr};
-    std::map<NetworkNode *, Node *> nodetab;
+    std::map<NetworkNode *, NSGraphicsNode *> nodetab;
     std::map<std::tuple<GenericNetworkInterface *,
                         GenericNetworkInterface *>,
              QGraphicsLineItem *> edgetab;
