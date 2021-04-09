@@ -19,8 +19,8 @@ NSGraphicsView::NSGraphicsView(QWidget *parent)
 
 NSGraphicsView::~NSGraphicsView()
 {
-    // delete model;
-    // delete scene;
+    delete model;
+    delete scene;
 }
 
 void NSGraphicsView::resetModel()
