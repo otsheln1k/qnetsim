@@ -7,6 +7,7 @@
 #include "EthernetInterface.hpp"
 #include "PCNode.h"
 #include "nsgraphicspcnode.h"
+#include "ECTPPingDialog.h"
 
 NSGraphicsPCNode::NSGraphicsPCNode(QObject *parent, PCNode *node,
                                    QPointF position, QSize size, QString *name)
@@ -45,8 +46,8 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
         &QAction::triggered,
         [this, widget]()
         {
-            auto *dialog = new InterfaceDialog(widget->window(), node);
-            QObject::connect(dialog, &InterfaceDialog::info,
+            auto *dialog = new ECTPPingDialog(widget->window(), node);
+            QObject::connect(dialog, &ECTPPingDialog::info,
                              this, &NSGraphicsPCNode::onSendECTPMessage);
             dialog->open();
         });

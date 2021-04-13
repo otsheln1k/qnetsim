@@ -9,7 +9,7 @@ SOURCES += ECTPDriver.cpp
 SOURCES += EthernetDriver.cpp
 SOURCES += EthernetFrame.cpp
 SOURCES += EthernetInterface.cpp
-SOURCES += gui/interfacedialog.cpp
+SOURCES += gui/ECTPPingDialog.cpp
 SOURCES += gui/nsgraphicshubnode.cpp
 SOURCES += gui/nsgraphicsnode.cpp
 SOURCES += gui/nsgraphicspcnode.cpp
@@ -28,7 +28,7 @@ HEADERS += EthernetDriver.hpp
 HEADERS += EthernetFrame.hpp
 HEADERS += EthernetInterface.hpp
 HEADERS += GenericNetworkInterface.hpp
-HEADERS += gui/interfacedialog.h
+HEADERS += gui/ECTPPingDialog.h
 HEADERS += gui/nsgraphicshubnode.h
 HEADERS += gui/nsgraphicsnode.h
 HEADERS += gui/nsgraphicspcnode.h
@@ -43,8 +43,8 @@ HEADERS += SimulationLogger.hpp
 HEADERS += SimulationStepper.hpp
 HEADERS += Steppable.hpp
 
-FORMS += NSWindow.ui \
-    gui/interfacedialog.ui
+FORMS += gui/ECTPPingDialog.ui
+FORMS += NSWindow.ui
 
 COPIES += icons models
 

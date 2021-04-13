@@ -1,9 +1,9 @@
-#include "interfacedialog.h"
-#include "ui_interfacedialog.h"
+#include "ECTPPingDialog.h"
+#include "ui_ECTPPingDialog.h"
 
-InterfaceDialog::InterfaceDialog(QWidget *parent, NetworkNode *node) :
+ECTPPingDialog::ECTPPingDialog(QWidget *parent, NetworkNode *node) :
     QDialog(parent),
-    ui(new Ui::InterfaceDialog)
+    ui(new Ui::ECTPPingDialog)
 {
     ui->setupUi(this);
 
@@ -15,12 +15,12 @@ InterfaceDialog::InterfaceDialog(QWidget *parent, NetworkNode *node) :
     }
 }
 
-InterfaceDialog::~InterfaceDialog()
+ECTPPingDialog::~ECTPPingDialog()
 {
     delete ui;
 }
 
-void InterfaceDialog::accept()
+void ECTPPingDialog::accept()
 {
     auto *iface = ui->ifaceCombo->currentData()
         .value<GenericNetworkInterface *>();

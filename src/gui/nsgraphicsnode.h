@@ -10,7 +10,6 @@
 #include <QWidget>
 
 #include "NetworkNode.h"
-#include "interfacedialog.h"
 
 class NSGraphicsNode : public QObject,
                        public QGraphicsItem {

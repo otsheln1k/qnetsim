@@ -1,5 +1,5 @@
-#ifndef INTERFACEDIALOG_H
-#define INTERFACEDIALOG_H
+#ifndef _NS_GUI_ECTP_PING_DIALOG_H_
+#define _NS_GUI_ECTP_PING_DIALOG_H_
 
 #include <stdint.h>
 
@@ -10,24 +10,24 @@
 #include "NetworkNode.h"
 
 namespace Ui {
-class InterfaceDialog;
+class ECTPPingDialog;
 }
 
-class InterfaceDialog : public QDialog
+class ECTPPingDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit InterfaceDialog(QWidget *parent = nullptr, NetworkNode *node = nullptr);
-    ~InterfaceDialog();
+    explicit ECTPPingDialog(QWidget *parent = nullptr, NetworkNode *node = nullptr);
+    ~ECTPPingDialog();
 
     virtual void accept() override;
 
 private:
-    Ui::InterfaceDialog *ui;
+    Ui::ECTPPingDialog *ui;
 
 signals:
     void info(GenericNetworkInterface *iface, uint16_t seq, MACAddr addr);
 };
 
-#endif // INTERFACEDIALOG_H
+#endif // _NS_GUI_ECTP_PING_DIALOG_H_
