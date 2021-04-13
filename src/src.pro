@@ -15,6 +15,7 @@ SOURCES += gui/nsgraphicspcnode.cpp
 SOURCES += gui/nsgraphicshubnode.cpp
 SOURCES += gui/nsgraphicsview.cpp
 SOURCES += HubNode.cpp
+SOURCES += MACAddr.cpp
 SOURCES += main.cpp
 SOURCES += NetworkModel.cpp
 SOURCES += NetworkNode.cpp
