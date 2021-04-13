@@ -8,7 +8,8 @@
 bool EthernetInterface::connect(GenericNetworkInterface *iface)
 {
     auto *eiface = dynamic_cast<EthernetInterface *>(iface);
-    if (!eiface) {
+    if (!eiface
+        || eiface == this) {
         return false;
     }
 

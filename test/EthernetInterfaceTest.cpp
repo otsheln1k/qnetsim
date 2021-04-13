@@ -40,6 +40,9 @@ void EthernetInterfaceTest::testConnectDisconnect() {
     QCOMPARE(i2.connectionsCount(), 1lu);
     QCOMPARE(i2.connectionByIndex(0), &i1);
 
+    QVERIFY(!i1.connect(&i1));
+    QVERIFY(!i2.connect(&i2));
+
     QVERIFY(i1.disconnect(&i2));
 
     QCOMPARE(dynamic_cast<EthernetInterface *>(
