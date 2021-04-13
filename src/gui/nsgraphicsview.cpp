@@ -195,7 +195,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
     } else if (ev->button() == Qt::MouseButton::RightButton) {
         if (auto *node = dynamic_cast<NSGraphicsNode *>(itemAt(ev->pos()))) {
             auto *menu = new QMenu(this);
-            node->populateMenu(menu);
+            node->populateMenu(menu, this);
             menu->exec(ev->globalPos());
         }
     }

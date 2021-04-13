@@ -7,6 +7,7 @@
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QMenu>
+#include <QWidget>
 
 #include "NetworkNode.h"
 #include "interfacedialog.h"
@@ -24,7 +25,7 @@ public:
                    QString *name = nullptr);
     ~NSGraphicsNode();
 
-    virtual void populateMenu(QMenu *menu) =0;
+    virtual void populateMenu(QMenu *menu, QWidget *widget) =0;
     virtual NetworkNode *networkNode() const =0;
 
     static void fillInterfacesMenu(QMenu *menu, NetworkNode *node);

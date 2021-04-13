@@ -28,7 +28,7 @@ void NSGraphicsHubNode::onNodeDestroyed()
     scene()->removeItem(this);
 }
 
-void NSGraphicsHubNode::populateMenu(QMenu *menu)
+void NSGraphicsHubNode::populateMenu(QMenu *menu, QWidget *)
 {
     QObject::connect(menu->addAction("Удалить"), &QAction::triggered,
                      [this]()

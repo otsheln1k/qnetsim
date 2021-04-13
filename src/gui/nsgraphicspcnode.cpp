@@ -23,7 +23,7 @@ void NSGraphicsPCNode::onNodeDestroyed()
     scene()->removeItem(this);
 }
 
-void NSGraphicsPCNode::populateMenu(QMenu *menu)
+void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
 {
     QObject::connect(menu->addAction("Удалить"), &QAction::triggered,
                      [this]()
@@ -40,9 +40,9 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu)
 
     QObject::connect(menu->addAction("Отправить проверку связи…"),
                      &QAction::triggered,
-                     [this]()
+                     [this, widget]()
                      {
-                          InterfaceDialog dialog(nullptr, node);
+                         InterfaceDialog dialog(widget->window(), node);
                           dialog.exec();
                           if (dialog.result()){
                               auto res = dialog.getResult();
