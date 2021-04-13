@@ -6,8 +6,9 @@ InterfaceDialog::InterfaceDialog(QWidget *parent, NetworkNode *node) :
     ui(new Ui::InterfaceDialog)
 {
     ui->setupUi(this);
+
     for (GenericNetworkInterface *iface : *node){
-        ui->comboBox->addItem(
+        ui->ifaceCombo->addItem(
             QString{"Интерфейс @ 0x%1"}
             .arg((size_t)iface, sizeof(size_t)*2, 16, QChar{'0'}),
             QVariant::fromValue(iface));
@@ -22,7 +23,7 @@ InterfaceDialog::~InterfaceDialog()
 InterfaceDialogAnswer InterfaceDialog::getResult()
 {
     return {
-        ui->comboBox->currentData().value<GenericNetworkInterface *>(),
-        static_cast<unsigned short>(ui->spinBox->value())
+        ui->ifaceCombo->currentData().value<GenericNetworkInterface *>(),
+        static_cast<unsigned short>(ui->sequenceInput->value()),
     };
 }

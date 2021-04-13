@@ -5,14 +5,14 @@ QT = core gui widgets
 TARGET = qnetsim
 CONFIG += c++17 strict_c++ warn_on
 
-SOURCES += ECTPDriver.cpp \
-    gui/interfacedialog.cpp
+SOURCES += ECTPDriver.cpp
 SOURCES += EthernetDriver.cpp
 SOURCES += EthernetFrame.cpp
 SOURCES += EthernetInterface.cpp
+SOURCES += gui/interfacedialog.cpp
+SOURCES += gui/nsgraphicshubnode.cpp
 SOURCES += gui/nsgraphicsnode.cpp
 SOURCES += gui/nsgraphicspcnode.cpp
-SOURCES += gui/nsgraphicshubnode.cpp
 SOURCES += gui/nsgraphicsview.cpp
 SOURCES += HubNode.cpp
 SOURCES += MACAddr.cpp
@@ -23,15 +23,15 @@ SOURCES += NSWindow.cpp
 SOURCES += PCNode.cpp
 SOURCES += SimulationLogger.cpp
 
-HEADERS += ECTPDriver.hpp \
-    gui/interfacedialog.h
+HEADERS += ECTPDriver.hpp
 HEADERS += EthernetDriver.hpp
 HEADERS += EthernetFrame.hpp
 HEADERS += EthernetInterface.hpp
 HEADERS += GenericNetworkInterface.hpp
+HEADERS += gui/interfacedialog.h
+HEADERS += gui/nsgraphicshubnode.h
 HEADERS += gui/nsgraphicsnode.h
 HEADERS += gui/nsgraphicspcnode.h
-HEADERS += gui/nsgraphicshubnode.h
 HEADERS += gui/nsgraphicsview.h
 HEADERS += HubNode.h
 HEADERS += MACAddr.hpp

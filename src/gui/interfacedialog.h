@@ -24,15 +24,12 @@ public:
 
     InterfaceDialogAnswer getResult();
 
-protected:
-    void fillSpinBox(NetworkNode*);
 
 private:
     Ui::InterfaceDialog *ui;
 
 signals:
     void accepted();
-private slots:
 };
 
 #endif // INTERFACEDIALOG_H
