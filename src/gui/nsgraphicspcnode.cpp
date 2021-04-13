@@ -40,18 +40,16 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
 
     auto *ectpAction = menu->addAction("Отправить проверку связи…");
     ectpAction->setEnabled(node->interfacesCount() > 0);
-    QObject::connect(ectpAction,
-                     &QAction::triggered,
-                     [this, widget]()
-                     {
-                         InterfaceDialog dialog(widget->window(), node);
-                         dialog.exec();
-                         if (dialog.result()){
-                             auto res = dialog.getResult();
-                             this->onSendECTPMessage(
-                                 res.interface, res.res, res.addr);
-                         }
-                     });
+    QObject::connect(
+        ectpAction,
+        &QAction::triggered,
+        [this, widget]()
+        {
+            auto *dialog = new InterfaceDialog(widget->window(), node);
+            QObject::connect(dialog, &InterfaceDialog::info,
+                             this, &NSGraphicsPCNode::onSendECTPMessage);
+            dialog->open();
+        });
 
     QMenu *ifmenu = menu->addMenu("Удалить интерфейс");
     ifmenu->setEnabled(node->interfacesCount() > 0);

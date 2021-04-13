@@ -1,6 +1,8 @@
 #ifndef INTERFACEDIALOG_H
 #define INTERFACEDIALOG_H
 
+#include <stdint.h>
+
 #include <QDialog>
 
 #include "MACAddr.hpp"
@@ -11,12 +13,6 @@ namespace Ui {
 class InterfaceDialog;
 }
 
-struct InterfaceDialogAnswer{
-    GenericNetworkInterface *interface;
-    unsigned short res;
-    MACAddr addr;
-};
-
 class InterfaceDialog : public QDialog
 {
     Q_OBJECT
@@ -25,14 +21,13 @@ public:
     explicit InterfaceDialog(QWidget *parent = nullptr, NetworkNode *node = nullptr);
     ~InterfaceDialog();
 
-    InterfaceDialogAnswer getResult();
-
+    virtual void accept() override;
 
 private:
     Ui::InterfaceDialog *ui;
 
 signals:
-    void accepted();
+    void info(GenericNetworkInterface *iface, uint16_t seq, MACAddr addr);
 };
 
 #endif // INTERFACEDIALOG_H

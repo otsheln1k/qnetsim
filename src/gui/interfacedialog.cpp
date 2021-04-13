@@ -20,14 +20,17 @@ InterfaceDialog::~InterfaceDialog()
     delete ui;
 }
 
-InterfaceDialogAnswer InterfaceDialog::getResult()
+void InterfaceDialog::accept()
 {
+    auto *iface = ui->ifaceCombo->currentData()
+        .value<GenericNetworkInterface *>();
+
+    uint16_t seq = ui->sequenceInput->value();
+
     MACAddr addr;
     addr.parseQString(ui->addrInput->text());
 
-    return {
-        ui->ifaceCombo->currentData().value<GenericNetworkInterface *>(),
-        static_cast<unsigned short>(ui->sequenceInput->value()),
-        addr,
-    };
+    emit info(iface, seq, addr);
+
+    QDialog::accept();
 }
