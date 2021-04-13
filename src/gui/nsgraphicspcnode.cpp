@@ -56,7 +56,13 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
     ifmenu->setEnabled(node->interfacesCount() > 0);
     fillPCInterfacesMenu(ifmenu, node);
     for (QAction *action : ifmenu->actions()) {
-        action->setEnabled(false);
+        QObject::connect(
+            action, &QAction::triggered,
+            [this, action]()
+            {
+                auto *iface = action->data().value<GenericNetworkInterface *>();
+                node->removeInterface(iface);
+            });
     }
 }
 
