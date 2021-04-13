@@ -2,8 +2,10 @@
 #define INTERFACEDIALOG_H
 
 #include <QDialog>
+
+#include "MACAddr.hpp"
 #include "GenericNetworkInterface.hpp"
-#include "../NetworkNode.h"
+#include "NetworkNode.h"
 
 namespace Ui {
 class InterfaceDialog;
@@ -12,6 +14,7 @@ class InterfaceDialog;
 struct InterfaceDialogAnswer{
     GenericNetworkInterface *interface;
     unsigned short res;
+    MACAddr addr;
 };
 
 class InterfaceDialog : public QDialog

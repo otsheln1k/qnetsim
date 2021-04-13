@@ -22,8 +22,12 @@ InterfaceDialog::~InterfaceDialog()
 
 InterfaceDialogAnswer InterfaceDialog::getResult()
 {
+    MACAddr addr;
+    addr.parseQString(ui->addrInput->text());
+
     return {
         ui->ifaceCombo->currentData().value<GenericNetworkInterface *>(),
         static_cast<unsigned short>(ui->sequenceInput->value()),
+        addr,
     };
 }

@@ -22,9 +22,12 @@ public:
     virtual NetworkNode *networkNode() const override;
 
     static void fillPCInterfacesMenu(QMenu *menu, PCNode *node);
+
 private slots:
     void onNodeDestroyed();
-    void onSendECTPMessage(GenericNetworkInterface *iface, uint16_t seq);
+    void onSendECTPMessage(GenericNetworkInterface *iface,
+                           uint16_t seq,
+                           MACAddr through);
 };
 
 #endif // NSGRAPHICSPCNODE_H

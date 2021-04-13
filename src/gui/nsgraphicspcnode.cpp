@@ -45,11 +45,12 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
                      [this, widget]()
                      {
                          InterfaceDialog dialog(widget->window(), node);
-                          dialog.exec();
-                          if (dialog.result()){
-                              auto res = dialog.getResult();
-                              this->onSendECTPMessage(res.interface, res.res);
-                          }
+                         dialog.exec();
+                         if (dialog.result()){
+                             auto res = dialog.getResult();
+                             this->onSendECTPMessage(
+                                 res.interface, res.res, res.addr);
+                         }
                      });
 
     QMenu *ifmenu = menu->addMenu("Удалить интерфейс");
@@ -72,7 +73,8 @@ NetworkNode *NSGraphicsPCNode::networkNode() const
 }
 
 void NSGraphicsPCNode::onSendECTPMessage(GenericNetworkInterface *iface,
-                                         uint16_t seq)
+                                         uint16_t seq,
+                                         MACAddr through)
 {
     auto *drv = node->getDriver(
         dynamic_cast<EthernetInterface *>(iface));
@@ -88,7 +90,7 @@ void NSGraphicsPCNode::onSendECTPMessage(GenericNetworkInterface *iface,
         .arg(drv->address())
         .arg(seq));
 
-    drv->sendFrame(0x010203040506, // their MAC
+    drv->sendFrame(through,     // their MAC
                    ETHERTYPE_ECTP,
                    bytes.begin(),
                    bytes.end());
