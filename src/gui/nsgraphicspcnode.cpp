@@ -38,7 +38,9 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
                          node->addInterface(new EthernetInterface {});
                      });
 
-    QObject::connect(menu->addAction("Отправить проверку связи…"),
+    auto *ectpAction = menu->addAction("Отправить проверку связи…");
+    ectpAction->setEnabled(node->interfacesCount() > 0);
+    QObject::connect(ectpAction,
                      &QAction::triggered,
                      [this, widget]()
                      {
@@ -50,10 +52,12 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
                           }
                      });
 
-
-
-
-    //fillInterfacesMenu(ectpMenu, node);
+    QMenu *ifmenu = menu->addMenu("Удалить интерфейс");
+    ifmenu->setEnabled(node->interfacesCount() > 0);
+    fillPCInterfacesMenu(ifmenu, node);
+    for (QAction *action : ifmenu->actions()) {
+        action->setEnabled(false);
+    }
 }
 
 NetworkNode *NSGraphicsPCNode::networkNode() const
@@ -90,4 +94,22 @@ void NSGraphicsPCNode::onSendECTPMessage(GenericNetworkInterface *iface,
     SimulationStepper stepper {(Steppable *)model};
 
     stepper.run();
+}
+
+void NSGraphicsPCNode::fillPCInterfacesMenu(QMenu *menu, PCNode *node)
+{
+    for (GenericNetworkInterface *iface : *node) {
+        QString text;
+        if (auto *eiface = dynamic_cast<EthernetInterface *>(iface)) {
+            auto drv = node->getDriver(eiface);
+            auto addr = drv->address();
+            text = QString{"Ethernet %1"}.arg(addr);
+        } else {
+            text = QString{"?"};
+        }
+
+        auto *action = menu->addAction(text);
+
+        action->setData(QVariant::fromValue(iface));
+    }
 }
