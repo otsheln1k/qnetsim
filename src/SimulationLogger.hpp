@@ -8,32 +8,38 @@
 #include "NetworkNode.h"        // NOTE: not hpp
 #include "GenericNetworkInterface.hpp"
 
-class SimulationLogger : public QObject {
-    Q_OBJECT;
+class SimulationLoggerMessage {
+    NetworkNode *_node;
+    GenericNetworkInterface *_iface;
+    QString _text;
 
 public:
-    class Message {
-        NetworkNode *_node;
-        GenericNetworkInterface *_iface;
-        QString _text;
+    SimulationLoggerMessage()
+        :SimulationLoggerMessage{nullptr, nullptr, {}} {}
 
-    public:
-        Message(NetworkNode *n, GenericNetworkInterface *i, QString t)
-            :_node{n}, _iface{i}, _text{std::move(t)} {}
+    SimulationLoggerMessage(
+        NetworkNode *n, GenericNetworkInterface *i, QString t)
+        :_node{n}, _iface{i}, _text{std::move(t)} {}
 
-        NetworkNode *node() const { return _node; }
-        void setNode(NetworkNode *n) { _node = n; }
+    NetworkNode *node() const { return _node; }
+    void setNode(NetworkNode *n) { _node = n; }
 
-        GenericNetworkInterface *interface() const { return _iface; }
-        void setInterface(GenericNetworkInterface *i) { _iface = i; }
+    GenericNetworkInterface *interface() const { return _iface; }
+    void setInterface(GenericNetworkInterface *i) { _iface = i; }
 
-        const QString &text() const { return _text; }
-    };
+    const QString &text() const { return _text; }
+};
+
+Q_DECLARE_METATYPE(SimulationLoggerMessage);
+
+
+class SimulationLogger : public QObject {
+    Q_OBJECT;
 
 private:
     NetworkNode *_curNode = nullptr;
     GenericNetworkInterface *_curIface = nullptr;
-    std::deque<Message> _mq {};
+    std::deque<SimulationLoggerMessage> _mq {};
 
     void flushMsgQueue();
 
@@ -41,9 +47,11 @@ private:
     static SimulationLogger _defaultLogger;
 
 public:
+    NetworkNode *currentNode() const { return _curNode; }
     void setCurrentNode(NetworkNode *n);
     void unsetCurrentNode();
 
+    GenericNetworkInterface *currentInterface() const { return _curIface; }
     void setCurrentInterface(GenericNetworkInterface *i);
     void unsetCurrentInterface();
 
@@ -54,7 +62,7 @@ public:
     void makeCurrent() { _curLogger = this; }
 
 signals:
-    void message(const Message &msg);
+    void message(const SimulationLoggerMessage &msg);
 };
 
 #endif

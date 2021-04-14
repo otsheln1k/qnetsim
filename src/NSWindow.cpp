@@ -53,7 +53,7 @@ void NSWindow::on_resetButton_clicked()
     ui->graphicsView->resetModel();
 }
 
-void NSWindow::onLoggerMessage(const SimulationLogger::Message &msg)
+void NSWindow::onLoggerMessage(const SimulationLoggerMessage &msg)
 {
     int row = ui->logTable->rowCount();
 

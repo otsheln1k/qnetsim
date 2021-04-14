@@ -18,7 +18,7 @@ void SimulationLogger::flushMsgQueue()
 void SimulationLogger::setCurrentNode(NetworkNode *n)
 {
     _curNode = n;
-    for (Message &msg : _mq) {
+    for (auto &msg : _mq) {
         if (msg.node() == nullptr) {
             msg.setNode(n);
         }
@@ -34,7 +34,7 @@ void SimulationLogger::unsetCurrentNode()
 void SimulationLogger::setCurrentInterface(GenericNetworkInterface *i)
 {
     _curIface = i;
-    for (Message &msg : _mq) {
+    for (auto &msg : _mq) {
         if (msg.interface() == nullptr) {
             msg.setInterface(i);
         }
@@ -49,7 +49,10 @@ void SimulationLogger::unsetCurrentInterface()
 
 void SimulationLogger::log(QString str)
 {
-    Message msg {_curNode, _curIface, std::move(str)};
+    qRegisterMetaType<SimulationLoggerMessage>();
+
+    SimulationLoggerMessage msg {
+        _curNode, _curIface, std::move(str)};
 
     if (_curNode == nullptr
         || _curIface == nullptr) {

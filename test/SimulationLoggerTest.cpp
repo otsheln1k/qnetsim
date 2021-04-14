@@ -14,7 +14,7 @@ void SimulationLoggerTest::testSimulationLogger()
     EthernetInterface iface2 {};
 
     int status = 0;
-    SimulationLogger::Message checkseq[] = {
+    SimulationLoggerMessage checkseq[] = {
         {&node, &iface, QString{"foo"}},
         {&node, &iface, QString{"bar"}},
         {&node, &iface2, QString{"baz"}},
@@ -23,7 +23,7 @@ void SimulationLoggerTest::testSimulationLogger()
     };
 
     QObject::connect(&logger, &SimulationLogger::message,
-                     [&status, &checkseq](const SimulationLogger::Message &msg)
+                     [&status, &checkseq](const SimulationLoggerMessage &msg)
                      {
                          const auto &ref = checkseq[status];
                          QCOMPARE(msg.node(), ref.node());
