@@ -29,6 +29,10 @@ public:
 
     static void fillInterfacesMenu(QMenu *menu, NetworkNode *node);
 
+signals:
+    void addingInterface(GenericNetworkInterface *iface);
+    void removingInterface(GenericNetworkInterface *iface);
+
 protected:
     virtual void paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,

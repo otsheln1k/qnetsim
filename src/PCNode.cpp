@@ -46,3 +46,12 @@ EthernetDriver* PCNode::getDriver(EthernetInterface *iface){
 
     return nullptr;
 }
+
+void PCNode::sendEthernetFrame(EthernetInterface *eiface,
+                               MACAddr dest,
+                               EtherType etherType,
+                               QVector<uint8_t> payload)
+{
+    auto *drv = getDriver(eiface);
+    drv->sendFrame(dest, etherType, payload.begin(), payload.end());
+}

@@ -4,7 +4,9 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include <QGraphicsView>
+#include <QThread>
 
+#include "SimulationStepper.hpp"
 #include "NetworkModel.h"
 #include "NetworkNode.h"
 #include "GenericNetworkInterface.hpp"
@@ -38,9 +40,6 @@ public:
 
     void resetModel();
 
-signals:
-
-
 private:
     QGraphicsScene *scene;
     NSGraphicsViewMode mode;
@@ -48,6 +47,8 @@ private:
     GenericNetworkInterface *connSource;
 
     NetworkModel *model {nullptr};
+    QThread simulationThread {};
+    SimulationStepper stepper {};
     std::map<NetworkNode *, NSGraphicsNode *> nodetab;
     std::map<std::tuple<GenericNetworkInterface *,
                         GenericNetworkInterface *>,

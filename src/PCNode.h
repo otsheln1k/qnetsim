@@ -19,6 +19,10 @@ public:
 public slots:
     virtual void addInterface(GenericNetworkInterface* iface);
     virtual void removeInterface(GenericNetworkInterface* iface);
+    void sendEthernetFrame(EthernetInterface *eiface,
+                           MACAddr dest,
+                           EtherType etherType,
+                           QVector<uint8_t> payload);
 };
 
 #endif // PC_H

@@ -13,12 +13,16 @@ NSGraphicsView::NSGraphicsView(QWidget *parent)
       scene {new QGraphicsScene {}},
       mode {NSGraphicsViewMode::NONE}
 {
+    simulationThread.start();
+    stepper.moveToThread(&simulationThread);
     resetModel();
     setScene(scene);
 }
 
 NSGraphicsView::~NSGraphicsView()
 {
+    simulationThread.quit();
+    simulationThread.wait();
     delete model;
     delete scene;
 }
@@ -26,7 +30,11 @@ NSGraphicsView::~NSGraphicsView()
 void NSGraphicsView::resetModel()
 {
     delete model;
+
     model = new NetworkModel {};
+    model->moveToThread(&simulationThread);
+    stepper.setObject(model);
+
     QObject::connect(model, &NetworkModel::nodeAdded,
                      this, &NSGraphicsView::onNodeAdded);
     QObject::connect(model, &NetworkModel::nodeRemoved,
@@ -57,6 +65,8 @@ void NSGraphicsView::onInterfaceAdded(GenericNetworkInterface *iface)
                      this, &NSGraphicsView::onConnected);
     QObject::connect(iface, &GenericNetworkInterface::disconnected,
                      this, &NSGraphicsView::onDisconnected);
+    QObject::connect(iface, &GenericNetworkInterface::started,
+                     &stepper, &SimulationStepper::run);
 }
 
 void NSGraphicsView::onInterfaceRemoved(GenericNetworkInterface *iface)
@@ -65,6 +75,8 @@ void NSGraphicsView::onInterfaceRemoved(GenericNetworkInterface *iface)
                         this, &NSGraphicsView::onConnected);
     QObject::disconnect(iface, &GenericNetworkInterface::disconnected,
                         this, &NSGraphicsView::onDisconnected);
+    QObject::disconnect(iface, &GenericNetworkInterface::started,
+                        &stepper, &SimulationStepper::run);
 }
 
 void NSGraphicsView::onConnected(GenericNetworkInterface *other)
@@ -131,6 +143,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
             }
             }
 
+            nd->moveToThread(&simulationThread);
             model->addNode(nd);
 
             scene->addItem(gnode);

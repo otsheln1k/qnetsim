@@ -1,3 +1,6 @@
+#include <stdint.h>
+
+#include <QVector>
 #include <QMenu>
 #include <QGraphicsScene>
 
@@ -15,8 +18,18 @@ NSGraphicsPCNode::NSGraphicsPCNode(QObject *parent, PCNode *node,
                      position, size, name),
       node{node}
 {
+    qRegisterMetaType<MACAddr>();
+    qRegisterMetaType<EtherType>();
+    qRegisterMetaType<QVector<uint8_t>>("QVector<uint8_t>");
+
     QObject::connect(node, &QObject::destroyed,
                      this, &NSGraphicsPCNode::onNodeDestroyed);
+    QObject::connect(this, &NSGraphicsNode::addingInterface,
+                     node, &NetworkNode::addInterface);
+    QObject::connect(this, &NSGraphicsNode::removingInterface,
+                     node, &NetworkNode::removeInterface);
+    QObject::connect(this, &NSGraphicsPCNode::sendingFrame,
+                     node, &PCNode::sendEthernetFrame);
 }
 
 void NSGraphicsPCNode::onNodeDestroyed()
@@ -29,14 +42,16 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
     QObject::connect(menu->addAction("Удалить"), &QAction::triggered,
                      [this]()
                      {
-                         delete node;
+                         node->deleteLater();
                      });
 
     QObject::connect(menu->addAction("Добавить порт Ethernet"),
                      &QAction::triggered,
                      [this]()
                      {
-                         node->addInterface(new EthernetInterface {});
+                         auto *iface = new EthernetInterface {};
+                         iface->moveToThread(node->thread());
+                         emit addingInterface((GenericNetworkInterface *)iface);
                      });
 
     auto *ectpAction = menu->addAction("Отправить проверку связи…");
@@ -61,7 +76,7 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
             [this, action]()
             {
                 auto *iface = action->data().value<GenericNetworkInterface *>();
-                node->removeInterface(iface);
+                emit removingInterface(iface);
             });
     }
 }
@@ -75,8 +90,8 @@ void NSGraphicsPCNode::onSendECTPMessage(GenericNetworkInterface *iface,
                                          uint16_t seq,
                                          MACAddr through)
 {
-    auto *drv = node->getDriver(
-        dynamic_cast<EthernetInterface *>(iface));
+    auto *eiface = dynamic_cast<EthernetInterface *>(iface);
+    auto *drv = node->getDriver(eiface);
 
     QVector<uint8_t> bytes;
     uint8_t arr[0];
@@ -84,23 +99,12 @@ void NSGraphicsPCNode::onSendECTPMessage(GenericNetworkInterface *iface,
                              arr, arr,
                              std::back_inserter(bytes));
 
-    SimulationLogger::currentLogger()->log(
-        QString{"Prepared loopback ECTP message: dest=%1, seq=%2"}
-        .arg(drv->address())
-        .arg(seq));
+    // SimulationLogger::currentLogger()->log(
+    //     QString{"Prepared loopback ECTP message: dest=%1, seq=%2"}
+    //     .arg(drv->address())
+    //     .arg(seq));
 
-    drv->sendFrame(through,     // their MAC
-                   ETHERTYPE_ECTP,
-                   bytes.begin(),
-                   bytes.end());
-
-    SimulationLogger::currentLogger()->unsetCurrentNode();
-
-    auto *model = dynamic_cast<NetworkModel *>(iface->parent()->parent());
-
-    SimulationStepper stepper {(Steppable *)model};
-
-    stepper.run();
+    emit sendingFrame(eiface, through, ETHERTYPE_ECTP, bytes);
 }
 
 void NSGraphicsPCNode::fillPCInterfacesMenu(QMenu *menu, PCNode *node)

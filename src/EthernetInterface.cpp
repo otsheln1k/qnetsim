@@ -72,6 +72,8 @@ bool EthernetInterface::sendFrame(const EthernetFrame &frame)
 
     _sq.emplace(std::move(bytes));
 
+    emit started();
+
     SimulationLogger::currentLogger()->unsetCurrentInterface();
     return true;
 }
