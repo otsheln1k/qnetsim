@@ -95,3 +95,67 @@ void SimulationStepperTest::testThreadedStepper()
 
     QCOMPARE(status, 4);
 }
+
+void SimulationStepperTest::testThreadedSimulation()
+{
+    int argc = 1;
+    char buf[7] = "_TEST_";
+    char *argv[2] = {buf, nullptr};
+    QCoreApplication app {argc, argv};
+
+    DummySimulation ds {};
+    SimulationStepper s {&ds};
+    QThread th;
+
+    QObject::connect(&s, &SimulationStepper::finished,
+                     &th, &QThread::quit);
+    QObject::connect(&th, &QThread::finished,
+                     &app, &QCoreApplication::quit);
+
+    int status = 0;
+
+    // Note: only checks below
+
+    QObject::connect(&th, &QThread::started,
+                     [&status, &th]()
+                     {
+                         QCOMPARE(status, 1);
+                         QCOMPARE(QThread::currentThread(), &th);
+                         status = 2;
+                     });
+
+    QObject::connect(&ds, &DummySimulation::stepped,
+                     [&status, &th]()
+                     {
+                         QCOMPARE(status, 2);
+                         QCOMPARE(QThread::currentThread(), &th);
+                         status = 3;
+                     });
+
+    QObject::connect(&s, &SimulationStepper::finished,
+                     [&status, &th]()
+                     {
+                         QCOMPARE(status, 3);
+                         QCOMPARE(QThread::currentThread(), &th);
+                         status = 4;
+                     });
+
+    QObject::connect(&th, &QThread::finished,
+                     [&status, &app, &th]()
+                     {
+                         QCOMPARE(status, 4);
+                         QCOMPARE(QThread::currentThread(), &th);
+                         status = 5;
+                     });
+
+    s.moveToThread(&th);
+    th.start();
+
+    status = 1;
+    QMetaObject::invokeMethod(&s, &SimulationStepper::run);
+
+    app.exec();
+    th.wait();
+
+    QCOMPARE(status, 5);
+}
