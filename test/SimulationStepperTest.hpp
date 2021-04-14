@@ -8,6 +8,8 @@ class SimulationStepperTest : public QObject {
 
 private slots:
     void testSimulationStepper();
+
+    void testThreadedStepper();
 };
 
 #endif

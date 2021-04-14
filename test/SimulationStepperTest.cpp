@@ -1,3 +1,4 @@
+#include <QThread>
 #include <QtTest/QtTest>
 
 #include "Steppable.hpp"
@@ -34,4 +35,63 @@ void SimulationStepperTest::testSimulationStepper()
 
     QCOMPARE(c.nSend, c.maxSend);
     QCOMPARE(c.nRecv, c.maxSend);
+}
+
+void SimulationStepperTest::testThreadedStepper()
+{
+    int argc = 1;
+    char buf[7] = "_TEST_";
+    char *argv[2] = {buf, nullptr};
+    QCoreApplication app {argc, argv};
+
+    Counter c {10};
+    SimulationStepper s {&c};
+    QThread th;
+
+    // Only “control-flow” here
+    QObject::connect(&s, &SimulationStepper::finished,
+                     &th, &QThread::quit);
+    QObject::connect(&th, &QThread::finished,
+                     &app, &QCoreApplication::quit);
+
+    int status = 0;
+
+    // Note: only checks below
+
+    QObject::connect(&th, &QThread::started,
+                     [&status, &th]()
+                     {
+                         QCOMPARE(status, 1);
+                         QCOMPARE(QThread::currentThread(), &th);
+                         status = 2;
+                     });
+
+    QObject::connect(&s, &SimulationStepper::finished,
+                     [&c, &status, &th]()
+                     {
+                         QCOMPARE(status, 2);
+                         QCOMPARE(c.nSend, c.maxSend);
+                         QCOMPARE(c.nRecv, c.maxSend);
+                         QCOMPARE(QThread::currentThread(), &th);
+                         status = 3;
+                     });
+
+    QObject::connect(&th, &QThread::finished,
+                     [&status, &app, &th]()
+                     {
+                         QCOMPARE(status, 3);
+                         QCOMPARE(QThread::currentThread(), &th);
+                         status = 4;
+                     });
+
+    s.moveToThread(&th);
+    th.start();
+
+    status = 1;
+    QMetaObject::invokeMethod(&s, &SimulationStepper::run);
+
+    app.exec();
+    th.wait();
+
+    QCOMPARE(status, 4);
 }

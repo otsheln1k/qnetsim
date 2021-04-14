@@ -17,31 +17,34 @@ class SimulationStepper : public QObject {
                WRITE setObject);
 
     Steppable *_s = nullptr;
-    bool _stopped = false;
+    bool _stopped = true;
 
 public:
     SimulationStepper() {}
     explicit SimulationStepper(Steppable *s)
         :_s{s} {}
 
-    bool step()
-    {
-        bool res = false;
-        res = _s->stepSend() || res;
-        res = _s->stepRecv() || res;
-        return res;
-    }
-
-    void run()
-    {
-        while (!_stopped && step());
-    }
-
     Steppable *object() const { return _s; }
     void setObject(Steppable *s) { _s = s; }
 
     bool stopped() const { return _stopped; }
     void setStopped(bool whether) { _stopped = whether; }
+
+public slots:
+    void run()
+    {
+        if (!_stopped) {
+            return;
+        }
+
+        _stopped = false;
+        while (!_stopped && _s->step());
+
+        emit finished();
+    }
+
+signals:
+    void finished();
 };
 
 #endif
