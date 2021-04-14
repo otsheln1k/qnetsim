@@ -20,9 +20,6 @@ public:
     NetworkNode();
     virtual ~NetworkNode();
 
-    virtual void addInterface(GenericNetworkInterface* iface);
-    virtual void removeInterface(GenericNetworkInterface* iface);
-
     unsigned int interfacesCount();
 
     using iterator = std::set<GenericNetworkInterface *>::const_iterator;
@@ -32,6 +29,10 @@ public:
 
     virtual bool stepSend() override;
     virtual bool stepRecv() override;
+
+public slots:
+    virtual void addInterface(GenericNetworkInterface* iface);
+    virtual void removeInterface(GenericNetworkInterface* iface);
 
 signals:
     void interfaceAdded(GenericNetworkInterface *iface);

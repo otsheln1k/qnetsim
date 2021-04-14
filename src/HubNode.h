@@ -11,8 +11,11 @@ class HubNode : public NetworkNode
 {
 private:
     QMetaObject::Connection connection;
+
 public:
     HubNode();
+
+public slots:
     virtual void addInterface(GenericNetworkInterface* iface);
     virtual void removeInterface(GenericNetworkInterface* iface);
 };
