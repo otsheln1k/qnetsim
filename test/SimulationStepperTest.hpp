@@ -27,8 +27,23 @@ public:
 
     virtual bool stepRecv() override { return false; }
 
+    void reset() { already = false; }
+
 signals:
     void stepped();
+};
+
+class DummySlot : public QObject {
+    Q_OBJECT;
+
+signals:
+    void triggered();
+
+public slots:
+    void trigger()
+    {
+        emit triggered();
+    }
 };
 
 class SimulationStepperTest : public QObject {
@@ -40,6 +55,8 @@ private slots:
     void testThreadedStepper();
 
     void testThreadedSimulation();
+
+    void testMultipleRuns();
 };
 
 #endif

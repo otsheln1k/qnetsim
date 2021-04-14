@@ -39,6 +39,7 @@ public slots:
 
         _stopped = false;
         while (!_stopped && _s->step());
+        _stopped = true;
 
         emit finished();
     }

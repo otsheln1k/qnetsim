@@ -103,18 +103,27 @@ void SimulationStepperTest::testThreadedSimulation()
     char *argv[2] = {buf, nullptr};
     QCoreApplication app {argc, argv};
 
+    DummySlot slot {};
     DummySimulation ds {};
     SimulationStepper s {&ds};
     QThread th;
 
+    QObject::connect(&ds, &DummySimulation::stepped,
+                     &slot, &DummySlot::trigger);
     QObject::connect(&s, &SimulationStepper::finished,
                      &th, &QThread::quit);
     QObject::connect(&th, &QThread::finished,
                      &app, &QCoreApplication::quit);
 
     int status = 0;
+    bool stepped = false;
 
     // Note: only checks below
+
+    // NOTE: the whole point is testing whether other objects’ slots
+    // execute in the same thread as the original one. It’s likely that
+    // they instead execute in objects’ own threads, but we have to
+    // establish that.
 
     QObject::connect(&th, &QThread::started,
                      [&status, &th]()
@@ -148,6 +157,18 @@ void SimulationStepperTest::testThreadedSimulation()
                          status = 5;
                      });
 
+    QObject::connect(&slot, &DummySlot::triggered,
+                     [&stepped, &th, &app]()
+                     {
+                         QVERIFY(!stepped);
+
+                         // NOTE: this is important
+                         QVERIFY(&th != app.thread());
+                         QCOMPARE(QThread::currentThread(), app.thread());
+
+                         stepped = true;
+                     });
+
     s.moveToThread(&th);
     th.start();
 
@@ -158,4 +179,28 @@ void SimulationStepperTest::testThreadedSimulation()
     th.wait();
 
     QCOMPARE(status, 5);
+    QVERIFY(stepped);
+}
+
+void SimulationStepperTest::testMultipleRuns()
+{
+    DummySimulation ds {};
+    SimulationStepper s {&ds};
+
+    int count = 0;
+
+    QObject::connect(&ds, &DummySimulation::stepped,
+                     [&count]()
+                     {
+                         ++count;
+                     });
+
+    s.run();
+
+    QCOMPARE(count, 1);
+
+    ds.reset();
+    s.run();
+
+    QCOMPARE(count, 2);
 }
