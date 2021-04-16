@@ -16,6 +16,10 @@ NSGraphicsHubNode::NSGraphicsHubNode(QObject *parent, HubNode *node,
 {
     QObject::connect(node, &QObject::destroyed,
                      this, &NSGraphicsHubNode::onNodeDestroyed);
+    QObject::connect(this, &NSGraphicsNode::addingInterface,
+                     node, &NetworkNode::addInterface);
+    QObject::connect(this, &NSGraphicsNode::removingInterface,
+                     node, &NetworkNode::removeInterface);
 }
 
 NetworkNode *NSGraphicsHubNode::networkNode() const
@@ -33,13 +37,15 @@ void NSGraphicsHubNode::populateMenu(QMenu *menu, QWidget *)
     QObject::connect(menu->addAction("Удалить"), &QAction::triggered,
                      [this]()
                      {
-                         delete node;
+                         node->deleteLater();
                      });
 
     QObject::connect(menu->addAction("Добавить порт Ethernet"),
                      &QAction::triggered,
                      [this]()
                      {
-                         node->addInterface(new EthernetInterface {});
+                         auto *iface = new EthernetInterface {};
+                         iface->moveToThread(node->thread());
+                         emit addingInterface((GenericNetworkInterface *)iface);
                      });
 }
