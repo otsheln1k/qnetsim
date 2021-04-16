@@ -31,9 +31,6 @@ signals:
 
 private slots:
     void onNodeDestroyed();
-    void onSendECTPMessage(GenericNetworkInterface *iface,
-                           uint16_t seq,
-                           MACAddr through);
 };
 
 #endif // NSGRAPHICSPCNODE_H

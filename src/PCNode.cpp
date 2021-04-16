@@ -1,3 +1,4 @@
+#include "SimulationLogger.hpp"
 #include "PCNode.h"
 
 PCNode::PCNode(){}
@@ -50,8 +51,29 @@ EthernetDriver* PCNode::getDriver(EthernetInterface *iface){
 void PCNode::sendEthernetFrame(EthernetInterface *eiface,
                                MACAddr dest,
                                EtherType etherType,
-                               QVector<uint8_t> payload)
+                               const QVector<uint8_t> &payload)
 {
     auto *drv = getDriver(eiface);
     drv->sendFrame(dest, etherType, payload.begin(), payload.end());
+}
+
+void PCNode::sendECTPLoopback(GenericNetworkInterface *iface,
+                              uint16_t seq,
+                              MACAddr through,
+                              const QVector<uint8_t> &payload)
+{
+    auto *eiface = dynamic_cast<EthernetInterface *>(iface);
+    auto *drv = getDriver(eiface);
+
+    QVector<uint8_t> bytes;
+    ECTPDriver::makeLoopback(drv->address(), seq,
+                             payload.begin(), payload.end(),
+                             std::back_inserter(bytes));
+
+    SimulationLogger::currentLogger()->log(
+        QString{"Prepared loopback ECTP message: dest=%1, seq=%2"}
+        .arg(drv->address())
+        .arg(seq));
+
+    sendEthernetFrame(eiface, through, ETHERTYPE_ECTP, bytes);
 }

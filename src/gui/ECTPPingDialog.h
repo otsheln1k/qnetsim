@@ -27,7 +27,9 @@ private:
     Ui::ECTPPingDialog *ui;
 
 signals:
-    void info(GenericNetworkInterface *iface, uint16_t seq, MACAddr addr);
+    void info(GenericNetworkInterface *iface,
+              uint16_t seq, MACAddr addr,
+              const QVector<uint8_t> &payload);
 };
 
 #endif // _NS_GUI_ECTP_PING_DIALOG_H_

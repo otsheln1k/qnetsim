@@ -30,7 +30,7 @@ void ECTPPingDialog::accept()
     MACAddr addr;
     addr.parseQString(ui->addrInput->text());
 
-    emit info(iface, seq, addr);
+    emit info(iface, seq, addr, QVector<uint8_t> {});
 
     QDialog::accept();
 }

@@ -18,8 +18,8 @@ NSGraphicsPCNode::NSGraphicsPCNode(QObject *parent, PCNode *node,
                      position, size, name),
       node{node}
 {
-    qRegisterMetaType<MACAddr>();
-    qRegisterMetaType<EtherType>();
+    qRegisterMetaType<MACAddr>("MACAddr");
+    qRegisterMetaType<uint16_t>("uint16_t");
     qRegisterMetaType<QVector<uint8_t>>("QVector<uint8_t>");
 
     QObject::connect(node, &QObject::destroyed,
@@ -28,8 +28,6 @@ NSGraphicsPCNode::NSGraphicsPCNode(QObject *parent, PCNode *node,
                      node, &NetworkNode::addInterface);
     QObject::connect(this, &NSGraphicsNode::removingInterface,
                      node, &NetworkNode::removeInterface);
-    QObject::connect(this, &NSGraphicsPCNode::sendingFrame,
-                     node, &PCNode::sendEthernetFrame);
 }
 
 void NSGraphicsPCNode::onNodeDestroyed()
@@ -63,7 +61,7 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
         {
             auto *dialog = new ECTPPingDialog(widget->window(), node);
             QObject::connect(dialog, &ECTPPingDialog::info,
-                             this, &NSGraphicsPCNode::onSendECTPMessage);
+                             node, &PCNode::sendECTPLoopback);
             dialog->open();
         });
 
@@ -84,27 +82,6 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
 NetworkNode *NSGraphicsPCNode::networkNode() const
 {
     return node;
-}
-
-void NSGraphicsPCNode::onSendECTPMessage(GenericNetworkInterface *iface,
-                                         uint16_t seq,
-                                         MACAddr through)
-{
-    auto *eiface = dynamic_cast<EthernetInterface *>(iface);
-    auto *drv = node->getDriver(eiface);
-
-    QVector<uint8_t> bytes;
-    uint8_t arr[0];
-    ECTPDriver::makeLoopback(drv->address(), seq,
-                             arr, arr,
-                             std::back_inserter(bytes));
-
-    // SimulationLogger::currentLogger()->log(
-    //     QString{"Prepared loopback ECTP message: dest=%1, seq=%2"}
-    //     .arg(drv->address())
-    //     .arg(seq));
-
-    emit sendingFrame(eiface, through, ETHERTYPE_ECTP, bytes);
 }
 
 void NSGraphicsPCNode::fillPCInterfacesMenu(QMenu *menu, PCNode *node)
