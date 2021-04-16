@@ -204,3 +204,68 @@ void SimulationStepperTest::testMultipleRuns()
 
     QCOMPARE(count, 2);
 }
+
+void SimulationStepperTest::testStop()
+{
+    Counter c {10};
+    SimulationStepper s {&c};
+
+    s.setStopped(false);
+
+    while (!s.stopped()) {
+        if (c.nSend == 5) {
+            s.setStopped(true);
+        }
+
+        s.step();
+    }
+
+    QCOMPARE(c.nSend, 5);
+}
+
+void SimulationStepperTest::testThreadedStop()
+{
+    int argc = 1;
+    char buf[7] = "_TEST_";
+    char *argv[2] = {buf, nullptr};
+    QCoreApplication app {argc, argv};
+
+    DummySlot slot {};
+    DummySimulation ds {};
+    SimulationStepper s {&ds};
+    QThread th;
+
+    // Only “control-flow” here
+    QObject::connect(&ds, &DummySimulation::stepped,
+                     &slot, &DummySlot::trigger);
+    QObject::connect(&s, &SimulationStepper::finished,
+                     &th, &QThread::quit);
+    QObject::connect(&th, &QThread::finished,
+                     &app, &QCoreApplication::quit);
+
+    // run indefinitely
+    QObject::connect(&ds, &DummySimulation::stepped,
+                     &DummySimulation::reset);
+
+    int n = 0;
+    QObject::connect(&slot, &DummySlot::triggered,
+                     [&n, &app, &s]()
+                     {
+                         QCOMPARE(QThread::currentThread(), app.thread());
+                         if (++n == 100) {
+                             s.setStopped(true);
+                         }
+                     });
+
+    s.moveToThread(&th);
+    th.start();
+
+    QMetaObject::invokeMethod(&s, &SimulationStepper::run);
+
+    app.exec();
+    th.wait();
+
+    // Note: we won’t be able to stop the dummy simulation until the main
+    // thread’s event loop reaches the DummySlot::triggered handler.
+    QVERIFY(n >= 100);
+}

@@ -19,14 +19,15 @@ public:
             return false;
         }
 
-        emit stepped();
         already = true;
+        emit stepped();
 
         return true;
     }
 
     virtual bool stepRecv() override { return false; }
 
+public slots:
     void reset() { already = false; }
 
 signals:
@@ -57,6 +58,10 @@ private slots:
     void testThreadedSimulation();
 
     void testMultipleRuns();
+
+    void testStop();
+
+    void testThreadedStop();
 };
 
 #endif

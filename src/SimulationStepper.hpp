@@ -44,6 +44,17 @@ public slots:
         emit finished();
     }
 
+    void step()
+    {
+        if (_stopped) {
+            return;
+        }
+
+        if (!_s->step()) {
+            _stopped = true;
+        }
+    }
+
 signals:
     void finished();
 };
