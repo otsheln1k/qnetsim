@@ -33,12 +33,15 @@ public:
     NSGraphicsView(QWidget *parent = nullptr);
     ~NSGraphicsView();
 
-    void mousePressEvent(QMouseEvent*) override;
-
     void setMode(NSGraphicsViewMode);
     void setNode(NSGraphicsViewNode);
 
+public slots:
     void resetModel();
+    void stopSimulation();
+
+protected:
+    void mousePressEvent(QMouseEvent*) override;
 
 private:
     QGraphicsScene *scene;

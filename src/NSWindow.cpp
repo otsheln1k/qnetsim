@@ -11,6 +11,12 @@ NSWindow::NSWindow(QWidget *parent)
 {
     this->ui->setupUi(this);
 
+    QObject::connect(ui->resetButton, &QPushButton::clicked,
+                     ui->graphicsView, &NSGraphicsView::resetModel);
+
+    QObject::connect(ui->stopSimulationButton, &QPushButton::clicked,
+                     ui->graphicsView, &NSGraphicsView::stopSimulation);
+
     ui->logTable->setColumnWidth(0, 300);
     ui->logTable->setColumnWidth(1, 300);
     ui->logTable->horizontalHeader()->setStretchLastSection(true);
@@ -46,11 +52,6 @@ void NSWindow::on_addHubButton_clicked()
 void NSWindow::on_toolButton_3_clicked()
 {
     ui->graphicsView->setMode(NSGraphicsViewMode::ADD_CONNECTION);
-}
-
-void NSWindow::on_resetButton_clicked()
-{
-    ui->graphicsView->resetModel();
 }
 
 void NSWindow::onLoggerMessage(const SimulationLoggerMessage &msg)

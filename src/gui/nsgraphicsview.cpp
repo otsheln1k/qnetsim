@@ -21,6 +21,7 @@ NSGraphicsView::NSGraphicsView(QWidget *parent)
 
 NSGraphicsView::~NSGraphicsView()
 {
+    stepper.terminate();
     simulationThread.quit();
     simulationThread.wait();
     delete model;
@@ -223,4 +224,9 @@ void NSGraphicsView::setMode(NSGraphicsViewMode nmode)
 void NSGraphicsView::setNode(NSGraphicsViewNode nnode)
 {
     node = nnode;
+}
+
+void NSGraphicsView::stopSimulation()
+{
+    stepper.terminate();
 }
