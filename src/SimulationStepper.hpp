@@ -6,18 +6,11 @@
 #include "Steppable.hpp"
 
 class SimulationStepper : public QObject {
-    Q_OBJECT
-
-    Q_PROPERTY(bool stopped
-               READ stopped
-               WRITE setStopped);
-
-    Q_PROPERTY(Steppable* object
-               READ object
-               WRITE setObject);
+    Q_OBJECT;
 
     Steppable *_s = nullptr;
-    bool _stopped = true;
+    bool _running = false;
+    bool _terminated = false;
 
 public:
     SimulationStepper() {}
@@ -27,33 +20,51 @@ public:
     Steppable *object() const { return _s; }
     void setObject(Steppable *s) { _s = s; }
 
-    bool stopped() const { return _stopped; }
-    void setStopped(bool whether) { _stopped = whether; }
+    bool running() const { return _running; }
+
+    bool shouldRun() const { return _running && !_terminated; }
 
 public slots:
     void run()
     {
-        if (!_stopped) {
+        if (_running) {
             return;
         }
 
-        _stopped = false;
-        while (!_stopped && _s->step());
-        _stopped = true;
+        _running = true;
+        while (!_terminated && _s->step());
+        _running = false;
+        _terminated = false;
 
         emit finished();
     }
 
+    void start()
+    {
+        _running = true;
+    }
+
     void step()
     {
-        if (_stopped) {
+        if (!_running || _terminated) {
             return;
         }
 
         if (!_s->step()) {
-            _stopped = true;
+            _running = false;
         }
     }
+
+    void terminate()
+    {
+        _terminated = true;
+    }
+
+    // TODO:
+    // 1. terminate()
+    // 2. pause()
+    // 3. resume()
+    // 4. run() -> start()
 
 signals:
     void finished();

@@ -210,11 +210,11 @@ void SimulationStepperTest::testStop()
     Counter c {10};
     SimulationStepper s {&c};
 
-    s.setStopped(false);
+    s.start();
 
-    while (!s.stopped()) {
+    while (s.shouldRun()) {
         if (c.nSend == 5) {
-            s.setStopped(true);
+            s.terminate();
         }
 
         s.step();
@@ -253,7 +253,10 @@ void SimulationStepperTest::testThreadedStop()
                      {
                          QCOMPARE(QThread::currentThread(), app.thread());
                          if (++n == 100) {
-                             s.setStopped(true);
+                             // Note: use direct connections (pass the
+                             // Qt::DirectConnection type to QObject::connect)
+                             // for termination, pause and so on.
+                             s.terminate();
                          }
                      });
 
