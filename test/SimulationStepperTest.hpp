@@ -67,6 +67,9 @@ private slots:
 
     void testPause();
     void testPause_data();
+
+    void testResumeStopped();
+    void testResumeStopped_data();
 };
 
 #endif

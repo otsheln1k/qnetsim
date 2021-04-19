@@ -395,3 +395,49 @@ void SimulationStepperTest::testPause_data()
     QTest::newRow("then resume") << false;
     QTest::newRow("then terminate") << true;
 }
+
+void SimulationStepperTest::testResumeStopped()
+{
+    Counter c {10};
+    SimulationStepper s {&c};
+
+    s.pause();
+    QCOMPARE(c.nSend, 0);
+    QVERIFY(!s.isRunning());
+    QVERIFY(s.isPaused());
+
+    QFETCH(int, afterStepping);
+    int expected = 0;
+
+    if (afterStepping > 0) {
+        expected = (afterStepping > 1) ? 5 : 10;
+
+        s.start();
+        QCOMPARE(c.nSend, 0);
+        QVERIFY(s.isRunning());
+        QVERIFY(s.isPaused());
+
+        while (s.isRunning()) {
+            if (afterStepping > 1
+                && c.nSend == 5) {
+                s.terminate();
+            }
+
+            s.step();
+        }
+    }
+
+    s.resume();
+    QCOMPARE(c.nSend, expected);
+    QVERIFY(!s.isRunning());
+    QVERIFY(!s.isPaused());
+}
+
+void SimulationStepperTest::testResumeStopped_data()
+{
+    QTest::addColumn<int>("afterStepping");
+
+    QTest::newRow("w/o stepping") << 0;
+    QTest::newRow("after stepping") << 1;
+    QTest::newRow("after terminate") << 2;
+}
