@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <string.h>
-
+#include <QString>
 #include <QMetaType>
 
 class MACAddr {

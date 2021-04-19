@@ -6,7 +6,8 @@ TARGET = qnetsim
 CONFIG += c++17 strict_c++ warn_on
 
 SOURCES += ECTPDriver.cpp \
-    gui/interfacedialog.cpp
+    gui/interfacedialog.cpp \
+    switchnode.cpp
 SOURCES += EthernetDriver.cpp
 SOURCES += EthernetFrame.cpp
 SOURCES += EthernetInterface.cpp
@@ -23,7 +24,8 @@ SOURCES += PCNode.cpp
 SOURCES += SimulationLogger.cpp
 
 HEADERS += ECTPDriver.hpp \
-    gui/interfacedialog.h
+    gui/interfacedialog.h \
+    switchnode.h
 HEADERS += EthernetDriver.hpp
 HEADERS += EthernetFrame.hpp
 HEADERS += EthernetInterface.hpp
