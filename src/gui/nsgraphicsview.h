@@ -39,6 +39,9 @@ public:
 public slots:
     void resetModel();
     void stopSimulation();
+    void pauseSimulation();
+    void resumeSimulation();
+    void stepSimulation();
 
 protected:
     void mousePressEvent(QMouseEvent*) override;

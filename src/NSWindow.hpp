@@ -38,6 +38,8 @@ private slots:
     void onLogClear();
 
     void on_logClearButton_clicked();
+
+    void onSteppingToggled(bool value);
 };
 
 #endif

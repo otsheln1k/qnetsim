@@ -67,7 +67,7 @@ void NSGraphicsView::onInterfaceAdded(GenericNetworkInterface *iface)
     QObject::connect(iface, &GenericNetworkInterface::disconnected,
                      this, &NSGraphicsView::onDisconnected);
     QObject::connect(iface, &GenericNetworkInterface::started,
-                     &stepper, &SimulationStepper::run);
+                     &stepper, &SimulationStepper::start);
 }
 
 void NSGraphicsView::onInterfaceRemoved(GenericNetworkInterface *iface)
@@ -77,7 +77,7 @@ void NSGraphicsView::onInterfaceRemoved(GenericNetworkInterface *iface)
     QObject::disconnect(iface, &GenericNetworkInterface::disconnected,
                         this, &NSGraphicsView::onDisconnected);
     QObject::disconnect(iface, &GenericNetworkInterface::started,
-                        &stepper, &SimulationStepper::run);
+                        &stepper, &SimulationStepper::start);
 }
 
 void NSGraphicsView::onConnected(GenericNetworkInterface *other)
@@ -229,4 +229,19 @@ void NSGraphicsView::setNode(NSGraphicsViewNode nnode)
 void NSGraphicsView::stopSimulation()
 {
     stepper.terminate();
+}
+
+void NSGraphicsView::pauseSimulation()
+{
+    stepper.pause();
+}
+
+void NSGraphicsView::resumeSimulation()
+{
+    QMetaObject::invokeMethod(&stepper, &SimulationStepper::resume);
+}
+
+void NSGraphicsView::stepSimulation()
+{
+    QMetaObject::invokeMethod(&stepper, &SimulationStepper::step);
 }

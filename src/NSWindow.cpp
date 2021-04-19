@@ -9,13 +9,19 @@ NSWindow::NSWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::NSWindow)
 {
-    this->ui->setupUi(this);
+    ui->setupUi(this);
 
     QObject::connect(ui->resetButton, &QPushButton::clicked,
                      ui->graphicsView, &NSGraphicsView::resetModel);
 
-    QObject::connect(ui->stopSimulationButton, &QPushButton::clicked,
+    QObject::connect(ui->stopSimAction, &QAction::triggered,
                      ui->graphicsView, &NSGraphicsView::stopSimulation);
+
+    QObject::connect(ui->stepSimAction, &QAction::triggered,
+                     ui->graphicsView, &NSGraphicsView::stepSimulation);
+
+    QObject::connect(ui->toggleStepSimAction, &QAction::toggled,
+                     this, &NSWindow::onSteppingToggled);
 
     ui->logTable->setColumnWidth(0, 300);
     ui->logTable->setColumnWidth(1, 300);
@@ -25,11 +31,13 @@ NSWindow::NSWindow(QWidget *parent)
     QObject::connect(SimulationLogger::currentLogger(),
                      &SimulationLogger::message,
                      this, &NSWindow::onLoggerMessage);
+
+    onSteppingToggled(ui->toggleStepSimAction->isChecked());
 }
 
 NSWindow::~NSWindow()
 {
-    delete this->ui;
+    delete ui;
 }
 
 void NSWindow::on_actionQuit_triggered()
@@ -91,4 +99,15 @@ void NSWindow::onLogClear()
 void NSWindow::on_logClearButton_clicked()
 {
     onLogClear();
+}
+
+void NSWindow::onSteppingToggled(bool value)
+{
+    if (value) {
+        ui->graphicsView->pauseSimulation();
+    } else {
+        ui->graphicsView->resumeSimulation();
+    }
+
+    ui->stepSimAction->setEnabled(value);
 }
