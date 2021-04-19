@@ -9,7 +9,6 @@ void SwitchNode::addInterface(GenericNetworkInterface *iface){
         return;
     }else{
         NetworkNode::addInterface(iface);
-        table.insert({eiface, nullptr});
     }
 }
 
@@ -20,32 +19,36 @@ void SwitchNode::removeInterface(GenericNetworkInterface *iface){
         return;
     }else{
         // удаление записи из табоицы
-        auto record = table.find(eiface);
-        if(record != table.end()){
-            table.erase(eiface);
+        for(auto i: table){
+            if(i.second == eiface){
+                table.erase(i.first);
+            }
         }
         NetworkNode::removeInterface(iface);
+        QObject::disconnect(connection);
     }
 }
 
 void SwitchNode::redirection(const EthernetFrame *f){
-    MACAddr a = f->srcAddr(); // mac куда идет фрайм
-    EthernetInterface* interface;
-    bool flag = false;
+    MACAddr a = f->srcAddr(); // mac источникаы
+    EthernetInterface* interface = dynamic_cast<EthernetInterface*>(sender());
+    table.insert({a, interface});
 
-    for(auto i: table){
-        if(*(i.second) == a){
-            interface = i.first;
-            flag = true;
-            break;
-        }
+    auto path = table.find(f->dstAddr());
+    if(path != table.end()){
+        EthernetInterface* i = path->second;
+        connection = QObject::connect(i, &EthernetInterface::receivedFrame,
+                                      [i, f](){i->sendFrame(*f);});
     }
-
-    if(flag){
+    else {
         connection = QObject::connect(interface, &EthernetInterface::receivedFrame,
-                                      [interface, f](){interface->sendFrame(*f);});
-    }else {
-        // ??? послать, получить ответ, проверить наш или нет, если нет - удалить соеденение
+                                      [this, interface, f](){
+                                        for (auto *i : *this) {
+                                            if (i != interface) {
+                                                dynamic_cast<EthernetInterface *>(i)->sendFrame(*f);
+                                            }
+                                         }
+                                       });
     }
 
 }

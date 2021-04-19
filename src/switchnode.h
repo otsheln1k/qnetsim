@@ -7,13 +7,19 @@
 
 class SwitchNode : public NetworkNode
 {
+    Q_OBJECT;
     QMetaObject::Connection connection;
-    std::map<EthernetInterface*, MACAddr*> table; //таблика коммутации
+    std::map<MACAddr, EthernetInterface*> table; //таблика коммутации
+
+public slots:
+    void redirection(const EthernetFrame *f);
+
+
 public:
     SwitchNode();
     virtual void addInterface(GenericNetworkInterface* iface);
     virtual void removeInterface(GenericNetworkInterface* iface);
-    void redirection(const EthernetFrame *f);
+
 };
 
 #endif // SWITCHNODE_H
