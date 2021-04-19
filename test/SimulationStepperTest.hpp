@@ -59,9 +59,14 @@ private slots:
 
     void testMultipleRuns();
 
-    void testStop();
+    void testPrepause();
 
+    void testSteppingStop();
+    void testSerialStop();
     void testThreadedStop();
+
+    void testPause();
+    void testPause_data();
 };
 
 #endif

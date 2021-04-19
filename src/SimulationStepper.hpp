@@ -11,63 +11,32 @@ class SimulationStepper : public QObject {
     Steppable *_s = nullptr;
     bool _running = false;
     bool _terminated = false;
+    bool _paused = false;
 
 public:
-    SimulationStepper() {}
+    SimulationStepper() :SimulationStepper{nullptr} {}
     explicit SimulationStepper(Steppable *s)
         :_s{s} {}
 
     Steppable *object() const { return _s; }
     void setObject(Steppable *s) { _s = s; }
 
-    bool running() const { return _running; }
-
-    bool shouldRun() const { return _running && !_terminated; }
+    bool isPaused() const { return _paused; }
+    bool isRunning() const { return _running; }
 
 public slots:
-    void run()
-    {
-        if (_running) {
-            return;
-        }
-
-        _running = true;
-        while (!_terminated && _s->step());
-        _running = false;
-        _terminated = false;
-
-        emit finished();
-    }
-
-    void start()
-    {
-        _running = true;
-    }
-
-    void step()
-    {
-        if (!_running || _terminated) {
-            return;
-        }
-
-        if (!_s->step()) {
-            _running = false;
-        }
-    }
-
-    void terminate()
-    {
-        _terminated = true;
-    }
-
-    // TODO:
-    // 1. terminate()
-    // 2. pause()
-    // 3. resume()
-    // 4. run() -> start()
+    void run();
+    void start();
+    void step();
+    void terminate();
+    void pause();
+    void resume();
 
 signals:
+    void started();
     void finished();
+    void paused();
+    void resumed();
 };
 
 #endif

@@ -31,7 +31,7 @@ void SimulationStepperTest::testSimulationStepper()
     Counter c {10};
     SimulationStepper s {&c};
 
-    s.run();
+    s.start();
 
     QCOMPARE(c.nSend, c.maxSend);
     QCOMPARE(c.nRecv, c.maxSend);
@@ -88,7 +88,7 @@ void SimulationStepperTest::testThreadedStepper()
     th.start();
 
     status = 1;
-    QMetaObject::invokeMethod(&s, &SimulationStepper::run);
+    QMetaObject::invokeMethod(&s, &SimulationStepper::start);
 
     app.exec();
     th.wait();
@@ -173,7 +173,7 @@ void SimulationStepperTest::testThreadedSimulation()
     th.start();
 
     status = 1;
-    QMetaObject::invokeMethod(&s, &SimulationStepper::run);
+    QMetaObject::invokeMethod(&s, &SimulationStepper::start);
 
     app.exec();
     th.wait();
@@ -195,24 +195,55 @@ void SimulationStepperTest::testMultipleRuns()
                          ++count;
                      });
 
-    s.run();
+    s.start();
 
     QCOMPARE(count, 1);
 
     ds.reset();
-    s.run();
+    s.start();
 
     QCOMPARE(count, 2);
 }
 
-void SimulationStepperTest::testStop()
+void SimulationStepperTest::testPrepause()
 {
     Counter c {10};
     SimulationStepper s {&c};
 
-    s.start();
+    QVERIFY(!s.isPaused());
 
-    while (s.shouldRun()) {
+    s.pause();
+    QVERIFY(!s.isRunning());
+    QVERIFY(s.isPaused());
+    QCOMPARE(c.nSend, 0);
+
+    s.start();
+    QVERIFY(s.isRunning());
+    QVERIFY(s.isPaused());
+    QCOMPARE(c.nSend, 0);
+
+    s.resume();
+    QVERIFY(!s.isRunning());
+    QVERIFY(!s.isPaused());
+    QCOMPARE(c.nSend, 10);
+}
+
+void SimulationStepperTest::testSteppingStop()
+{
+    Counter c {10};
+    SimulationStepper s {&c};
+
+    QVERIFY(!s.isRunning());
+
+    s.pause();                  // manual stepping
+    QVERIFY(!s.isRunning());
+
+    s.start();
+    QVERIFY(s.isRunning());
+
+    while (s.isRunning()) {
+        QVERIFY(s.isRunning());
+
         if (c.nSend == 5) {
             s.terminate();
         }
@@ -221,6 +252,39 @@ void SimulationStepperTest::testStop()
     }
 
     QCOMPARE(c.nSend, 5);
+    QVERIFY(!s.isRunning());
+}
+
+void SimulationStepperTest::testSerialStop()
+{
+    DummySimulation ds {};
+    SimulationStepper s {&ds};
+
+    int counter = 0;
+    bool flag = true;
+
+    QObject::connect(&ds, &DummySimulation::stepped,
+                     [&s, &ds, &counter, &flag]()
+                     {
+                         flag = s.isRunning() && flag;
+
+                         ++counter;
+                         if (counter < 10) {
+                             ds.reset();
+                         }
+                         if (counter == 5) {
+                             s.terminate();
+                         }
+                     });
+
+    QCOMPARE(counter, 0);
+    QVERIFY(!s.isRunning());
+
+    s.start();
+    QCOMPARE(counter, 5);
+    QVERIFY(!s.isRunning());
+
+    QVERIFY(flag);
 }
 
 void SimulationStepperTest::testThreadedStop()
@@ -263,7 +327,7 @@ void SimulationStepperTest::testThreadedStop()
     s.moveToThread(&th);
     th.start();
 
-    QMetaObject::invokeMethod(&s, &SimulationStepper::run);
+    QMetaObject::invokeMethod(&s, &SimulationStepper::start);
 
     app.exec();
     th.wait();
@@ -271,4 +335,63 @@ void SimulationStepperTest::testThreadedStop()
     // Note: we won’t be able to stop the dummy simulation until the main
     // thread’s event loop reaches the DummySlot::triggered handler.
     QVERIFY(n >= 100);
+}
+
+void SimulationStepperTest::testPause()
+{
+    DummySimulation ds {};
+    SimulationStepper s {&ds};
+
+    int counter = 0;
+    bool flag = true;
+
+    QObject::connect(&ds, &DummySimulation::stepped,
+                     [&s, &ds, &counter, &flag]()
+                     {
+                         bool f = flag;
+                         flag = false;
+                         QVERIFY(s.isRunning());
+                         QVERIFY(!s.isPaused());
+                         flag = f;
+
+                         ++counter;
+                         if (counter < 10) {
+                             ds.reset();
+                         }
+                         if (counter == 5) {
+                             s.pause();
+                         }
+                     });
+
+    QCOMPARE(counter, 0);
+    QVERIFY(!s.isRunning());
+    QVERIFY(!s.isPaused());
+
+    s.start();
+    QCOMPARE(counter, 5);
+    QVERIFY(s.isRunning());
+    QVERIFY(s.isPaused());
+
+    QFETCH(bool, terminate);
+    if (!terminate) {
+        s.resume();
+        QCOMPARE(counter, 10);
+        QVERIFY(!s.isRunning());
+        QVERIFY(!s.isPaused());
+    } else {
+        s.terminate();
+        QCOMPARE(counter, 5);
+        QVERIFY(!s.isRunning());
+        QVERIFY(s.isPaused());
+    }
+
+    QVERIFY(flag);
+}
+
+void SimulationStepperTest::testPause_data()
+{
+    QTest::addColumn<bool>("terminate");
+
+    QTest::newRow("then resume") << false;
+    QTest::newRow("then terminate") << true;
 }
