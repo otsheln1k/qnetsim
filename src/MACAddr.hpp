@@ -46,6 +46,26 @@ public:
 
     bool parseQString(const QString &s);
     operator QString() const;
+
+    bool operator<(const MACAddr &a) const
+    {
+        return memcmp(_bs, a._bs, sizeof(_bs)) < 0;
+    }
+
+    bool operator>(const MACAddr &a) const
+    {
+        return memcmp(_bs, a._bs, sizeof(_bs)) > 0;
+    }
+
+    bool operator<=(const MACAddr &a) const
+    {
+        return memcmp(_bs, a._bs, sizeof(_bs)) <= 0;
+    }
+
+    bool operator>=(const MACAddr &a) const
+    {
+        return memcmp(_bs, a._bs, sizeof(_bs)) >= 0;
+    }
 };
 
 Q_DECLARE_METATYPE(MACAddr);
