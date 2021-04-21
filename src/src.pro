@@ -7,7 +7,6 @@ CONFIG += c++17 strict_c++ warn_on
 
 SOURCES += ECTPDriver.cpp \
     gui/interfacedialog.cpp \
-    switchnode.cpp
 SOURCES += EthernetDriver.cpp
 SOURCES += EthernetFrame.cpp
 SOURCES += EthernetInterface.cpp
@@ -22,10 +21,10 @@ SOURCES += NetworkNode.cpp
 SOURCES += NSWindow.cpp
 SOURCES += PCNode.cpp
 SOURCES += SimulationLogger.cpp
+SOURCES += switchnode.cpp
 
 HEADERS += ECTPDriver.hpp \
     gui/interfacedialog.h \
-    switchnode.h
 HEADERS += EthernetDriver.hpp
 HEADERS += EthernetFrame.hpp
 HEADERS += EthernetInterface.hpp
@@ -43,6 +42,7 @@ HEADERS += PCNode.h
 HEADERS += SimulationLogger.hpp
 HEADERS += SimulationStepper.hpp
 HEADERS += Steppable.hpp
+HEADERS += switchnode.h
 
 FORMS += NSWindow.ui \
     gui/interfacedialog.ui

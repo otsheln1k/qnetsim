@@ -9,6 +9,7 @@ void SwitchNode::addInterface(GenericNetworkInterface *iface){
         return;
     }else{
         NetworkNode::addInterface(iface);
+        connection = QObject::connect(eiface, &EthernetInterface::receivedFrame, this, &SwitchNode::redirection);
     }
 }
 
@@ -36,19 +37,13 @@ void SwitchNode::redirection(const EthernetFrame *f){
 
     auto path = table.find(f->dstAddr());
     if(path != table.end()){
-        EthernetInterface* i = path->second;
-        connection = QObject::connect(i, &EthernetInterface::receivedFrame,
-                                      [i, f](){i->sendFrame(*f);});
+        path->second->sendFrame(*f);
     }
     else {
-        connection = QObject::connect(interface, &EthernetInterface::receivedFrame,
-                                      [this, interface, f](){
-                                        for (auto *i : *this) {
-                                            if (i != interface) {
-                                                dynamic_cast<EthernetInterface *>(i)->sendFrame(*f);
-                                            }
-                                         }
-                                       });
+        for(auto *i: *this){
+            if(i != interface){
+                dynamic_cast<EthernetInterface *>(i)->sendFrame(*f);
+            }
+        }
     }
-
 }
