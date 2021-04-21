@@ -5,6 +5,8 @@
 #include <QMouseEvent>
 #include <QGraphicsView>
 #include <QThread>
+#include <QGraphicsScene>
+
 
 #include "SimulationStepper.hpp"
 #include "NetworkModel.h"

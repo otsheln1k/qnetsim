@@ -213,6 +213,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
             menu->exec(ev->globalPos());
         }
     }
+    QGraphicsView::mousePressEvent(ev);
 }
 
 void NSGraphicsView::setMode(NSGraphicsViewMode nmode)

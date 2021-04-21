@@ -8,6 +8,7 @@
 #include <QPainter>
 #include <QMenu>
 #include <QWidget>
+#include <QGraphicsSceneMouseEvent>
 
 #include "NetworkNode.h"
 
@@ -26,6 +27,10 @@ public:
 
     virtual void populateMenu(QMenu *menu, QWidget *widget) =0;
     virtual NetworkNode *networkNode() const =0;
+
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
     static void fillInterfacesMenu(QMenu *menu, NetworkNode *node);
 
