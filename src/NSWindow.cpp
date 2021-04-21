@@ -111,3 +111,13 @@ void NSWindow::onSteppingToggled(bool value)
 
     ui->stepSimAction->setEnabled(value);
 }
+
+void NSWindow::on_journalView_toggled(bool arg1)
+{
+    ui->logDock->setHidden(!arg1);
+}
+
+void NSWindow::on_logDock_visibilityChanged(bool visible)
+{
+    ui->journalView->setChecked(visible);
+}
