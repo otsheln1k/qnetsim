@@ -5,6 +5,7 @@ QT = core gui widgets
 TARGET = qnetsim
 CONFIG += c++17 strict_c++ warn_on
 
+SOURCES += ARPPacket.cpp
 SOURCES += ECTPDriver.cpp \
     gui/interfacedialog.cpp
 SOURCES += EthernetDriver.cpp
@@ -22,6 +23,7 @@ SOURCES += NSWindow.cpp
 SOURCES += PCNode.cpp
 SOURCES += SimulationLogger.cpp
 
+HEADERS += ARPPacket.hpp
 HEADERS += ECTPDriver.hpp \
     gui/interfacedialog.h
 HEADERS += EthernetDriver.hpp

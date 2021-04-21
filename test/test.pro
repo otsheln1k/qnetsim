@@ -15,6 +15,7 @@ HEADERS += EthernetDriverTest.hpp
 HEADERS += SimulationStepperTest.hpp
 HEADERS += SimulationLoggerTest.hpp
 HEADERS += ECTPDriverTest.hpp
+HEADERS += ARPPacketTest.hpp
 
 SOURCES += MACAddrTest.cpp
 SOURCES += EthernetFrameTest.cpp
@@ -23,7 +24,9 @@ SOURCES += EthernetDriverTest.cpp
 SOURCES += SimulationStepperTest.cpp
 SOURCES += SimulationLoggerTest.cpp
 SOURCES += ECTPDriverTest.cpp
+SOURCES += ARPPacketTest.cpp
 
+HEADERS += ../src/ARPPacket.hpp
 HEADERS += ../src/ECTPDriver.hpp
 HEADERS += ../src/EthernetDriver.hpp
 HEADERS += ../src/EthernetInterface.hpp
@@ -33,6 +36,7 @@ HEADERS += ../src/NetworkNode.h
 HEADERS += ../src/SimulationLogger.hpp
 HEADERS += ../src/SimulationStepper.hpp
 
+SOURCES += ../src/ARPPacket.cpp
 SOURCES += ../src/ECTPDriver.cpp
 SOURCES += ../src/EthernetDriver.cpp
 SOURCES += ../src/EthernetFrame.cpp
