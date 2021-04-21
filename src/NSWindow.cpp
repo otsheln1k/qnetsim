@@ -43,6 +43,12 @@ void NSWindow::on_addHubButton_clicked()
     ui->graphicsView->setNode(NSGraphicsViewNode::HUB);
 }
 
+void NSWindow::on_addSwitchButton_clicked()
+{
+    ui->graphicsView->setMode(NSGraphicsViewMode::ADD_NODE);
+    ui->graphicsView->setNode(NSGraphicsViewNode::SWITCH);
+}
+
 void NSWindow::on_toolButton_3_clicked()
 {
     ui->graphicsView->setMode(NSGraphicsViewMode::ADD_CONNECTION);

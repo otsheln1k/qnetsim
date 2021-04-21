@@ -2,10 +2,12 @@
 
 #include "PCNode.h"
 #include "HubNode.h"
+#include "switchnode.h"
 #include "NetworkModel.h"
 
 #include "nsgraphicspcnode.h"
 #include "nsgraphicshubnode.h"
+#include "NSGraphicsSwitchNode.h"
 #include "nsgraphicsview.h"
 
 NSGraphicsView::NSGraphicsView(QWidget *parent)
@@ -127,6 +129,13 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
                 auto *hnode = new HubNode {};
                 nd = hnode;
                 gnode = new NSGraphicsHubNode(this, hnode, scn);
+                break;
+            }
+
+            case NSGraphicsViewNode::SWITCH: {
+                auto *hnode = new SwitchNode {};
+                nd = hnode;
+                gnode = new NSGraphicsSwitchNode(this, hnode, scn);
                 break;
             }
             }
