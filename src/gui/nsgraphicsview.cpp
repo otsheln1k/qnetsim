@@ -8,6 +8,8 @@
 #include "nsgraphicshubnode.h"
 #include "nsgraphicsview.h"
 
+#include "EthernetInterfaceSettingsDialog.h"
+
 NSGraphicsView::NSGraphicsView(QWidget *parent)
     : QGraphicsView(parent),
       scene {new QGraphicsScene {}},
@@ -17,6 +19,8 @@ NSGraphicsView::NSGraphicsView(QWidget *parent)
     stepper.moveToThread(&simulationThread);
     resetModel();
     setScene(scene);
+
+    EthernetInterfaceSettingsDialog().exec();
 }
 
 NSGraphicsView::~NSGraphicsView()
