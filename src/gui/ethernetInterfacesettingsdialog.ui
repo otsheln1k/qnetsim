@@ -29,10 +29,10 @@
         <string>HH:HH:HH:HH:HH:HH</string>
        </property>
        <property name="text">
-        <string>:::::</string>
+        <string>00:00:00:00:00:00</string>
        </property>
        <property name="cursorPosition">
-        <number>0</number>
+        <number>17</number>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -52,10 +52,10 @@
         <string>009.009.009.009</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>192.168.1.1</string>
        </property>
        <property name="cursorPosition">
-        <number>0</number>
+        <number>15</number>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
