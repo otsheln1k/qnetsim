@@ -21,6 +21,8 @@ enum EtherType: uint16_t {
     ETHERTYPE_8021Q = 0x8100,
 };
 
+Q_DECLARE_METATYPE(EtherType);
+
 uint32_t crc32Dumb(const uint8_t *data, size_t len);
 
 class EthernetFrame {

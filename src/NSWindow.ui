@@ -190,9 +190,23 @@ padding: 3px;</string>
               <number>3</number>
              </property>
              <item row="7" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Соединители</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0">
               <widget class="QToolButton" name="toolButton_3">
                <property name="text">
                 <string>Провод</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="Line" name="line_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>
@@ -207,20 +221,6 @@ padding: 3px;</string>
                </property>
                <property name="checked">
                 <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="0">
-              <widget class="Line" name="line_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="0">
-              <widget class="QLabel" name="label_2">
-               <property name="text">
-                <string>Соединители</string>
                </property>
               </widget>
              </item>
@@ -245,6 +245,17 @@ padding: 3px;</string>
                <property name="icon">
                 <iconset>
                  <normaloff>icons/017-hub.svg</normaloff>icons/017-hub.svg</iconset>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QToolButton" name="addSwitchButton">
+               <property name="text">
+                <string>Коммутатор</string>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>icons/016-switch.svg</normaloff>icons/016-switch.svg</iconset>
                </property>
               </widget>
              </item>
@@ -317,7 +328,16 @@ padding: 3px;</string>
      <string>Справка</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuSimulation">
+    <property name="title">
+     <string>Симуляция</string>
+    </property>
+    <addaction name="stopSimAction"/>
+    <addaction name="toggleStepSimAction"/>
+    <addaction name="stepSimAction"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuSimulation"/>
    <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -379,6 +399,37 @@ padding: 3px;</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="stopSimAction">
+   <property name="text">
+    <string>Остановить</string>
+   </property>
+  </action>
+  <action name="toggleStepSimAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Пошаговый режим</string>
+   </property>
+  </action>
+  <action name="stepSimAction">
+   <property name="text">
+    <string>Шаг</string>
+   </property>
+   <property name="shortcut">
+    <string>F3</string>
+   </property>
+  </action>
+  <action name="pauseSimAction">
+   <property name="text">
+    <string>Пауза</string>
+   </property>
+  </action>
+  <action name="resumeSimAction">
+   <property name="text">
+    <string>Продолжить</string>
    </property>
   </action>
  </widget>

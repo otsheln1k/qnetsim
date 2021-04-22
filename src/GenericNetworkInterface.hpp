@@ -21,6 +21,8 @@ public:
 signals:
     void connected(GenericNetworkInterface *other);
     void disconnected(GenericNetworkInterface *other);
+
+    void started();
 };
 
 #endif

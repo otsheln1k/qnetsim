@@ -4,7 +4,9 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include <QGraphicsView>
+#include <QThread>
 
+#include "SimulationStepper.hpp"
 #include "NetworkModel.h"
 #include "NetworkNode.h"
 #include "GenericNetworkInterface.hpp"
@@ -19,6 +21,7 @@ enum NSGraphicsViewMode{
 enum NSGraphicsViewNode{
     PC=1,
     HUB=2,
+    SWITCH=3,
 };
 
 class NSGraphicsView : public QGraphicsView
@@ -31,15 +34,18 @@ public:
     NSGraphicsView(QWidget *parent = nullptr);
     ~NSGraphicsView();
 
-    void mousePressEvent(QMouseEvent*) override;
-
     void setMode(NSGraphicsViewMode);
     void setNode(NSGraphicsViewNode);
 
+public slots:
     void resetModel();
+    void stopSimulation();
+    void pauseSimulation();
+    void resumeSimulation();
+    void stepSimulation();
 
-signals:
-
+protected:
+    void mousePressEvent(QMouseEvent*) override;
 
 private:
     QGraphicsScene *scene;
@@ -48,6 +54,8 @@ private:
     GenericNetworkInterface *connSource;
 
     NetworkModel *model {nullptr};
+    QThread simulationThread {};
+    SimulationStepper stepper {};
     std::map<NetworkNode *, NSGraphicsNode *> nodetab;
     std::map<std::tuple<GenericNetworkInterface *,
                         GenericNetworkInterface *>,
