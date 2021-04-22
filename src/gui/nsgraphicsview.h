@@ -26,7 +26,7 @@ enum NSGraphicsViewNode{
 class NSGraphicsView : public QGraphicsView
 {
     Q_OBJECT;
-
+    friend class Serialization;
     static QMenu *makeInterfacesMenu(NetworkNode *node);
 
 public:

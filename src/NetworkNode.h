@@ -12,7 +12,6 @@ class NetworkNode : public QObject,
                     public Steppable
 {
     Q_OBJECT;
-
 private:
     std::set <GenericNetworkInterface*> interfaceTable;
 

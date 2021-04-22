@@ -23,6 +23,7 @@ SOURCES += NSWindow.cpp
 SOURCES += PCNode.cpp
 SOURCES += SimulationLogger.cpp
 SOURCES += SimulationStepper.cpp
+SOURCES += Serialization.cpp
 
 HEADERS += ECTPDriver.hpp
 HEADERS += EthernetDriver.hpp
@@ -43,6 +44,7 @@ HEADERS += PCNode.h
 HEADERS += SimulationLogger.hpp
 HEADERS += SimulationStepper.hpp
 HEADERS += Steppable.hpp
+HEADERS += Serialization.h
 
 FORMS += gui/ECTPPingDialog.ui
 FORMS += NSWindow.ui

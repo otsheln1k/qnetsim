@@ -2,12 +2,14 @@
 #define _NS_WINDOW_HPP_
 
 #include <QMainWindow>
+#include <QFileDialog>
 
 #include "SimulationLogger.hpp"
 #include "NetworkNode.h"
 #include "EthernetInterface.hpp"
 
 #include "ui_NSWindow.h"
+#include "Serialization.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -40,6 +42,8 @@ private slots:
     void on_logClearButton_clicked();
 
     void onSteppingToggled(bool value);
+    void on_saveButton_clicked();
+    void on_loadButton_clicked();
 };
 
 #endif

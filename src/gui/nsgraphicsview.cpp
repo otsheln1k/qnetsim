@@ -121,6 +121,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
         qDebug() << "Left button clicked!";
 
         QPoint pos = ev->pos();
+        qDebug() << pos;
         QPointF scn = mapToScene(pos);
 
         switch(mode){

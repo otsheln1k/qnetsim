@@ -15,6 +15,7 @@ class NSGraphicsNode : public QObject,
                        public QGraphicsItem {
     Q_OBJECT;
     Q_INTERFACES(QGraphicsItem);
+    friend class Serialization;
 
 public:
     NSGraphicsNode(QObject *parent,
