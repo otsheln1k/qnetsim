@@ -63,3 +63,17 @@ uint8_t *ARPPacket::write(uint8_t *src) const
 
     return src;
 }
+
+ARPPacket ARPPacket::makeReply(const uint8_t *replyHwAddr) const
+{
+    ARPPacket p {*this};
+    p.setOperation(ARPPacket::OP_REPLY);
+
+    memcpy(p.senderHardwareAddr(), replyHwAddr, _hwSize);
+    memcpy(p.senderProtocolAddr(), targetProtocolAddr(), _prSize);
+    memcpy(p.targetHardwareAddr(), senderHardwareAddr(), _hwSize);
+    memcpy(p.targetProtocolAddr(), senderProtocolAddr(), _prSize);
+
+    return p;
+
+}

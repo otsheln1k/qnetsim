@@ -59,6 +59,8 @@ public:
 
     size_t size() const;
     uint8_t *write(uint8_t *dest) const;
+
+    ARPPacket makeReply(const uint8_t *replyHwAddr) const;
 };
 
 #endif
