@@ -6,9 +6,11 @@ CONFIG += testcase no_testcase_installs
 
 INCLUDEPATH += ../src
 
-SOURCES = test.cpp
+SOURCES = test.cpp \
+    switchnodetest.cpp
 
-HEADERS += MACAddrTest.hpp
+HEADERS += MACAddrTest.hpp \
+    switchnodetest.h
 HEADERS += EthernetFrameTest.hpp
 HEADERS += EthernetInterfaceTest.hpp
 HEADERS += EthernetDriverTest.hpp
@@ -32,7 +34,9 @@ HEADERS += ../src/NetworkModel.h
 HEADERS += ../src/NetworkNode.h
 HEADERS += ../src/SimulationLogger.hpp
 HEADERS += ../src/SimulationStepper.hpp
-SOURCES += ../src/MACAddr.hpp
+HEADERS += ../src/MACAddr.hpp
+HEADERS += ../src/PCNode.h
+HEADERS += ../src/switchnode.h
 
 SOURCES += ../src/ECTPDriver.cpp
 SOURCES += ../src/EthernetDriver.cpp
@@ -43,3 +47,5 @@ SOURCES += ../src/NetworkModel.cpp
 SOURCES += ../src/NetworkNode.cpp
 SOURCES += ../src/SimulationLogger.cpp
 SOURCES += ../src/SimulationStepper.cpp
+SOURCES += ../src/PCNode.cpp
+SOURCES += ../src/switchnode.cpp
