@@ -7,6 +7,7 @@
 #include "SimulationStepperTest.hpp"
 #include "SimulationLoggerTest.hpp"
 #include "ECTPDriverTest.hpp"
+#include "switchnodetest.h"
 
 int main(int argc, char **argv)
 {
@@ -18,7 +19,10 @@ int main(int argc, char **argv)
         new SimulationStepperTest {},
         new SimulationLoggerTest {},
         new ECTPDriverTest {},
+        new switchnodeTest{},
     };
+
+    int status = 0;
 
     char **nargv = new char *[argc];
     char **next = nargv;
@@ -33,10 +37,13 @@ int main(int argc, char **argv)
     int nargc = next - nargv;
 
     for (QObject *test : tests) {
-        QTest::qExec(test, nargc, nargv);
+        int teststatus = QTest::qExec(test, nargc, nargv);
+        status = std::max(status, teststatus);
     }
 
     for (QObject *test : tests) {
         delete test;
     }
+
+    return status;
 }

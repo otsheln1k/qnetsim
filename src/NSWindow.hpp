@@ -34,12 +34,13 @@ private slots:
     void on_addHubButton_clicked();
     void on_addSwitchButton_clicked();
     void on_toolButton_3_clicked();
-    void on_resetButton_clicked();
 
-    void onLoggerMessage(const SimulationLogger::Message &msg);
+    void onLoggerMessage(const SimulationLoggerMessage &msg);
     void onLogClear();
 
     void on_logClearButton_clicked();
+
+    void onSteppingToggled(bool value);
 };
 
 #endif

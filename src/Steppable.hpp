@@ -16,6 +16,14 @@ class Steppable {
 public:
     virtual bool stepSend() =0;
     virtual bool stepRecv() =0;
+
+    bool step()
+    {
+        bool res = false;
+        res = stepSend() || res;
+        res = stepRecv() || res;
+        return res;
+    }
 };
 
 #endif

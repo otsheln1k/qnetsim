@@ -34,10 +34,11 @@ QRectF NSGraphicsNode::boundingRect() const
 
 void NSGraphicsNode::fillInterfacesMenu(QMenu *menu, NetworkNode *node)
 {
+    int i = 0;
     for (GenericNetworkInterface *iface : *node) {
-        auto *action = menu->addAction(
-            QString{"Интерфейс @ 0x%1"}
-            .arg((size_t)iface, sizeof(size_t)*2, 16, QChar{'0'}));
+        QString text = QString{"Интерфейс %1"}.arg(i++);
+
+        auto *action = menu->addAction(text);
 
         action->setData(QVariant::fromValue(iface));
     }

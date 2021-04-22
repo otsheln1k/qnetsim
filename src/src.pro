@@ -65,19 +65,21 @@ SOURCES += ECTPDriver.cpp
 SOURCES += EthernetDriver.cpp
 SOURCES += EthernetFrame.cpp
 SOURCES += EthernetInterface.cpp
-SOURCES += gui/interfacedialog.cpp
+SOURCES += gui/ECTPPingDialog.cpp
 SOURCES += gui/nsgraphicshubnode.cpp
 SOURCES += gui/nsgraphicsnode.cpp
 SOURCES += gui/nsgraphicspcnode.cpp
 SOURCES += gui/NSGraphicsSwitchNode.cpp
 SOURCES += gui/nsgraphicsview.cpp
 SOURCES += HubNode.cpp
+SOURCES += MACAddr.cpp
 SOURCES += main.cpp
 SOURCES += NetworkModel.cpp
 SOURCES += NetworkNode.cpp
 SOURCES += NSWindow.cpp
 SOURCES += PCNode.cpp
 SOURCES += SimulationLogger.cpp
+SOURCES += SimulationStepper.cpp
 SOURCES += switchnode.cpp
 
 HEADERS += ECTPDriver.hpp
@@ -85,7 +87,7 @@ HEADERS += EthernetDriver.hpp
 HEADERS += EthernetFrame.hpp
 HEADERS += EthernetInterface.hpp
 HEADERS += GenericNetworkInterface.hpp
-HEADERS += gui/interfacedialog.h
+HEADERS += gui/ECTPPingDialog.h
 HEADERS += gui/nsgraphicshubnode.h
 HEADERS += gui/nsgraphicsnode.h
 HEADERS += gui/nsgraphicspcnode.h
@@ -102,8 +104,8 @@ HEADERS += SimulationStepper.hpp
 HEADERS += Steppable.hpp
 HEADERS += switchnode.h
 
-FORMS += NSWindow.ui \
-    gui/interfacedialog.ui
+FORMS += gui/ECTPPingDialog.ui
+FORMS += NSWindow.ui
 
 COPIES += icons models
 

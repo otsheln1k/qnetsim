@@ -7,7 +7,6 @@ thread_local SimulationLogger *SimulationLogger::_curLogger =
 void SimulationLogger::flushMsgQueue()
 {
     while (!_mq.empty()
-           && (_mq.front().node() != nullptr)
            && (_mq.front().interface() != nullptr)) {
 
         emit message(_mq.front());
@@ -15,26 +14,10 @@ void SimulationLogger::flushMsgQueue()
     }
 }
 
-void SimulationLogger::setCurrentNode(NetworkNode *n)
-{
-    _curNode = n;
-    for (Message &msg : _mq) {
-        if (msg.node() == nullptr) {
-            msg.setNode(n);
-        }
-    }
-    flushMsgQueue();
-}
-
-void SimulationLogger::unsetCurrentNode()
-{
-    _curNode = nullptr;
-}
-
 void SimulationLogger::setCurrentInterface(GenericNetworkInterface *i)
 {
     _curIface = i;
-    for (Message &msg : _mq) {
+    for (auto &msg : _mq) {
         if (msg.interface() == nullptr) {
             msg.setInterface(i);
         }
@@ -49,10 +32,11 @@ void SimulationLogger::unsetCurrentInterface()
 
 void SimulationLogger::log(QString str)
 {
-    Message msg {_curNode, _curIface, std::move(str)};
+    qRegisterMetaType<SimulationLoggerMessage>();
 
-    if (_curNode == nullptr
-        || _curIface == nullptr) {
+    SimulationLoggerMessage msg {_curIface, std::move(str)};
+
+    if (_curIface == nullptr) {
         _mq.emplace_back(std::move(msg));
     } else {
         emit message(msg);

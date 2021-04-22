@@ -17,8 +17,8 @@ public slots:
 
 public:
     SwitchNode();
-    virtual void addInterface(GenericNetworkInterface* iface);
-    virtual void removeInterface(GenericNetworkInterface* iface);
+    virtual void addInterface(GenericNetworkInterface* iface) override;
+    virtual void removeInterface(GenericNetworkInterface* iface) override;
 
 };
 

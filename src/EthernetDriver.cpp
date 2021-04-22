@@ -28,6 +28,11 @@ void EthernetDriver::sendFrame(const EthernetFrame &frame)
 
 void EthernetDriver::handleFrame(const EthernetFrame *frame)
 {
+    SimulationLogger::currentLogger()->log(
+        QString{"Received frame from %1 to %2"}
+        .arg(frame->srcAddr())
+        .arg(frame->dstAddr()));
+
     if (_doVerifyChecksum
         && !frame->checksumCorrect()) {
         return;

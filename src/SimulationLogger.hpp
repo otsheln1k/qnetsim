@@ -5,35 +5,34 @@
 
 #include <QObject>
 
-#include "NetworkNode.h"        // NOTE: not hpp
 #include "GenericNetworkInterface.hpp"
+
+class SimulationLoggerMessage {
+    GenericNetworkInterface *_iface;
+    QString _text;
+
+public:
+    SimulationLoggerMessage()
+        :SimulationLoggerMessage{nullptr, {}} {}
+
+    SimulationLoggerMessage(GenericNetworkInterface *i, QString t)
+        :_iface{i}, _text{std::move(t)} {}
+
+    GenericNetworkInterface *interface() const { return _iface; }
+    void setInterface(GenericNetworkInterface *i) { _iface = i; }
+
+    const QString &text() const { return _text; }
+};
+
+Q_DECLARE_METATYPE(SimulationLoggerMessage);
+
 
 class SimulationLogger : public QObject {
     Q_OBJECT;
 
-public:
-    class Message {
-        NetworkNode *_node;
-        GenericNetworkInterface *_iface;
-        QString _text;
-
-    public:
-        Message(NetworkNode *n, GenericNetworkInterface *i, QString t)
-            :_node{n}, _iface{i}, _text{std::move(t)} {}
-
-        NetworkNode *node() const { return _node; }
-        void setNode(NetworkNode *n) { _node = n; }
-
-        GenericNetworkInterface *interface() const { return _iface; }
-        void setInterface(GenericNetworkInterface *i) { _iface = i; }
-
-        const QString &text() const { return _text; }
-    };
-
 private:
-    NetworkNode *_curNode = nullptr;
     GenericNetworkInterface *_curIface = nullptr;
-    std::deque<Message> _mq {};
+    std::deque<SimulationLoggerMessage> _mq {};
 
     void flushMsgQueue();
 
@@ -41,9 +40,7 @@ private:
     static SimulationLogger _defaultLogger;
 
 public:
-    void setCurrentNode(NetworkNode *n);
-    void unsetCurrentNode();
-
+    GenericNetworkInterface *currentInterface() const { return _curIface; }
     void setCurrentInterface(GenericNetworkInterface *i);
     void unsetCurrentInterface();
 
@@ -54,7 +51,7 @@ public:
     void makeCurrent() { _curLogger = this; }
 
 signals:
-    void message(const Message &msg);
+    void message(const SimulationLoggerMessage &msg);
 };
 
 #endif
