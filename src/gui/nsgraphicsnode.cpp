@@ -1,3 +1,5 @@
+#include <QDebug>
+
 #include "nsgraphicsnode.h"
 
 
@@ -13,6 +15,24 @@ NSGraphicsNode::~NSGraphicsNode()
 {
     delete image;
     delete name;
+}
+
+void NSGraphicsNode::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    qDebug() <<"Pressed";
+    this->setCursor(QCursor(Qt::ClosedHandCursor));
+    Q_UNUSED(event);
+}
+
+void NSGraphicsNode::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    this->setPos(mapToScene(event->pos()));
+}
+
+void NSGraphicsNode::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    this->setCursor(QCursor(Qt::ArrowCursor));
+    Q_UNUSED(event);
 }
 
 void NSGraphicsNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

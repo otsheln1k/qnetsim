@@ -4,6 +4,7 @@
 #include <QMenu>
 #include <QGraphicsScene>
 
+#include "EthernetInterfaceSettingsDialog.h"
 #include "NetworkModel.h"
 #include "SimulationStepper.hpp"
 #include "SimulationLogger.hpp"
@@ -65,7 +66,33 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
             dialog->open();
         });
 
-    QMenu *ifmenu = menu->addMenu("Удалить интерфейс");
+    QMenu *cfgmenu = menu->addMenu("Настроить интерфейс…");
+    cfgmenu->setEnabled(node->interfacesCount() > 0);
+    fillPCInterfacesMenu(cfgmenu, node);
+    for (QAction *action : cfgmenu->actions()) {
+        QObject::connect(
+            action, &QAction::triggered,
+            [this, action, widget]()
+            {
+                auto *iface = action->data().value<GenericNetworkInterface *>();
+                auto *drv = node->getDriver(dynamic_cast<EthernetInterface *>(iface));
+                auto *ipdrv = node->getIP4Driver(dynamic_cast<EthernetInterface *>(iface));
+                auto *dialog = new EthernetInterfaceSettingsDialog {
+                    drv->address(),
+                    ipdrv->address(),
+                    ipdrv->cidr(),
+                    widget->window()};
+                QObject::connect(
+                    dialog, &EthernetInterfaceSettingsDialog::info,
+                    [iface, this](MACAddr hw, IP4Address ip, uint8_t cidr)
+                    {
+                        node->setInterfaceSettings(iface, hw, ip, cidr);
+                    });
+                dialog->open();
+            });
+    }
+
+    QMenu *ifmenu = menu->addMenu("Удалить интерфейс…");
     ifmenu->setEnabled(node->interfacesCount() > 0);
     fillPCInterfacesMenu(ifmenu, node);
     for (QAction *action : ifmenu->actions()) {

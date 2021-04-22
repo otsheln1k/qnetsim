@@ -150,7 +150,7 @@ padding: 3px;</string>
          <property name="spacing">
           <number>2</number>
          </property>
-         <item row="0" column="0">
+         <item row="0" column="0" alignment="Qt::AlignTop">
           <widget class="QScrollArea" name="scrollArea">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
@@ -210,20 +210,6 @@ padding: 3px;</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
-              <widget class="QToolButton" name="addPCButton">
-               <property name="text">
-                <string>ПК</string>
-               </property>
-               <property name="icon">
-                <iconset>
-                 <normaloff>icons/018-monitor screen.svg</normaloff>icons/018-monitor screen.svg</iconset>
-               </property>
-               <property name="checked">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
              <item row="0" column="0">
               <widget class="QLabel" name="label">
                <property name="sizePolicy">
@@ -237,15 +223,50 @@ padding: 3px;</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
-              <widget class="QToolButton" name="addHubButton">
-               <property name="text">
-                <string>Хаб</string>
-               </property>
-               <property name="icon">
-                <iconset>
-                 <normaloff>icons/017-hub.svg</normaloff>icons/017-hub.svg</iconset>
-               </property>
+             <item row="3" column="0" alignment="Qt::AlignLeft|Qt::AlignTop">
+              <widget class="QWidget" name="widget_2" native="true">
+               <layout class="QGridLayout" name="gridLayout_3">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>2</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>2</number>
+                </property>
+                <property name="spacing">
+                 <number>2</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QToolButton" name="addPCButton">
+                  <property name="text">
+                   <string>ПК</string>
+                  </property>
+                  <property name="icon">
+                   <iconset>
+                    <normaloff>icons/018-monitor screen.svg</normaloff>icons/018-monitor screen.svg</iconset>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QToolButton" name="addHubButton">
+                  <property name="text">
+                   <string>Хаб</string>
+                  </property>
+                  <property name="icon">
+                   <iconset>
+                    <normaloff>icons/017-hub.svg</normaloff>icons/017-hub.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
              <item row="4" column="0">
@@ -336,8 +357,15 @@ padding: 3px;</string>
     <addaction name="toggleStepSimAction"/>
     <addaction name="stepSimAction"/>
    </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Вид</string>
+    </property>
+    <addaction name="journalView"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSimulation"/>
+   <addaction name="menu_2"/>
    <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -430,6 +458,17 @@ padding: 3px;</string>
   <action name="resumeSimAction">
    <property name="text">
     <string>Продолжить</string>
+   </property>
+  </action>
+  <action name="journalView">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Журнал событий</string>
    </property>
   </action>
  </widget>

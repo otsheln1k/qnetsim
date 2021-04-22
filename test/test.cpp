@@ -8,6 +8,7 @@
 #include "SimulationLoggerTest.hpp"
 #include "ECTPDriverTest.hpp"
 #include "switchnodetest.h"
+#include "ARPPacketTest.hpp"
 
 int main(int argc, char **argv)
 {
@@ -20,6 +21,7 @@ int main(int argc, char **argv)
         new SimulationLoggerTest {},
         new ECTPDriverTest {},
         new switchnodeTest{},
+        new ARPPacketTest {},
     };
 
     int status = 0;

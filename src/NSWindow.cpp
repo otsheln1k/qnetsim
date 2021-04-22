@@ -131,3 +131,13 @@ void NSWindow::on_loadButton_clicked()
     Serialization* serialization = new Serialization(ui->graphicsView, path);
     serialization->loadSave();
 }
+
+void NSWindow::on_journalView_toggled(bool arg1)
+{
+    ui->logDock->setHidden(!arg1);
+}
+
+void NSWindow::on_logDock_visibilityChanged(bool visible)
+{
+    ui->journalView->setChecked(visible);
+}

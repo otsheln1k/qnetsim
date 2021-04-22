@@ -5,6 +5,8 @@
 #include <QMouseEvent>
 #include <QGraphicsView>
 #include <QThread>
+#include <QGraphicsScene>
+
 
 #include "SimulationStepper.hpp"
 #include "NetworkModel.h"
@@ -70,8 +72,9 @@ private slots:
     void onDisconnected(GenericNetworkInterface *other);
     void onRemovingGraphicsNode();
 
-    signals:
-        void removingNode(NetworkNode *node);
+signals:
+    void removingNode(NetworkNode *node);
+    void addingNode(NetworkNode *node);
 };
 
 #endif // NSGRAPHICSVIEW_H

@@ -1,7 +1,11 @@
 #include "SimulationLogger.hpp"
+#include "IP4OnEthernetDriver.hpp"
 #include "PCNode.h"
 
-PCNode::PCNode(){}
+PCNode::PCNode()
+{
+    ipNode.setParent(this);
+}
 
 MACAddr PCNode::createMac(){
     const uint32_t orgID = 787458;
@@ -20,8 +24,12 @@ void PCNode::addInterface(GenericNetworkInterface *iface){
         NetworkNode::addInterface(iface);
         MACAddr MAC = createMac();
         EthernetDriver* driver = new EthernetDriver(MAC, eiface);
+
         driver->setParent(this);
         interfaces[eiface] = driver;
+
+        IP4Driver *drv = new IP4OnEthernetDriver {driver};
+        ipNode.addDriver(drv);
     }
 }
 
@@ -36,6 +44,10 @@ void PCNode::removeInterface(GenericNetworkInterface *iface){
         delete driver->second;
         interfaces.erase(driver);
     }
+
+    IP4Driver *drv = ipNode.driverByInterface(iface);
+    delete drv;
+
     NetworkNode::removeInterface(iface);
 }
 
@@ -76,4 +88,30 @@ void PCNode::sendECTPLoopback(GenericNetworkInterface *iface,
         .arg(seq));
 
     sendEthernetFrame(eiface, through, ETHERTYPE_ECTP, bytes);
+}
+
+void PCNode::setInterfaceSettings(GenericNetworkInterface *iface,
+                                  MACAddr hw,
+                                  IP4Address ip,
+                                  uint8_t cidr)
+{
+    auto *eiface = dynamic_cast<EthernetInterface *>(iface);
+    if (eiface == nullptr) {
+        return;
+    }
+
+    getDriver(eiface)->setAddress(hw);
+    auto *ipdrv = getIP4Driver(eiface);
+    ipdrv->setAddress(ip);
+    ipdrv->setCidr(cidr);
+}
+
+IP4Driver *PCNode::getIP4Driver(EthernetInterface *iface)
+{
+    return ipNode.driverByInterface(iface);
+}
+
+IP4Node *PCNode::getIP4Node()
+{
+    return &ipNode;
 }

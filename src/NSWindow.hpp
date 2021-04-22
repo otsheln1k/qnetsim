@@ -45,6 +45,8 @@ private slots:
     void onSteppingToggled(bool value);
     void on_saveButton_clicked();
     void on_loadButton_clicked();
+    void on_journalView_toggled(bool arg1);
+    void on_logDock_visibilityChanged(bool visible);
 };
 
 #endif

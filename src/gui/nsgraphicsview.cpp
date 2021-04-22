@@ -10,6 +10,8 @@
 #include "NSGraphicsSwitchNode.h"
 #include "nsgraphicsview.h"
 
+#include "EthernetInterfaceSettingsDialog.h"
+
 NSGraphicsView::NSGraphicsView(QWidget *parent)
     : QGraphicsView(parent),
       scene {new QGraphicsScene {}},
@@ -44,6 +46,8 @@ void NSGraphicsView::resetModel()
                      this, &NSGraphicsView::onNodeRemoved);
     QObject::connect(this, &NSGraphicsView::removingNode,
                          model, &NetworkModel::removeNode);
+    QObject::connect(this, &NSGraphicsView::addingNode,
+                     model, &NetworkModel::addNode);
 }
 
 void NSGraphicsView::onNodeAdded(NetworkNode *node)
@@ -184,7 +188,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
             }
             }
             nd->moveToThread(&simulationThread);
-            model->addNode(nd);
+            emit addingNode(nd);
 
             QObject::connect(gnode, &NSGraphicsNode::removingNode,
                                          this, &NSGraphicsView::onRemovingGraphicsNode);
@@ -255,6 +259,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
             menu->exec(ev->globalPos());
         }
     }
+    QGraphicsView::mousePressEvent(ev);
 }
 
 void NSGraphicsView::setMode(NSGraphicsViewMode nmode)
