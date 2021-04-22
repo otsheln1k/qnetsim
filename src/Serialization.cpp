@@ -1,22 +1,23 @@
 #include "Serialization.h"
 
-Serialization::Serialization(NSGraphicsView* view, QString path) : view{view}, path{path}, scene{view->scene},
-    model{view->model}, nodetab{view->nodetab}, edgetab{view->edgetab}
+Serialization::Serialization(NSGraphicsView* view, QString path) : view{view}, path{path}
 {}
 
 void Serialization::createSave()
 {
     QFile file(path);
     QDataStream stream(&file);
-    file.open(QIODevice::WriteOnly);
+    if(!file.open(QIODevice::WriteOnly))
+        return;
 
-    int count = nodetab.size();
-    stream << count;
-    for(auto item : nodetab)
+    int countNodes = view->nodetab.size();
+    stream << countNodes;
+    for(auto item : view->nodetab)
     {
         QPoint pos;
         QSize size;
         QString name, type;
+        unsigned int countInterfaces;
 
         if(dynamic_cast<NSGraphicsPCNode*>(item.second))
             type = "PC";
@@ -29,7 +30,18 @@ void Serialization::createSave()
         else
             name = "None";
 
-        stream << type << pos << size << name;
+        countInterfaces = item.first->interfacesCount();
+
+        stream << type << pos << size << name << countInterfaces;
+
+        qDebug() << "Start read:";
+        qDebug() << type;
+        qDebug() << pos;
+        qDebug() << size;
+        qDebug() << name;
+        qDebug() << countInterfaces;
+        qDebug() << "End read";
+
     }
 
     file.close();
@@ -39,24 +51,29 @@ void Serialization::loadSave()
 {
     QFile file(path);
     QDataStream stream(&file);
-    file.open( QIODevice::ReadOnly );
+    if(!file.open( QIODevice::ReadOnly))
+        return;
     view->resetModel();
     int count;
     QPoint pos;
     QSize size;
-    QString name, type;
+    QString nameStr, *name, type;
+    unsigned int countInterfaces;
 
     stream >> count;
     for(int i = 0; i < count; i++){
-        stream >> type >> pos >> size >> name;
+        stream >> type >> pos >> size >> nameStr >> countInterfaces;
 
-        if(name == "None")
+        if(nameStr == "None")
             name = nullptr;
 
+        qDebug() << "Start write:";
         qDebug() << type;
         qDebug() << pos;
         qDebug() << size;
         qDebug() << name;
+        qDebug() << countInterfaces;
+        qDebug() << "End write";
 
         QPointF scn = view->mapToScene(pos);
 
@@ -66,26 +83,39 @@ void Serialization::loadSave()
         if(type == "PC"){
             auto *pnode = new PCNode {};
             nd = pnode;
-            gnode = new NSGraphicsPCNode(view, pnode, scn, size, &name);
+            for(unsigned int i = 0; i < countInterfaces; i++){
+                auto *iface = new EthernetInterface {};
+                iface->moveToThread(pnode->thread());
+                pnode->addInterface((GenericNetworkInterface *)iface);
+            }
+            gnode = new NSGraphicsPCNode(view, pnode, scn, size, name);
         }
         else if(type == "HUB"){
-            auto *pnode = new HubNode {};
-            nd = pnode;
-            gnode = new NSGraphicsHubNode(view, pnode, scn, size, &name);
+            auto *hnode = new HubNode {};
+            nd = hnode;
+            for(unsigned int i = 0; i < countInterfaces; i++){
+                auto *iface = new EthernetInterface {};
+                iface->moveToThread(hnode->thread());
+                hnode->addInterface((GenericNetworkInterface *)iface);
+            }
+            gnode = new NSGraphicsHubNode(view, hnode, scn, size, name);
         }
 
         nd->moveToThread(&view->simulationThread);
-        model->addNode(nd);
+        view->model->addNode(nd);
 
-        scene->addItem(gnode);
-        scene->update(0,0,view->width(),view->height());
+        QObject::connect(gnode, &NSGraphicsNode::removingNode,
+                                     view, &NSGraphicsView::onRemovingGraphicsNode);
+
+        view->scene->addItem(gnode);
+        view->scene->update(0,0,view->width(),view->height());
         auto r = view->sceneRect();
         auto pos2 = view->mapFromScene(scn);
         r.setX(r.x() - (pos.x() - pos2.x()));
         r.setY(r.y() - (pos.y() - pos2.y()));
         view->setSceneRect(r);
 
-        nodetab[nd] = gnode;
+        view->nodetab[nd] = gnode;
     }
 
     file.close();

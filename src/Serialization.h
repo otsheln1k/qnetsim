@@ -10,12 +10,7 @@ class Serialization
 {
     NSGraphicsView* view;
     QString path;
-    QGraphicsScene *scene;
-    NetworkModel *model;
-    std::map<NetworkNode *, NSGraphicsNode *> nodetab;
-    std::map<std::tuple<GenericNetworkInterface *,
-                        GenericNetworkInterface *>,
-             QGraphicsLineItem *> edgetab;
+
 public:
     Serialization(NSGraphicsView* view, QString path);
     void createSave();

@@ -33,6 +33,7 @@ public:
 signals:
     void addingInterface(GenericNetworkInterface *iface);
     void removingInterface(GenericNetworkInterface *iface);
+    void removingNode();
 
 protected:
     virtual void paint(QPainter *painter,

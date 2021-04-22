@@ -15,6 +15,13 @@ void NetworkModel::removeNode(NetworkNode* node)
     emit nodeRemoved(node);
 }
 
+NetworkModel::~NetworkModel()
+{
+    for (auto *n : *this) {
+        removeNode(n);
+    }
+}
+
 unsigned int NetworkModel::countNodes()
 {
     return children().size();
