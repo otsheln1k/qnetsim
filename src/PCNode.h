@@ -10,12 +10,25 @@ class PCNode : public NetworkNode
 
 private:
     std::map<EthernetInterface*, EthernetDriver*> interfaces;
+
 public:
     PCNode();
-    virtual void addInterface(GenericNetworkInterface* iface);
-    virtual void removeInterface(GenericNetworkInterface* iface);
     MACAddr createMac();
     EthernetDriver* getDriver(EthernetInterface *iface);
+
+public slots:
+    virtual void addInterface(GenericNetworkInterface* iface);
+    virtual void removeInterface(GenericNetworkInterface* iface);
+
+    void sendEthernetFrame(EthernetInterface *eiface,
+                           MACAddr dest,
+                           EtherType etherType,
+                           const QVector<uint8_t> &payload);
+
+    void sendECTPLoopback(GenericNetworkInterface *iface,
+                          uint16_t seq,
+                          MACAddr through,
+                          const QVector<uint8_t> &payload);
 };
 
 #endif // PC_H

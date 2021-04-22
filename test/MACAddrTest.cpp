@@ -81,7 +81,13 @@ void MACAddrTest::testMACAddr_data() {
 void MACAddrTest::testToString()
 {
     QFETCH(MACAddr, addr);
-    QTEST(QString{addr}, "str");
+    QFETCH(QString, str);
+
+    QCOMPARE(QString{addr}, str);
+
+    char buf[17];
+    QCOMPARE((void *)addr.display(buf), (void *)&buf[17]);
+    QVERIFY(!memcmp(buf, str.toUtf8().data(), sizeof(buf)));
 }
 
 void MACAddrTest::testToString_data()
@@ -93,7 +99,63 @@ void MACAddrTest::testToString_data()
         << MACAddr{0x101010010203}
         << QString{"10:10:10:01:02:03"};
 
+    QTest::newRow("AB:bc:12:1A:F0:DD")
+        << MACAddr{0xABBC121AF0DD}
+        << QString{"AB:BC:12:1A:F0:DD"};
+
     QTest::newRow("FF:FF:FF:FF:FF:FF")
         << MACAddr{0xFFFFFFFFFFFF}
         << QString{"FF:FF:FF:FF:FF:FF"};
+}
+
+void MACAddrTest::testFromString()
+{
+    QFETCH(MACAddr, addr);
+    QFETCH(QString, str);
+
+    MACAddr a2;
+    QVERIFY(a2.parseQString(str));
+
+    QCOMPARE(a2, addr);
+
+    MACAddr a3;
+    QVERIFY(a3.parse(str.toUtf8().data()));
+
+    QCOMPARE(a3, addr);
+}
+
+void MACAddrTest::testFromString_data()
+{
+    QTest::addColumn<MACAddr>("addr");
+    QTest::addColumn<QString>("str");
+
+    QTest::newRow("10:10:10:01:02:03")
+        << MACAddr{0x101010010203}
+        << QString{"10:10:10:01:02:03"};
+
+    QTest::newRow("AB:bc:12:1A:F0:DD")
+        << MACAddr{0xABBC121AF0DD}
+        << QString{"AB:bc:12:1A:F0:DD"};
+
+    QTest::newRow("FF:FF:FF:FF:FF:FF")
+        << MACAddr{0xFFFFFFFFFFFF}
+        << QString{"FF:FF:FF:FF:FF:FF"};
+}
+
+void MACAddrTest::testParse()
+{
+    MACAddr a1, a2;
+    QVERIFY(a1.parse("de:ad:be:ef:01:02"));
+    QVERIFY(a2.parse("DE:AD:BE:EF:01:02"));
+    QCOMPARE(a1, a2);
+
+    QVERIFY(a1.parse("12:23:34:45:56:67"));
+    QCOMPARE(a1, MACAddr(0x122334455667));
+
+    QVERIFY(!a1.parse("122334455667"));
+    QVERIFY(!a1.parse("12:23:3445:56:67"));
+    QVERIFY(!a1.parse("122:334:455:667"));
+    QVERIFY(!a1.parse("122:334:455:667"));
+    QVERIFY(!a1.parse("ab:bc:cd:de:ef:fg"));
+    QVERIFY(!a1.parse("AB:BC:CD:DE:EF:FG"));
 }

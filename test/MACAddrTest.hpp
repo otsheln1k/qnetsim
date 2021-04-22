@@ -12,6 +12,11 @@ private slots:
 
     void testToString();
     void testToString_data();
+
+    void testFromString();
+    void testFromString_data();
+
+    void testParse();
 };
 
 #endif

@@ -20,6 +20,8 @@ int main(int argc, char **argv)
         new ECTPDriverTest {},
     };
 
+    int status = 0;
+
     char **nargv = new char *[argc];
     char **next = nargv;
     for (int i = 0; i < argc; ++i) {
@@ -33,10 +35,13 @@ int main(int argc, char **argv)
     int nargc = next - nargv;
 
     for (QObject *test : tests) {
-        QTest::qExec(test, nargc, nargv);
+        int teststatus = QTest::qExec(test, nargc, nargv);
+        status = std::max(status, teststatus);
     }
 
     for (QObject *test : tests) {
         delete test;
     }
+
+    return status;
 }

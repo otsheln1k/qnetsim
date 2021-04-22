@@ -17,7 +17,7 @@ public:
                       QSize size = {64, 64},
                       QString *name = nullptr);
 
-    virtual void populateMenu(QMenu *menu) override;
+    virtual void populateMenu(QMenu *menu, QWidget *widget) override;
     virtual NetworkNode *networkNode() const override;
 
 private slots:

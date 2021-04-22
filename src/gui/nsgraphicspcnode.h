@@ -18,12 +18,19 @@ public:
                      QSize size= {64, 64},
                      QString *name= nullptr);
 
-    virtual void populateMenu(QMenu *menu) override;
+    virtual void populateMenu(QMenu *menu, QWidget *widget) override;
     virtual NetworkNode *networkNode() const override;
+
+    static void fillPCInterfacesMenu(QMenu *menu, PCNode *node);
+
+signals:
+    void sendingFrame(EthernetInterface *eiface,
+                      MACAddr dest,
+                      EtherType etherType,
+                      QVector<uint8_t> payload);
 
 private slots:
     void onNodeDestroyed();
-    void onSendECTPMessage(GenericNetworkInterface *iface, uint16_t seq);
 };
 
 #endif // NSGRAPHICSPCNODE_H
