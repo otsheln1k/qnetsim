@@ -15,7 +15,7 @@ class EthernetInterfaceSettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit EthernetInterfaceSettingsDialog(QWidget *parent = nullptr);
+    explicit EthernetInterfaceSettingsDialog(MACAddr, IP4Address, uint8_t, QWidget *parent = nullptr);
     ~EthernetInterfaceSettingsDialog();
 
     virtual void accept() override;

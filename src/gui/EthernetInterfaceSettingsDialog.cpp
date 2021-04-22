@@ -3,11 +3,15 @@
 #include "EthernetInterfaceSettingsDialog.h"
 #include "ui_ethernetInterfacesettingsdialog.h"
 
-EthernetInterfaceSettingsDialog::EthernetInterfaceSettingsDialog(QWidget *parent) :
+EthernetInterfaceSettingsDialog::EthernetInterfaceSettingsDialog(MACAddr mac, IP4Address ip4, uint8_t mask, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::EthernetInterfaceSettingsDialog)
 {
     ui->setupUi(this);
+    ui->macInput->setText(mac);
+    auto *tmp = ip4.bytes();
+    ui->ipInput->setText(QString{"%1.%2.%3.%4"}.arg(tmp[0]).arg(tmp[1]).arg(tmp[2]).arg(tmp[3]));
+    ui->cidrInput->setValue(mask);
 }
 
 EthernetInterfaceSettingsDialog::~EthernetInterfaceSettingsDialog()
