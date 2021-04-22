@@ -9,6 +9,7 @@ void SwitchNode::addInterface(GenericNetworkInterface *iface){
         return;
     }else{
         NetworkNode::addInterface(iface);
+        connection = QObject::connect(eiface, &EthernetInterface::receivedFrame, this, &SwitchNode::redirection);
     }
 }
 
@@ -18,7 +19,7 @@ void SwitchNode::removeInterface(GenericNetworkInterface *iface){
     if(eiface == nullptr){
         return;
     }else{
-        // удаление записи из табоицы
+        // удаление записи из таблицы
         for(auto i: table){
             if(i.second == eiface){
                 table.erase(i.first);
@@ -30,25 +31,19 @@ void SwitchNode::removeInterface(GenericNetworkInterface *iface){
 }
 
 void SwitchNode::redirection(const EthernetFrame *f){
-    MACAddr a = f->srcAddr(); // mac источникаы
     EthernetInterface* interface = dynamic_cast<EthernetInterface*>(sender());
-    table.insert({a, interface});
+    table.insert({(f->srcAddr()), interface});
 
-    auto path = table.find(f->dstAddr());
+    const MACAddr a = f->dstAddr();
+    auto path = table.find(a);
     if(path != table.end()){
-        EthernetInterface* i = path->second;
-        connection = QObject::connect(i, &EthernetInterface::receivedFrame,
-                                      [i, f](){i->sendFrame(*f);});
+        path->second->sendFrame(*f);
     }
     else {
-        connection = QObject::connect(interface, &EthernetInterface::receivedFrame,
-                                      [this, interface, f](){
-                                        for (auto *i : *this) {
-                                            if (i != interface) {
-                                                dynamic_cast<EthernetInterface *>(i)->sendFrame(*f);
-                                            }
-                                         }
-                                       });
+        for(auto *i: *this){
+            if(i != interface){
+                dynamic_cast<EthernetInterface *>(i)->sendFrame(*f);
+            }
+        }
     }
-
 }
