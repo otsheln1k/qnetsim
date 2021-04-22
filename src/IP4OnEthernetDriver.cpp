@@ -6,6 +6,8 @@ IP4OnEthernetDriver::IP4OnEthernetDriver(EthernetDriver *drv)
 {
     QObject::connect(_drv, &EthernetDriver::receivedFrame,
                      this, &IP4OnEthernetDriver::handleFrame);
+    QObject::connect(_arp, &ARPForIP4OnEthernetDriver::receivedReply,
+                     this, &IP4OnEthernetDriver::handleARPReply);
 }
 
 void IP4OnEthernetDriver::handleFrame(const EthernetFrame *f)
@@ -27,10 +29,21 @@ void IP4OnEthernetDriver::sendPacket(const IP4Packet &p)
 {
     // TODO: fragmentation
 
-    // 1. ARP request
-    // 2. await ARP reply
-    // 3. wait for some time, drop on timeout
-    // 4. on reply, write packet into a buffer and send a frame
+    // TODO: timeout
+
+    _arp->sendRequest(p.dstAddr());
+    _queue.insert(std::make_pair(p.dstAddr(), p));
+}
+
+void IP4OnEthernetDriver::handleARPReply(MACAddr hw, IP4Address ip)
+{
+    auto range = _queue.equal_range(ip);
+    for (auto iter = range.first; iter != range.second; ++iter) {
+        std::vector<uint8_t> buf (iter->second.size());
+        iter->second.write(buf.data());
+
+        _drv->sendFrame(hw, ETHERTYPE_IPV4, buf.begin(), buf.end());
+    }
 }
 
 void IP4OnEthernetDriver::setAddress(IP4Address addr)

@@ -8,8 +8,7 @@ ARPForIP4OnEthernetDriver::ARPForIP4OnEthernetDriver(EthernetDriver *drv,
                      this, &ARPForIP4OnEthernetDriver::handleFrame);
 }
 
-ARPPacket ARPForIP4OnEthernetDriver::makeRequestPacket(IP4Address ourAddr,
-                                                       IP4Address lookupAddr)
+ARPPacket ARPForIP4OnEthernetDriver::makeRequestPacket(IP4Address lookupAddr)
 {
     ARPPacket p {};
     p.setAddrSizes(6, 4);
@@ -18,7 +17,7 @@ ARPPacket ARPForIP4OnEthernetDriver::makeRequestPacket(IP4Address ourAddr,
     p.setOperation(ARPPacket::OP_REQUEST);
 
     _drv->address().write(p.senderHardwareAddr());
-    ourAddr.write(p.senderProtocolAddr());
+    _addr.write(p.senderProtocolAddr());
     memset(p.targetHardwareAddr(), 0, 4);
     lookupAddr.write(p.targetProtocolAddr());
 
@@ -34,6 +33,11 @@ void ARPForIP4OnEthernetDriver::sendPacket(const ARPPacket &p)
                     ETHERTYPE_ARP,
                     buf.begin(),
                     buf.end());
+}
+
+void ARPForIP4OnEthernetDriver::sendRequest(IP4Address lookupAddr)
+{
+    sendPacket(makeRequestPacket(lookupAddr));
 }
 
 void ARPForIP4OnEthernetDriver::handleFrame(const EthernetFrame *f)

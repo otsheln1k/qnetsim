@@ -20,9 +20,10 @@ public:
     IP4Address address() const { return _addr; }
     void setAddress(IP4Address x) { _addr = x; }
 
-    ARPPacket makeRequestPacket(IP4Address ourAddr, IP4Address lookupAddr);
+    ARPPacket makeRequestPacket(IP4Address lookupAddr);
 
     void sendPacket(const ARPPacket &p);
+    void sendRequest(IP4Address lookupAddr);
 
 signals:
     void receivedReply(MACAddr hw, IP4Address ip);

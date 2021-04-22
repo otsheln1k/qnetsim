@@ -1,6 +1,8 @@
 #ifndef _NS_IP4_ON_ETHERNET_DRIVER_HPP_
 #define _NS_IP4_ON_ETHERNET_DRIVER_HPP_
 
+#include <map>
+
 #include "GenericNetworkInterface.hpp"
 #include "IP4Packet.hpp"
 #include "IP4Driver.hpp"
@@ -13,6 +15,8 @@ class IP4OnEthernetDriver : public IP4Driver {
 
     EthernetDriver *_drv;
     ARPForIP4OnEthernetDriver *_arp;
+
+    std::multimap<IP4Address, IP4Packet> _queue {};
 
     // TODO: ARP cache
     // TODO: ARP driver or something
@@ -31,6 +35,8 @@ public:
 
 private slots:
     void handleFrame(const EthernetFrame *f);
+
+    void handleARPReply(MACAddr hw, IP4Address ip);
 };
 
 #endif
