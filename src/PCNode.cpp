@@ -1,3 +1,5 @@
+#include "IP4OnEthernetDriver.hpp"
+
 #include "PCNode.h"
 
 PCNode::PCNode(){}
@@ -20,6 +22,9 @@ void PCNode::addInterface(GenericNetworkInterface *iface){
         MACAddr MAC = createMac();
         EthernetDriver* driver = new EthernetDriver(MAC, eiface);
         interfaces[eiface]=driver;
+
+        IP4Driver *drv = new IP4OnEthernetDriver {driver};
+        ipNode.addDriver(drv);
     }
 }
 
@@ -29,6 +34,10 @@ void PCNode::removeInterface(GenericNetworkInterface *iface){
     if(driver != interfaces.end()){
         interfaces.erase(eiface);
     }
+
+    IP4Driver *drv = ipNode.driverByInterface(iface);
+    delete drv;
+
     NetworkNode::removeInterface(iface);
 }
 
@@ -39,4 +48,14 @@ EthernetDriver* PCNode::getDriver(EthernetInterface *iface){
     }
 
     return nullptr;
+}
+
+IP4Driver *PCNode::getIP4Driver(EthernetInterface *iface)
+{
+    return ipNode.driverByInterface(iface);
+}
+
+IP4Node *PCNode::getIP4Node()
+{
+    return &ipNode;
 }
