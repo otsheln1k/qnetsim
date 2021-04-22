@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>285</width>
-    <height>138</height>
+    <height>147</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="QLineEdit" name="macInput">
        <property name="inputMask">
         <string>HH:HH:HH:HH:HH:HH</string>
        </property>
@@ -47,7 +47,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="lineEdit_2">
+      <widget class="QLineEdit" name="ipInput">
        <property name="inputMask">
         <string>009.009.009.009</string>
        </property>
@@ -70,7 +70,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QSpinBox" name="spinBox">
+      <widget class="QSpinBox" name="cidrInput">
        <property name="maximum">
         <number>32</number>
        </property>

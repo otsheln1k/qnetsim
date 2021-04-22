@@ -90,6 +90,22 @@ void PCNode::sendECTPLoopback(GenericNetworkInterface *iface,
     sendEthernetFrame(eiface, through, ETHERTYPE_ECTP, bytes);
 }
 
+void PCNode::setInterfaceSettings(GenericNetworkInterface *iface,
+                                  MACAddr hw,
+                                  IP4Address ip,
+                                  uint8_t cidr)
+{
+    auto *eiface = dynamic_cast<EthernetInterface *>(iface);
+    if (eiface == nullptr) {
+        return;
+    }
+
+    getDriver(eiface)->setAddress(hw);
+    auto *ipdrv = getIP4Driver(eiface);
+    ipdrv->setAddress(ip);
+    ipdrv->setCidr(cidr);
+}
+
 IP4Driver *PCNode::getIP4Driver(EthernetInterface *iface)
 {
     return ipNode.driverByInterface(iface);

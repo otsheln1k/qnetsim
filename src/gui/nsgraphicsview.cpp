@@ -19,8 +19,6 @@ NSGraphicsView::NSGraphicsView(QWidget *parent)
     stepper.moveToThread(&simulationThread);
     resetModel();
     setScene(scene);
-
-    EthernetInterfaceSettingsDialog().exec();
 }
 
 NSGraphicsView::~NSGraphicsView()

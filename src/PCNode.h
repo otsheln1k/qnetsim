@@ -36,6 +36,11 @@ public slots:
                           uint16_t seq,
                           MACAddr through,
                           const QVector<uint8_t> &payload);
+
+    void setInterfaceSettings(GenericNetworkInterface *iface,
+                              MACAddr hw,
+                              IP4Address ip,
+                              uint8_t cidr);
 };
 
 #endif // PC_H

@@ -3,6 +3,9 @@
 
 #include <QDialog>
 
+#include "MACAddr.hpp"
+#include "IP4Address.hpp"
+
 namespace Ui {
 class EthernetInterfaceSettingsDialog;
 }
@@ -21,7 +24,7 @@ private:
     Ui::EthernetInterfaceSettingsDialog *ui;
 
 signals:
-    void info();
+    void info(MACAddr hw, IP4Address ip, uint8_t cidr);
 };
 
 #endif // ETHERNETINTERFACESETTINGSDIALOG_H
