@@ -4,21 +4,21 @@
 #include <QDialog>
 
 namespace Ui {
-class interfaceSettingsDialog;
+class EthernetInterfaceSettingsDialog;
 }
 
-class interfaceSettingsDialog : public QDialog
+class EthernetInterfaceSettingsDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit interfaceSettingsDialog(QWidget *parent = nullptr);
-    ~interfaceSettingsDialog();
+    explicit EthernetInterfaceSettingsDialog(QWidget *parent = nullptr);
+    ~EthernetInterfaceSettingsDialog();
 
     virtual void accept() override;
 
 private:
-    Ui::interfaceSettingsDialog *ui;
+    Ui::EthernetInterfaceSettingsDialog *ui;
 
 signals:
     void info();
