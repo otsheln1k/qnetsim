@@ -8,7 +8,7 @@
 class NSGraphicsPCNode : public NSGraphicsNode
 {
     Q_OBJECT;
-
+    //friend class Serialization;
     PCNode *node;
 
 public:

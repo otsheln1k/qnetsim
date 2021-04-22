@@ -42,6 +42,8 @@ void NSGraphicsView::resetModel()
                      this, &NSGraphicsView::onNodeAdded);
     QObject::connect(model, &NetworkModel::nodeRemoved,
                      this, &NSGraphicsView::onNodeRemoved);
+    QObject::connect(this, &NSGraphicsView::removingNode,
+                         model, &NetworkModel::removeNode);
 }
 
 void NSGraphicsView::onNodeAdded(NetworkNode *node)
@@ -59,7 +61,25 @@ void NSGraphicsView::onNodeRemoved(NetworkNode *node)
     QObject::disconnect(node, &NetworkNode::interfaceRemoved,
                         this, &NSGraphicsView::onInterfaceRemoved);
 
+    qDebug() << "node removed" << node;
+
+    for (auto iface : *node) {
+        for (auto iter = edgetab.begin(); iter != edgetab.end();) {
+            QObject *obj = iface;
+            bool remove = (iter->first.first == obj
+                           || iter->first.second == obj);
+            if (remove) {
+                qDebug() << "edge deleted" << obj << iter->first.first << iter->first.second;
+                delete iter->second;
+                edgetab.erase(iter++);
+            } else {
+                ++iter;
+            }
+        }
+    }
+
     nodetab.erase(node);
+    node->deleteLater();
 }
 
 void NSGraphicsView::onInterfaceAdded(GenericNetworkInterface *iface)
@@ -84,7 +104,7 @@ void NSGraphicsView::onInterfaceRemoved(GenericNetworkInterface *iface)
 
 void NSGraphicsView::onConnected(GenericNetworkInterface *other)
 {
-    auto *iface = dynamic_cast<GenericNetworkInterface *>(sender());
+    auto *iface = sender();
 
     if (other < iface) {
         return;
@@ -97,23 +117,33 @@ void NSGraphicsView::onConnected(GenericNetworkInterface *other)
         QLineF{n1->pos(), n2->pos()},
         Qt::SolidLine);
 
-    edgetab[std::make_tuple(iface, other)] = line;
+    auto key = std::make_pair(iface, (QObject *)other);
+    edgetab[key] = line;
 }
 
 void NSGraphicsView::onDisconnected(GenericNetworkInterface *other)
 {
-    auto *iface = dynamic_cast<GenericNetworkInterface *>(sender());
+    auto *iface = sender();
 
     qDebug() << "disconnected " << (void*)iface << " " << (void*)other;
+
+    if (iface == nullptr
+        || other == nullptr) {
+        return;
+    }
 
     if (other < iface) {
         return;
     }
 
-    qDebug() << "deleting";
+    qDebug() << "deleting edge";
 
-    auto *lineitem = edgetab.extract(std::make_tuple(iface, other)).mapped();
-    delete lineitem;
+    auto key = std::make_pair(iface, (QObject *)other);
+    auto entry = edgetab.extract(key);
+    if (!entry.empty()) {
+        auto *lineitem = entry.mapped();
+        delete lineitem;
+    }
 }
 
 void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
@@ -123,6 +153,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
         qDebug() << "Left button clicked!";
 
         QPoint pos = ev->pos();
+        qDebug() << pos;
         QPointF scn = mapToScene(pos);
 
         switch(mode){
@@ -152,9 +183,11 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
                 break;
             }
             }
-
             nd->moveToThread(&simulationThread);
             model->addNode(nd);
+
+            QObject::connect(gnode, &NSGraphicsNode::removingNode,
+                                         this, &NSGraphicsView::onRemovingGraphicsNode);
 
             scene->addItem(gnode);
             scene->update(0,0,width(),height());
@@ -253,4 +286,12 @@ void NSGraphicsView::resumeSimulation()
 void NSGraphicsView::stepSimulation()
 {
     QMetaObject::invokeMethod(&stepper, &SimulationStepper::step);
+}
+
+void NSGraphicsView::onRemovingGraphicsNode()
+{
+    auto *gn = dynamic_cast<NSGraphicsNode *>(sender());
+    auto *node = gn->networkNode();
+
+    emit removingNode(node);
 }

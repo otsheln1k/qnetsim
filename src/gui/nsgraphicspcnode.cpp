@@ -40,7 +40,7 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
     QObject::connect(menu->addAction("Удалить"), &QAction::triggered,
                      [this]()
                      {
-                         node->deleteLater();
+                         emit removingNode();
                      });
 
     QObject::connect(menu->addAction("Добавить порт Ethernet"),

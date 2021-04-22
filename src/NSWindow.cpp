@@ -117,3 +117,17 @@ void NSWindow::onSteppingToggled(bool value)
 
     ui->stepSimAction->setEnabled(value);
 }
+
+void NSWindow::on_saveButton_clicked()
+{
+    QString path = QFileDialog::getSaveFileName(this, "Save Dialog", "/home", "*.bin");
+    Serialization* serialization = new Serialization(ui->graphicsView, path);
+    serialization->createSave();
+}
+
+void NSWindow::on_loadButton_clicked()
+{
+    QString path = QFileDialog::getOpenFileName(this, "Load Dialog", "/home", "*.bin");
+    Serialization* serialization = new Serialization(ui->graphicsView, path);
+    serialization->loadSave();
+}

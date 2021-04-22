@@ -15,6 +15,7 @@ class NSGraphicsNode : public QObject,
                        public QGraphicsItem {
     Q_OBJECT;
     Q_INTERFACES(QGraphicsItem);
+    friend class Serialization;
 
 public:
     NSGraphicsNode(QObject *parent,
@@ -32,6 +33,7 @@ public:
 signals:
     void addingInterface(GenericNetworkInterface *iface);
     void removingInterface(GenericNetworkInterface *iface);
+    void removingNode();
 
 protected:
     virtual void paint(QPainter *painter,

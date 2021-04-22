@@ -27,7 +27,7 @@ enum NSGraphicsViewNode{
 class NSGraphicsView : public QGraphicsView
 {
     Q_OBJECT;
-
+    friend class Serialization;
     static QMenu *makeInterfacesMenu(NetworkNode *node);
 
 public:
@@ -57,9 +57,7 @@ private:
     QThread simulationThread {};
     SimulationStepper stepper {};
     std::map<NetworkNode *, NSGraphicsNode *> nodetab;
-    std::map<std::tuple<GenericNetworkInterface *,
-                        GenericNetworkInterface *>,
-             QGraphicsLineItem *> edgetab;
+    std::map<std::pair<QObject *, QObject *>, QGraphicsLineItem *> edgetab;
 
 private slots:
     void onNodeAdded(NetworkNode *node);
@@ -70,6 +68,10 @@ private slots:
 
     void onConnected(GenericNetworkInterface *other);
     void onDisconnected(GenericNetworkInterface *other);
+    void onRemovingGraphicsNode();
+
+    signals:
+        void removingNode(NetworkNode *node);
 };
 
 #endif // NSGRAPHICSVIEW_H

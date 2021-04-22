@@ -7,7 +7,6 @@
 class PCNode : public NetworkNode
 {
     Q_OBJECT;
-
 private:
     std::map<EthernetInterface*, EthernetDriver*> interfaces;
 
