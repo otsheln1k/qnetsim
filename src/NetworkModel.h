@@ -16,8 +16,6 @@ class NetworkModel : public QObject,
 public:
     NetworkModel();
 
-    void addNode(NetworkNode* node);
-    void removeNode(NetworkNode* node);
     unsigned int countNodes();
 
     class iterator {
@@ -48,6 +46,10 @@ public:
 
     virtual bool stepSend() override;
     virtual bool stepRecv() override;
+
+public slots:
+    void addNode(NetworkNode* node);
+    void removeNode(NetworkNode* node);
 
 signals:
     void nodeAdded(NetworkNode *node);

@@ -7,6 +7,7 @@
 #include "SimulationStepperTest.hpp"
 #include "SimulationLoggerTest.hpp"
 #include "ECTPDriverTest.hpp"
+#include "ARPPacketTest.hpp"
 
 int main(int argc, char **argv)
 {
@@ -18,6 +19,7 @@ int main(int argc, char **argv)
         new SimulationStepperTest {},
         new SimulationLoggerTest {},
         new ECTPDriverTest {},
+        new ARPPacketTest {},
     };
 
     int status = 0;

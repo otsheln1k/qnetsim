@@ -40,6 +40,8 @@ void NSGraphicsView::resetModel()
                      this, &NSGraphicsView::onNodeAdded);
     QObject::connect(model, &NetworkModel::nodeRemoved,
                      this, &NSGraphicsView::onNodeRemoved);
+    QObject::connect(this, &NSGraphicsView::addingNode,
+                     model, &NetworkModel::addNode);
 }
 
 void NSGraphicsView::onNodeAdded(NetworkNode *node)
@@ -145,7 +147,7 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
             }
 
             nd->moveToThread(&simulationThread);
-            model->addNode(nd);
+            emit addingNode(nd);
 
             scene->addItem(gnode);
             scene->update(0,0,width(),height());
