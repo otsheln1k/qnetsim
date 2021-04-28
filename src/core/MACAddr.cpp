@@ -95,6 +95,26 @@ bool MACAddr::operator!=(const MACAddr &a) const
     return !(*this == a);
 }
 
+bool MACAddr::operator<(const MACAddr &a) const
+{
+    return memcmp(_bs, a._bs, sizeof(_bs)) < 0;
+}
+
+bool MACAddr::operator>(const MACAddr &a) const
+{
+    return memcmp(_bs, a._bs, sizeof(_bs)) > 0;
+}
+
+bool MACAddr::operator<=(const MACAddr &a) const
+{
+    return memcmp(_bs, a._bs, sizeof(_bs)) <= 0;
+}
+
+bool MACAddr::operator>=(const MACAddr &a) const
+{
+    return memcmp(_bs, a._bs, sizeof(_bs)) >= 0;
+}
+
 char *MACAddr::display(char *p) const
 {
     uint64_t n = asUint64();

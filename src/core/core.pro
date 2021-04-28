@@ -14,6 +14,7 @@ SOURCES += EthernetDriver.cpp
 SOURCES += EthernetFrame.cpp
 SOURCES += EthernetInterface.cpp
 SOURCES += HubNode.cpp
+SOURCES += IP4Address.cpp
 SOURCES += IP4Node.cpp
 SOURCES += IP4OnEthernetDriver.cpp
 SOURCES += IP4Packet.cpp

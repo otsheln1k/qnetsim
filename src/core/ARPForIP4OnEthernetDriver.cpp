@@ -60,9 +60,12 @@ void ARPForIP4OnEthernetDriver::handleFrame(const EthernetFrame *f)
     }
 
     switch (p.operation()) {
-    case ARPPacket::OP_REQUEST:
-        sendPacket(p.makeReply(_addr.bytes()));
+    case ARPPacket::OP_REQUEST: {
+        uint8_t buf[4];
+        _addr.write(buf);
+        sendPacket(p.makeReply(buf));
         break;
+    }
     case ARPPacket::OP_REPLY: {
         MACAddr hw;
         hw.read(p.senderHardwareAddr());

@@ -9,8 +9,7 @@ EthernetInterfaceSettingsDialog::EthernetInterfaceSettingsDialog(MACAddr mac, IP
 {
     ui->setupUi(this);
     ui->macInput->setText(mac);
-    auto *tmp = ip4.bytes();
-    ui->ipInput->setText(QString{"%1.%2.%3.%4"}.arg(tmp[0]).arg(tmp[1]).arg(tmp[2]).arg(tmp[3]));
+    ui->ipInput->setText(QString{"%1.%2.%3.%4"}.arg(ip4[0]).arg(ip4[1]).arg(ip4[2]).arg(ip4[3]));
     ui->cidrInput->setValue(mask);
 }
 
