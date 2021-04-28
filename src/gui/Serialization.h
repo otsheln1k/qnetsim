@@ -3,8 +3,8 @@
 
 #include <QDebug>
 
-#include "gui/nsgraphicsview.h"
-#include "gui/nsgraphicshubnode.h"
+#include "nsgraphicsview.h"
+#include "nsgraphicshubnode.h"
 
 class Serialization
 {

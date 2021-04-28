@@ -476,7 +476,7 @@ padding: 3px;</string>
   <customwidget>
    <class>NSGraphicsView</class>
    <extends>QGraphicsView</extends>
-   <header>gui/nsgraphicsview.h</header>
+   <header>nsgraphicsview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
