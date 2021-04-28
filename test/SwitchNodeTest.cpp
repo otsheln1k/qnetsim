@@ -1,11 +1,11 @@
-#include "switchnodetest.h"
+#include "SwitchNodeTest.h"
 
 #include <stdint.h>
 #include <QVector>
 #include <QtTest/QtTest>
 #include "SimulationStepper.hpp"
 
-void switchnodeTest::testSwitch(){
+void SwitchNodeTest::testSwitch(){
 
     NetworkModel model;
     PCNode pc1;

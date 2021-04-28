@@ -5,7 +5,7 @@
 #include "SimulationStepper.hpp"
 #include "SimulationLogger.hpp"
 #include "EthernetInterface.hpp"
-#include "switchnode.h"
+#include "SwitchNode.h"
 #include "NSGraphicsSwitchNode.h"
 
 NSGraphicsSwitchNode::NSGraphicsSwitchNode(

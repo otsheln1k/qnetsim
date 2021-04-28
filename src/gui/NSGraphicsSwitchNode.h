@@ -1,7 +1,7 @@
 #ifndef NSGRAPHICSSWITCHNODE_H
 #define NSGRAPHICSSWITCHNODE_H
 
-#include "switchnode.h"
+#include "SwitchNode.h"
 #include "NetworkNode.h"
 #include "nsgraphicsnode.h"
 

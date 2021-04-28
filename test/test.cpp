@@ -7,7 +7,7 @@
 #include "SimulationStepperTest.hpp"
 #include "SimulationLoggerTest.hpp"
 #include "ECTPDriverTest.hpp"
-#include "switchnodetest.h"
+#include "SwitchNodeTest.h"
 #include "ARPPacketTest.hpp"
 
 int main(int argc, char **argv)
@@ -20,7 +20,7 @@ int main(int argc, char **argv)
         new SimulationStepperTest {},
         new SimulationLoggerTest {},
         new ECTPDriverTest {},
-        new switchnodeTest{},
+        new SwitchNodeTest{},
         new ARPPacketTest {},
     };
 

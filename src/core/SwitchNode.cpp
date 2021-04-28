@@ -1,4 +1,4 @@
-#include "switchnode.h"
+#include "SwitchNode.h"
 
 SwitchNode::SwitchNode(){}
 

@@ -17,7 +17,7 @@ HEADERS += EthernetInterfaceTest.hpp
 HEADERS += MACAddrTest.hpp
 HEADERS += SimulationLoggerTest.hpp
 HEADERS += SimulationStepperTest.hpp
-HEADERS += switchnodetest.h
+HEADERS += SwitchNodeTest.h
 
 SOURCES += ARPPacketTest.cpp
 SOURCES += ECTPDriverTest.cpp
@@ -27,4 +27,4 @@ SOURCES += EthernetInterfaceTest.cpp
 SOURCES += MACAddrTest.cpp
 SOURCES += SimulationLoggerTest.cpp
 SOURCES += SimulationStepperTest.cpp
-SOURCES += switchnodetest.cpp
+SOURCES += SwitchNodeTest.cpp

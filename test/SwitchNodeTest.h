@@ -2,11 +2,11 @@
 #define SWITCHNODETEST_H
 
 #include <QObject>
-#include "switchnode.h"
+#include "SwitchNode.h"
 #include "PCNode.h"
 #include "NetworkModel.h"
 
-class switchnodeTest: public QObject{
+class SwitchNodeTest: public QObject{
     Q_OBJECT;
 
 private slots:

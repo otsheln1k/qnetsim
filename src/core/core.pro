@@ -23,7 +23,7 @@ SOURCES += NetworkNode.cpp
 SOURCES += PCNode.cpp
 SOURCES += SimulationLogger.cpp
 SOURCES += SimulationStepper.cpp
-SOURCES += switchnode.cpp
+SOURCES += SwitchNode.cpp
 
 HEADERS += ARPForIP4OnEthernetDriver.hpp
 HEADERS += ARPPacket.hpp
@@ -45,4 +45,4 @@ HEADERS += PCNode.h
 HEADERS += SimulationLogger.hpp
 HEADERS += SimulationStepper.hpp
 HEADERS += Steppable.hpp
-HEADERS += switchnode.h
+HEADERS += SwitchNode.h

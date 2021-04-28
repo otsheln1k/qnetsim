@@ -2,7 +2,7 @@
 
 #include "PCNode.h"
 #include "HubNode.h"
-#include "switchnode.h"
+#include "SwitchNode.h"
 #include "NetworkModel.h"
 
 #include "nsgraphicspcnode.h"
