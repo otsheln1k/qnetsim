@@ -33,12 +33,7 @@ bool MACAddr::isUnicast() const
 
 bool MACAddr::isBroadcast() const
 {
-    for (int i = 0; i < 6; ++i) {
-        if (_bs[i] != 0xFF) {
-            return false;
-        }
-    }
-    return true;
+    return asUint64() == BROADCAST_ADDR;
 }
 
     // Organizationally Unique Identifier (i.e. upper 24 bits are vendor ID)

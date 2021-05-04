@@ -29,7 +29,7 @@ void ARPForIP4OnEthernetDriver::sendPacket(const ARPPacket &p)
     std::vector<uint8_t> buf (p.size());
     p.write(buf.data());
 
-    _drv->sendFrame(0xFFFFFFFFFFFF, // broadcast
+    _drv->sendFrame(MACAddr::BROADCAST_ADDR,
                     ETHERTYPE_ARP,
                     buf.begin(),
                     buf.end());

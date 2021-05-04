@@ -12,6 +12,8 @@ private:
     uint8_t _bs[6];
 
 public:
+    static const uint64_t BROADCAST_ADDR = 0xFFFFFFFFFFFF;
+
     MACAddr();
 
     MACAddr(uint8_t x1, uint8_t x2, uint8_t x3,
