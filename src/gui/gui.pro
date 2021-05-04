@@ -5,6 +5,9 @@ QT = core gui widgets
 INCLUDEPATH += ../core
 LIBS += -L../core -lqnetsimcore
 
+# TODO: other name on MS Windows?
+PRE_TARGETDEPS += ../core/libqnetsimcore.a
+
 TARGET = qnetsim
 CONFIG += c++17 strict_c++ warn_on
 

@@ -7,6 +7,9 @@ CONFIG += testcase no_testcase_installs
 INCLUDEPATH += ../src/core
 LIBS += -L../src/core -lqnetsimcore
 
+# TODO: other name on MS Windows?
+PRE_TARGETDEPS += ../src/core/libqnetsimcore.a
+
 SOURCES = test.cpp
 
 HEADERS += ARPPacketTest.hpp
