@@ -150,24 +150,24 @@ static int8_t charValue(char c)
     return -1;
 }
 
-bool MACAddr::parse(const char *s)
+const char *MACAddr::parse(const char *s)
 {
     for (int i = 0; i < 6; ++i) {
         if (i > 0
             && *s++ != ':') {
-            return false;
+            return nullptr;
         }
 
         char ch, cl;
         if ((ch = charValue(*s++)) < 0
             || (cl = charValue(*s++)) < 0) {
-            return false;
+            return nullptr;
         }
 
         _bs[i] = cl | (ch << 4);
     }
 
-    return true;
+    return s;
 }
 
 bool MACAddr::parseQString(const QString &s)

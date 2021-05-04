@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <string.h>
+
 #include <QString>
 #include <QMetaType>
 
@@ -46,7 +47,7 @@ public:
     bool operator<=(const MACAddr &a) const;
     bool operator>=(const MACAddr &a) const;
 
-    bool parse(const char *s);
+    const char *parse(const char *s);
     char *display(char *p) const;
 
     bool parseQString(const QString &s);
