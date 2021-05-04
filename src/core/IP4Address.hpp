@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <string.h>
 
+#include <QString>
+#include <QMetaType>
+
 class IP4Address {
     uint8_t _b[4];
 
@@ -19,7 +22,6 @@ public:
     uint32_t asUint32() const;
 
     uint8_t *write(uint8_t *dest) const;
-
     const uint8_t *read(const uint8_t *src);
 
     bool operator==(const IP4Address &a) const;
@@ -30,8 +32,16 @@ public:
     bool operator<=(const IP4Address &a) const;
     bool operator>=(const IP4Address &a) const;
 
-    // TODO: to/from string
+    const char *parse(const char *s);
+    char *display(char *p) const;
+    size_t displaySize() const;
+
+    bool parseQString(const QString &s);
+    operator QString() const;
+
     // TODO: split into subnet/node addresses
 };
+
+Q_DECLARE_METATYPE(IP4Address);
 
 #endif

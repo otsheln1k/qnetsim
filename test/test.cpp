@@ -9,6 +9,7 @@
 #include "ECTPDriverTest.hpp"
 #include "SwitchNodeTest.h"
 #include "ARPPacketTest.hpp"
+#include "IP4AddressTest.hpp"
 
 int main(int argc, char **argv)
 {
@@ -22,6 +23,7 @@ int main(int argc, char **argv)
         new ECTPDriverTest {},
         new SwitchNodeTest{},
         new ARPPacketTest {},
+        new IP4AddressTest {},
     };
 
     int status = 0;
