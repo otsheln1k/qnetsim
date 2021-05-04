@@ -3,15 +3,20 @@
 
 #include <stdint.h>
 
+#include <optional>
 #include <vector>
 
 #include "IP4Address.hpp"
+
+uint16_t ip4HeaderChecksum(const uint8_t *data, size_t len);
 
 // Note: we can use the same class for fragmented and reconstructed packets, so
 // no restrictions on payload size should be made here.
 
 enum IPProtocol : uint8_t {
     IPPROTO_ICMP = 1,
+    IPPROTO_TEST1 = 0xFD,
+    IPPROTO_TEST2 = 0xFE,
     IPPROTO_RESERVED = 0xFF,
 };
 
@@ -32,12 +37,16 @@ private:
     uint16_t _frag_offset = 0;
     uint8_t _ttl = 0;
     IPProtocol _proto = IPPROTO_RESERVED;
-    uint16_t _hcs = 0;
+
+    std::optional<uint16_t> _hcs {};
+    uint16_t _calchcs = 0;
 
     IP4Address _srca {};
     IP4Address _dsta {};
 
     std::vector<uint8_t> _payload {};
+
+    uint8_t *writeHeaderNoChecksum(uint8_t *dest) const;
 
 public:
     IP4Packet() {}
@@ -57,8 +66,17 @@ public:
     IPProtocol protocol() const { return _proto; }
     void setProtocol(IPProtocol x) { _proto = x; }
 
-    uint16_t headerChecksum() const { return _hcs; }
-    void setHeaderChecksum(uint16_t x) { _hcs = x; }
+    uint16_t headerChecksum() const { return _hcs.value(); }
+    void setHeaderChecksum(uint16_t x) { _hcs.emplace(x); }
+    void unsetHeaderChecksum() { _hcs.reset(); }
+    uint16_t calculatedHeaderChecksum() const { return _calchcs; }
+
+    bool headerChecksumCorrect() const
+    {
+        return _hcs && _calchcs == _hcs.value();
+    }
+
+    uint16_t calculateHeaderChecksum() const;
 
     IP4Address srcAddr() const { return _srca; }
     void setSrcAddr(IP4Address x) { _srca = x; }
@@ -73,7 +91,9 @@ public:
     const uint8_t *read(const uint8_t *src, size_t len);
     uint8_t *write(uint8_t *dest) const;
 
-    // TODO: checksumming
+    size_t headerSize() const;
+    uint8_t *writeHeader(uint8_t *dest) const;
+
     // TODO: fragmentation & reconstruction
 };
 

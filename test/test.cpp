@@ -10,6 +10,7 @@
 #include "SwitchNodeTest.h"
 #include "ARPPacketTest.hpp"
 #include "IP4AddressTest.hpp"
+#include "IP4PacketTest.hpp"
 
 int main(int argc, char **argv)
 {
@@ -24,6 +25,7 @@ int main(int argc, char **argv)
         new SwitchNodeTest{},
         new ARPPacketTest {},
         new IP4AddressTest {},
+        new IP4PacketTest {},
     };
 
     int status = 0;
