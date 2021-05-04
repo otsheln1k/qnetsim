@@ -9,7 +9,7 @@ void IP4PacketTest::testChecksum()
 {
     QFETCH(QVector<uint8_t>, data);
 
-    uint16_t hcs = ip4HeaderChecksum(data.data(), data.size());
+    uint16_t hcs = IP4Checksum::ofBytes(data.data(), data.size());
 
     QTEST(hcs, "checksum");
 }

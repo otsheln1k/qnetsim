@@ -3,15 +3,32 @@
 
 #include "IP4Packet.hpp"
 
-uint16_t ip4HeaderChecksum(const uint8_t *data, size_t len)
+void IP4Checksum::feedWord(uint16_t w)
 {
-    uint16_t acc = 0;
-    for (size_t i = 0; i + 1 < len; i += 2) {
-        uint16_t w = (data[i]<<8) | data[i+1];
-        uint32_t x = (uint32_t)acc + w;
-        acc = (x & 0xFFFF) + ((x >> 16) & 0xFFFF); // Note: won’t overflow
+    uint32_t x = (uint32_t)_acc + w;
+    _acc = (x & 0xFFFF) + ((x >> 16) & 0xFFFF); // Note: won’t overflow
+}
+
+void IP4Checksum::feedBytes(const uint8_t *start, size_t n)
+{
+    for (size_t i = 0; i + 1 < n; i += 2) {
+        feedWord((start[i]<<8) | start[i+1]);
     }
-    return ~acc;
+    if (n % 2 != 0) {
+        feedWord(start[n-1]<<8);
+    }
+}
+
+uint16_t IP4Checksum::result() const
+{
+    return ~_acc;
+}
+
+uint16_t IP4Checksum::ofBytes(const uint8_t *start, size_t n)
+{
+    IP4Checksum cs {};
+    cs.feedBytes(start, n);
+    return cs.result();
 }
 
 static uint8_t *writeUint16(uint8_t *dest, uint16_t v)
@@ -83,10 +100,10 @@ const uint8_t *IP4Packet::read(const uint8_t *src, size_t len)
 
     // TODO: Options
 
-    uint16_t hcalc = ip4HeaderChecksum(src, hdrbytes);
-    uint16_t a = ~hcalc;
-    uint16_t d = a - hcs - (a <= hcs);
-    _calchcs = ~d;
+    IP4Checksum cs {};
+    cs.feedBytes(src, 10);      // 10: offset to 2-byte HCS
+    cs.feedBytes(&src[12], hdrbytes-12);
+    _calchcs = cs.result();
 
     uint16_t pll = total_len - hdrbytes;
     _payload.resize(pll);
@@ -130,7 +147,7 @@ uint8_t *IP4Packet::writeHeader(uint8_t *dest) const
     if (_hcs) {
         hcsvalue = _hcs.value();
     } else {
-        hcsvalue = ip4HeaderChecksum(dest, end - dest);
+        hcsvalue = IP4Checksum::ofBytes(dest, end - dest);
     }
 
     writeUint16(&dest[10], hcsvalue); // 10: offset to HCS
@@ -142,7 +159,7 @@ uint16_t IP4Packet::calculateHeaderChecksum() const
 {
     std::vector<uint8_t> buf (headerSize());
     writeHeaderNoChecksum(buf.data());
-    return ip4HeaderChecksum(buf.data(), buf.size());
+    return IP4Checksum::ofBytes(buf.data(), buf.size());
 }
 
 uint8_t *IP4Packet::write(uint8_t *dest) const

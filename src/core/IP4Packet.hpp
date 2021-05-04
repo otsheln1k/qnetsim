@@ -8,8 +8,6 @@
 
 #include "IP4Address.hpp"
 
-uint16_t ip4HeaderChecksum(const uint8_t *data, size_t len);
-
 // Note: we can use the same class for fragmented and reconstructed packets, so
 // no restrictions on payload size should be made here.
 
@@ -18,6 +16,20 @@ enum IPProtocol : uint8_t {
     IPPROTO_TEST1 = 0xFD,
     IPPROTO_TEST2 = 0xFE,
     IPPROTO_RESERVED = 0xFF,
+};
+
+class IP4Checksum {
+    uint16_t _acc = 0;
+
+public:
+    IP4Checksum() {};
+
+    void feedWord(uint16_t w);
+    void feedBytes(const uint8_t *start, size_t n);
+
+    uint16_t result() const;
+
+    static uint16_t ofBytes(const uint8_t *start, size_t n);
 };
 
 class IP4Packet {
@@ -94,7 +106,9 @@ public:
     size_t headerSize() const;
     uint8_t *writeHeader(uint8_t *dest) const;
 
-    // TODO: fragmentation & reconstruction
+    // TODO: fragmentation & reassembly
 };
+
+// TODO: metatype
 
 #endif
