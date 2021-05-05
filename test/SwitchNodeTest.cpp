@@ -49,14 +49,12 @@ void SwitchNodeTest::testSwitch(){
                      [&k](uint16_t seq, const uint8_t *, size_t){
         QCOMPARE(seq, 22);
         k++;
-        qDebug("IFACE3");
     });
 
     QObject::connect(pc2.getDriver(&iface2)->ectpDriver(), &ECTPDriver::forward,
                      [&k ,&pc1, &iface1](MACAddr a){
 
         QCOMPARE(a, pc1.getDriver(&iface1)->address());
-        qDebug("OK TUT");
         k++;
     });
 
@@ -69,6 +67,4 @@ void SwitchNodeTest::testSwitch(){
 
     QCOMPARE(f, 1);
     QCOMPARE(k, 2);
-
-    qDebug() << f << " " << k;
 }
