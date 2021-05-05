@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdint.h>
 
+#include "util.hpp"
 #include "IP4Packet.hpp"
 
 void IP4Checksum::feedWord(uint16_t w)
@@ -29,21 +30,6 @@ uint16_t IP4Checksum::ofBytes(const uint8_t *start, size_t n)
     IP4Checksum cs {};
     cs.feedBytes(start, n);
     return cs.result();
-}
-
-static uint8_t *writeUint16(uint8_t *dest, uint16_t v)
-{
-    *dest++ = (v >> 8) & 0xFF;
-    *dest++ = v & 0xFF;
-    return dest;
-}
-
-static uint16_t readUint16(const uint8_t *src)
-{
-    uint16_t v;
-    v = (uint16_t)*src++ << 8;
-    v |= (uint16_t)*src++;
-    return v;
 }
 
 size_t IP4Packet::headerSize() const
@@ -78,21 +64,21 @@ const uint8_t *IP4Packet::read(const uint8_t *src, size_t len)
 
     // skip DS
 
-    uint16_t total_len = readUint16(&src[2]);
+    uint16_t total_len = readBigEndianUint16(&src[2]);
 
     if (total_len > len) {
         return nullptr;
     }
 
-    _ident = readUint16(&src[4]);
+    _ident = readBigEndianUint16(&src[4]);
 
-    uint16_t f = readUint16(&src[6]);
+    uint16_t f = readBigEndianUint16(&src[6]);
     _flags = (Flags)((f >> 13) & 0x7);
     _frag_offset = f & 0x1FFF;
 
     _ttl = src[8];
     _proto = (IPProtocol)src[9];
-    uint16_t hcs = readUint16(&src[10]);
+    uint16_t hcs = readBigEndianUint16(&src[10]);
     _hcs.emplace(hcs);
 
     _srca.read(&src[12]);
@@ -117,19 +103,19 @@ uint8_t *IP4Packet::writeHeaderNoChecksum(uint8_t *dest) const
     *dest++ = 0x45;             // No Options yet
     *dest++ = 0x00;             // No DS yet
 
-    dest = writeUint16(dest, (uint16_t)size());
+    dest = writeBigEndianUint16(dest, (uint16_t)size());
 
-    dest = writeUint16(dest, _ident);
+    dest = writeBigEndianUint16(dest, _ident);
 
     uint16_t f =
         (((uint16_t)_flags & 0x7) << 13)
         | (_frag_offset & 0x1FFF);
-    dest = writeUint16(dest, f);
+    dest = writeBigEndianUint16(dest, f);
 
     *dest++ = _ttl;
     *dest++ = _proto & 0xFF;
 
-    dest = writeUint16(dest, 0);
+    dest = writeBigEndianUint16(dest, 0);
 
     dest = _srca.write(dest);
     dest = _dsta.write(dest);
@@ -150,7 +136,7 @@ uint8_t *IP4Packet::writeHeader(uint8_t *dest) const
         hcsvalue = IP4Checksum::ofBytes(dest, end - dest);
     }
 
-    writeUint16(&dest[10], hcsvalue); // 10: offset to HCS
+    writeBigEndianUint16(&dest[10], hcsvalue); // 10: offset to HCS
 
     return end;
 }
