@@ -71,3 +71,40 @@ void ARPPacketTest::testRead()
     QVERIFY(!memcmp(p.targetHardwareAddr(), tha.data(), tha.size()));
     QVERIFY(!memcmp(p.targetProtocolAddr(), tpa.data(), tpa.size()));
 }
+
+void ARPPacketTest::testReply()
+{
+    // Request from:
+    QVector<uint8_t> sha = {1,1,1,1,1,1};
+    QVector<uint8_t> spa = {192,168,0,1};
+
+    // Requesting:
+    QVector<uint8_t> tpa = {192,168,0,2};
+
+    // Reply:
+    QVector<uint8_t> tha {2,2,2,2,2,2};
+
+    ARPPacket p {};
+    p.setHardwareType(HWTYPE_ETHERNET);
+    p.setProtocolType(ETHERTYPE_IPV4);
+    p.setAddrSizes(6, 4);
+    p.setOperation(ARPPacket::OP_REQUEST);
+
+    memcpy(p.senderHardwareAddr(), sha.data(), sha.size());
+    memcpy(p.senderProtocolAddr(), spa.data(), spa.size());
+    memset(p.targetHardwareAddr(), 0, 6);
+    memcpy(p.targetProtocolAddr(), tpa.data(), tpa.size());
+
+    ARPPacket r = p.makeReply(tha.data());
+
+    QCOMPARE(r.hardwareType(), p.hardwareType());
+    QCOMPARE(r.protocolType(), p.protocolType());
+    QCOMPARE(r.hardwareAddrSize(), p.hardwareAddrSize());
+    QCOMPARE(r.protocolAddrSize(), p.protocolAddrSize());
+    QCOMPARE(r.operation(), ARPPacket::OP_REPLY);
+
+    QVERIFY(!memcmp(r.senderHardwareAddr(), tha.data(), tha.size()));
+    QVERIFY(!memcmp(r.senderProtocolAddr(), tpa.data(), tpa.size()));
+    QVERIFY(!memcmp(r.targetProtocolAddr(), spa.data(), spa.size()));
+    QVERIFY(!memcmp(r.targetHardwareAddr(), sha.data(), sha.size()));
+}

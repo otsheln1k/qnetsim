@@ -10,6 +10,8 @@ private slots:
     void testWrite();
 
     void testRead();
+
+    void testReply();
 };
 
 #endif
