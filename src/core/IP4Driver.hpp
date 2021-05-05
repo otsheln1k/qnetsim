@@ -3,11 +3,14 @@
 
 #include <QObject>
 
+#include "Tickable.hpp"
 #include "GenericNetworkInterface.hpp"
 #include "IP4Packet.hpp"
 #include "IP4Address.hpp"
 
-class IP4Driver : public QObject {
+class IP4Driver : public QObject,
+                  public Tickable
+{
     Q_OBJECT;
 
 protected:
@@ -22,6 +25,8 @@ public:
     virtual void setCidr(uint8_t x) { _cidr = x; }
 
     virtual GenericNetworkInterface *interface() const =0;
+
+    virtual bool tick() override { return false; }
 
 public slots:
     // Note: don’t mark this as slot in subclasses, it shouldn’t be necessary

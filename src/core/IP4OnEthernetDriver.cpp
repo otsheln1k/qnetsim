@@ -29,17 +29,34 @@ void IP4OnEthernetDriver::sendPacket(const IP4Packet &p)
 {
     // TODO: fragmentation
 
-    // TODO: timeout
-
     _arp->sendRequest(p.dstAddr());
-    _queue.insert(std::make_pair(p.dstAddr(), p));
+    _queue.insert(std::make_pair(p.dstAddr(), SendItem{p, _timeout}));
+}
+
+bool IP4OnEthernetDriver::tick()
+{
+    bool res = !_queue.empty();
+
+    for (auto iter = _queue.begin(); iter != _queue.end();) {
+        SendItem &item = iter->second;
+        if (item.timeout == 0) {
+            _queue.erase(iter++);
+        } else {
+            if (item.timeout > 0) {
+                --item.timeout;
+            }
+            ++iter;
+        }
+    }
+
+    return res;
 }
 
 void IP4OnEthernetDriver::handleARPReply(MACAddr hw, IP4Address ip)
 {
     auto range = _queue.equal_range(ip);
     for (auto iter = range.first; iter != range.second;) {
-        IP4Packet &p = iter->second;
+        IP4Packet &p = iter->second.packet;
         if (p.dstAddr() != ip) {
             ++iter;
             continue;

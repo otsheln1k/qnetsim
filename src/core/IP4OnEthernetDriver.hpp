@@ -16,10 +16,12 @@ class IP4OnEthernetDriver : public IP4Driver {
     EthernetDriver *_drv;
     ARPForIP4OnEthernetDriver *_arp;
 
-    std::multimap<IP4Address, IP4Packet> _queue {};
-
-    // TODO: ARP cache
-    // TODO: ARP driver or something
+    struct SendItem {
+        IP4Packet packet;
+        int timeout;
+    };
+    std::multimap<IP4Address, SendItem> _queue {};
+    int _timeout = -1;
 
 public:
     IP4OnEthernetDriver(EthernetDriver *drv);
@@ -32,6 +34,13 @@ public:
     virtual void setAddress(IP4Address addr) override;
 
     virtual void sendPacket(const IP4Packet &p) override;
+
+    virtual bool tick() override;
+
+    int timeout() const { return _timeout; }
+    void setTimeout(int x) { _timeout = x; }
+
+    ARPForIP4OnEthernetDriver *arpDriver() { return _arp; }
 
 private slots:
     void handleFrame(const EthernetFrame *f);

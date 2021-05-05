@@ -14,6 +14,8 @@ class IP4OnEthernetTest : public QObject {
 
 private slots:
     void testOneLink();
+
+    void testTimeout();
 };
 
 #endif

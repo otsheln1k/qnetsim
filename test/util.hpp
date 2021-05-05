@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "Tickable.hpp"
 #include "Steppable.hpp"
 
 #include <QObject>
@@ -27,6 +28,15 @@ struct SimpleModel : public Steppable {
         }
         return res;
     }
+};
+
+struct StepTicker : public Steppable {
+    Tickable *t;
+
+    StepTicker(Tickable *t) :t{t} {}
+
+    virtual bool stepSend() override { return false; }
+    virtual bool stepRecv() override { return t->tick(); }
 };
 
 struct Counter : public Steppable {
