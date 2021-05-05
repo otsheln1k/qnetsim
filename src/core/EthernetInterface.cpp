@@ -87,7 +87,7 @@ bool EthernetInterface::stepSend()
 
     while (!_sq.empty()) {
         if (_peer) {
-            _peer->_bq.emplace(std::move(_sq.front()));
+            _peer->_rq.emplace(std::move(_sq.front()));
         }
 
         _sq.pop();
@@ -98,7 +98,9 @@ bool EthernetInterface::stepSend()
 
 bool EthernetInterface::stepRecv()
 {
-    bool res = !_rq.empty() || !_bq.empty();
+    if (_rq.empty()) {
+        return false;
+    }
 
     SimulationLogger::currentLogger()->setCurrentInterface(this);
 
@@ -115,9 +117,7 @@ bool EthernetInterface::stepRecv()
 
     SimulationLogger::currentLogger()->unsetCurrentInterface();
 
-    std::swap(_rq, _bq);
-
-    return res;
+    return true;
 }
 
 EthernetInterface::~EthernetInterface()

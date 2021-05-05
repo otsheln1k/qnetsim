@@ -3,10 +3,14 @@
 
 /* Usage
  *
- * To implement layer-at-a-time stepping, first step the sending parts from
- * lower to higher layers, then step the receiving parts from higher to lower
- * layer. Only start receiving after all nodes in the model have completed the
- * sending part.
+ * Stepping only happens in interfaces; the parts on upper levels are driven
+ * either by the interfaces or by timers. To ensure steps are separated,
+ * interfaces must buffer transmitted data.
+ *
+ * 1. All writes go to send-buffer (instead of executing immediately);
+ * 2. We want to be able to review send-buffer contents, so replies to received
+ *    messages must NOT be transmitted immediately. Thus, the order of sub-steps
+ *    is send, then recv.
  *
  * Return value is true if any action was taken during the step. If all steps of
  * all elements of the model return false, the simulation can be stopped.
