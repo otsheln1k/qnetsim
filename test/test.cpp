@@ -11,6 +11,7 @@
 #include "ARPPacketTest.hpp"
 #include "IP4AddressTest.hpp"
 #include "IP4PacketTest.hpp"
+#include "IP4OnEthernetTest.hpp"
 
 int main(int argc, char **argv)
 {
@@ -26,6 +27,7 @@ int main(int argc, char **argv)
         new ARPPacketTest {},
         new IP4AddressTest {},
         new IP4PacketTest {},
+        new IP4OnEthernetTest {},
     };
 
     int status = 0;

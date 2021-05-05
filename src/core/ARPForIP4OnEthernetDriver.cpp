@@ -18,7 +18,7 @@ ARPPacket ARPForIP4OnEthernetDriver::makeRequestPacket(IP4Address lookupAddr)
 
     _drv->address().write(p.senderHardwareAddr());
     _addr.write(p.senderProtocolAddr());
-    memset(p.targetHardwareAddr(), 0, 4);
+    memset(p.targetHardwareAddr(), 0, 6);
     lookupAddr.write(p.targetProtocolAddr());
 
     return p;
@@ -28,6 +28,8 @@ void ARPForIP4OnEthernetDriver::sendPacket(const ARPPacket &p)
 {
     std::vector<uint8_t> buf (p.size());
     p.write(buf.data());
+
+    // TODO: directed reply
 
     _drv->sendFrame(MACAddr::BROADCAST_ADDR,
                     ETHERTYPE_ARP,
@@ -61,8 +63,8 @@ void ARPForIP4OnEthernetDriver::handleFrame(const EthernetFrame *f)
 
     switch (p.operation()) {
     case ARPPacket::OP_REQUEST: {
-        uint8_t buf[4];
-        _addr.write(buf);
+        uint8_t buf[6];
+        _drv->address().write(buf);
         sendPacket(p.makeReply(buf));
         break;
     }

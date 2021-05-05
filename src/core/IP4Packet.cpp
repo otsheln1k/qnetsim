@@ -80,7 +80,7 @@ const uint8_t *IP4Packet::read(const uint8_t *src, size_t len)
 
     uint16_t total_len = readUint16(&src[2]);
 
-    if (total_len < len) {
+    if (total_len > len) {
         return nullptr;
     }
 

@@ -38,11 +38,19 @@ void IP4OnEthernetDriver::sendPacket(const IP4Packet &p)
 void IP4OnEthernetDriver::handleARPReply(MACAddr hw, IP4Address ip)
 {
     auto range = _queue.equal_range(ip);
-    for (auto iter = range.first; iter != range.second; ++iter) {
-        std::vector<uint8_t> buf (iter->second.size());
-        iter->second.write(buf.data());
+    for (auto iter = range.first; iter != range.second;) {
+        IP4Packet &p = iter->second;
+        if (p.dstAddr() != ip) {
+            ++iter;
+            continue;
+        }
+
+        std::vector<uint8_t> buf (p.size());
+        p.write(buf.data());
 
         _drv->sendFrame(hw, ETHERTYPE_IPV4, buf.begin(), buf.end());
+
+        _queue.erase(iter++);
     }
 }
 

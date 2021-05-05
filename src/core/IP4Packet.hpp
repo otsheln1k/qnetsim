@@ -48,7 +48,7 @@ private:
     Flags _flags = (Flags)0;
     uint16_t _frag_offset = 0;
     uint8_t _ttl = 0;
-    IPProtocol _proto = IPPROTO_RESERVED;
+    IPProtocol _proto = IPPROTO_TEST1;
 
     std::optional<uint16_t> _hcs {};
     uint16_t _calchcs = 0;

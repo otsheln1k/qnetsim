@@ -14,6 +14,8 @@ class ARPForIP4OnEthernetDriver : public QObject {
     EthernetDriver *_drv;
     IP4Address _addr;
 
+    // TODO: ARP cache
+
 public:
     ARPForIP4OnEthernetDriver(EthernetDriver *drv, IP4Address addr);
 
