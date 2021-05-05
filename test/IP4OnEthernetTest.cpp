@@ -1,6 +1,6 @@
 #include <QtTest/QtTest>
 
-#include "Steppable.hpp"
+#include "util.hpp"
 #include "SimulationStepper.hpp"
 #include "EthernetInterface.hpp"
 #include "EthernetDriver.hpp"
@@ -10,28 +10,6 @@
 void IP4OnEthernetTest::testOneLink()
 {
     static const uint16_t ident = 42;
-
-    struct SimpleModel : public Steppable {
-        std::vector<Steppable *> vec;
-
-        virtual bool stepSend() override
-        {
-            bool res = false;
-            for (Steppable *s : vec) {
-                res = s->stepSend() || res;
-            }
-            return res;
-        }
-
-        virtual bool stepRecv() override
-        {
-            bool res = false;
-            for (Steppable *s : vec) {
-                res = s->stepRecv() || res;
-            }
-            return res;
-        }
-    };
 
     EthernetInterface if1 {};
     EthernetInterface if2 {};

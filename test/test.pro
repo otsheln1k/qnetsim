@@ -12,6 +12,8 @@ PRE_TARGETDEPS += ../src/core/libqnetsimcore.a
 
 SOURCES = test.cpp
 
+HEADERS += util.hpp
+
 HEADERS += ARPPacketTest.hpp
 HEADERS += ECTPDriverTest.hpp
 HEADERS += EthernetDriverTest.hpp
