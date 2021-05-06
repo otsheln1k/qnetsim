@@ -1,25 +1,26 @@
 #include <stdio.h>
 
+#include "util.hpp"
 #include "IP4Address.hpp"
 
 uint8_t *IP4Address::write(uint8_t *dest) const
 {
-    memcpy(dest, _b, sizeof(_b));
-    return dest + sizeof(_b);
+    return writeBigEndianUint32(dest, _bits);
 }
 
 const uint8_t *IP4Address::read(const uint8_t *src)
 {
-    memcpy(_b, src, sizeof(_b));
-    return src + sizeof(_b);
+    _bits = readBigEndianUint32(src);
+    return src + 4;
 }
 
 size_t IP4Address::displaySize() const
 {
     size_t acc = 0;
     for (int i = 0; i < 4; ++i) {
-        acc += (_b[i] < 10) ? 1
-            :  (_b[i] < 100) ? 2 : 3;
+        uint8_t o = octet(i);
+        acc += (o < 10) ? 1
+            :  (o < 100) ? 2 : 3;
     }
     return acc + 3;
 }
@@ -28,7 +29,7 @@ char *IP4Address::display(char *p) const
 {
     char buf[16];
     int n = sprintf(buf, "%hhu.%hhu.%hhu.%hhu",
-                    _b[0], _b[1], _b[2], _b[3]);
+                    octet(0), octet(1), octet(2), octet(3));
     memcpy(p, buf, n);
     return p + n;
 }
@@ -58,7 +59,7 @@ const char *IP4Address::parse(const char *s)
                 return nullptr;
             }
             ne = false;
-            _b[i] = (uint8_t)acc;
+            _bits = (_bits << 8) | acc;
             acc = 0;
             ++i;
             if (i == 4) {
@@ -88,7 +89,7 @@ bool IP4Address::parseQString(const QString &s)
                 return false;
             }
             ne = false;
-            _b[i] = (uint8_t)acc;
+            _bits = (_bits << 8) | acc;
             acc = 0;
             ++i;
         } else {
@@ -100,6 +101,6 @@ bool IP4Address::parseQString(const QString &s)
         return false;
     }
 
-    _b[i] = (uint8_t)acc;
+    _bits = (_bits << 8) | acc;
     return true;
 }

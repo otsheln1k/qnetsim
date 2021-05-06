@@ -57,12 +57,12 @@ void IP4AddressTest::testToString()
     size_t sz = addr.displaySize();
     QCOMPARE(sz, (size_t)expected.size());
 
+    QString s {addr};
+    QCOMPARE(s, expected);
+
     char buf[sz];
     QCOMPARE((void*)addr.display(buf), (void*)&buf[sz]);
     QVERIFY(!memcmp(buf, expected.toUtf8().data(), sz));
-
-    QString s {addr};
-    QCOMPARE(s, expected);
 }
 
 void IP4AddressTest::testToString_data()
@@ -143,5 +143,6 @@ void IP4AddressTest::testParse_data()
     QTest::newRow("1.2.3") << QString{"1.2.3"} << false << -1;
     QTest::newRow("1.2.3.4.") << QString{"1.2.3.4."} << false << 7;
     QTest::newRow("192.168.0.256") << QString{"192.168.0.256"} << false << -1;
+    QTest::newRow("192.168.700.65") << QString{"192.168.0.256"} << false << -1;
     QTest::newRow("0.0.-1.2") << QString{"0.0.-1.2"} << false << -1;
 }

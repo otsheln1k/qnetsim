@@ -8,33 +8,26 @@
 #include <QMetaType>
 
 class IP4Address {
-    uint8_t _b[4];
+    uint32_t _bits;
 
 public:
     constexpr IP4Address(uint8_t b0, uint8_t b1, uint8_t b2, uint8_t b3)
-        :_b{b0, b1, b2, b3} {}
+        :IP4Address{(uint32_t)(b0 << 24) | (b1 << 16) | (b2 << 8) | b3} {}
 
     constexpr IP4Address(uint32_t x)
-        :IP4Address{
-                (uint8_t)((x >> 24) & 0xFF),
-                (uint8_t)((x >> 16) & 0xFF),
-                (uint8_t)((x >> 8) & 0xFF),
-                (uint8_t)(x & 0xFF),
-            } {}
+        :_bits{x} {}
 
-    constexpr IP4Address() :IP4Address{0, 0, 0, 0} {}
+    constexpr IP4Address() :IP4Address{0} {}
 
-    constexpr uint8_t operator[](int i) const
+    constexpr uint8_t octet(int i) const
     {
-        return _b[i];
+        return (_bits >> (8 * (3 - i))) & 0xFF;
     }
 
+    constexpr uint8_t operator[](int i) const { return octet(i); }
     constexpr uint32_t asUint32() const
     {
-        return (_b[0] << 24)
-            |  (_b[1] << 16)
-            |  (_b[2] << 8)
-            |  (_b[3]);
+        return _bits;
     }
 
     uint8_t *write(uint8_t *dest) const;
@@ -42,32 +35,32 @@ public:
 
     constexpr bool operator==(const IP4Address &a) const
     {
-        return !memcmp(_b, a._b, sizeof(_b));
+        return _bits == a._bits;
     }
 
     constexpr bool operator!=(const IP4Address &a) const
     {
-        return !(*this == a);
+        return _bits != a._bits;
     }
 
     constexpr bool operator<(const IP4Address &a) const
     {
-        return memcmp(_b, a._b, sizeof(_b)) < 0;
+        return _bits < a._bits;
     }
 
     constexpr bool operator>(const IP4Address &a) const
     {
-        return memcmp(_b, a._b, sizeof(_b)) > 0;
+        return _bits > a._bits;
     }
 
     constexpr bool operator<=(const IP4Address &a) const
     {
-        return memcmp(_b, a._b, sizeof(_b)) <= 0;
+        return _bits <= a._bits;
     }
 
     constexpr bool operator>=(const IP4Address &a) const
     {
-        return memcmp(_b, a._b, sizeof(_b)) >= 0;
+        return _bits >= a._bits;
     }
 
     const char *parse(const char *s);
