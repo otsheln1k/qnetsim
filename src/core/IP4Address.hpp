@@ -11,26 +11,64 @@ class IP4Address {
     uint8_t _b[4];
 
 public:
-    IP4Address(uint8_t b0, uint8_t b1, uint8_t b2, uint8_t b3);
+    constexpr IP4Address(uint8_t b0, uint8_t b1, uint8_t b2, uint8_t b3)
+        :_b{b0, b1, b2, b3} {}
 
-    IP4Address(uint32_t x);
+    constexpr IP4Address(uint32_t x)
+        :IP4Address{
+                (uint8_t)((x >> 24) & 0xFF),
+                (uint8_t)((x >> 16) & 0xFF),
+                (uint8_t)((x >> 8) & 0xFF),
+                (uint8_t)(x & 0xFF),
+            } {}
 
-    IP4Address();
+    constexpr IP4Address() :IP4Address{0, 0, 0, 0} {}
 
-    uint8_t operator[](int i) const;
+    constexpr uint8_t operator[](int i) const
+    {
+        return _b[i];
+    }
 
-    uint32_t asUint32() const;
+    constexpr uint32_t asUint32() const
+    {
+        return (_b[0] << 24)
+            |  (_b[1] << 16)
+            |  (_b[2] << 8)
+            |  (_b[3]);
+    }
 
     uint8_t *write(uint8_t *dest) const;
     const uint8_t *read(const uint8_t *src);
 
-    bool operator==(const IP4Address &a) const;
-    bool operator!=(const IP4Address &a) const;
+    constexpr bool operator==(const IP4Address &a) const
+    {
+        return !memcmp(_b, a._b, sizeof(_b));
+    }
 
-    bool operator<(const IP4Address &a) const;
-    bool operator>(const IP4Address &a) const;
-    bool operator<=(const IP4Address &a) const;
-    bool operator>=(const IP4Address &a) const;
+    constexpr bool operator!=(const IP4Address &a) const
+    {
+        return !(*this == a);
+    }
+
+    constexpr bool operator<(const IP4Address &a) const
+    {
+        return memcmp(_b, a._b, sizeof(_b)) < 0;
+    }
+
+    constexpr bool operator>(const IP4Address &a) const
+    {
+        return memcmp(_b, a._b, sizeof(_b)) > 0;
+    }
+
+    constexpr bool operator<=(const IP4Address &a) const
+    {
+        return memcmp(_b, a._b, sizeof(_b)) <= 0;
+    }
+
+    constexpr bool operator>=(const IP4Address &a) const
+    {
+        return memcmp(_b, a._b, sizeof(_b)) >= 0;
+    }
 
     const char *parse(const char *s);
     char *display(char *p) const;
