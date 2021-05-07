@@ -2,7 +2,6 @@
 #define _NS_IP4_ADDRESS_HPP_
 
 #include <stdint.h>
-#include <string.h>
 
 #include <QString>
 #include <QMetaType>

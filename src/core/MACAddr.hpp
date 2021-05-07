@@ -2,7 +2,6 @@
 #define _NS_MAC_ADDR_HPP_
 
 #include <stdint.h>
-#include <string.h>
 
 #include <QString>
 #include <QMetaType>
