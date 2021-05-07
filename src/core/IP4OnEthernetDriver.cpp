@@ -1,7 +1,10 @@
 #include "IP4OnEthernetDriver.hpp"
 
-IP4OnEthernetDriver::IP4OnEthernetDriver(EthernetDriver *drv)
-    :_drv{drv},
+IP4OnEthernetDriver::IP4OnEthernetDriver(EthernetDriver *drv,
+                                         IP4Address addr,
+                                         uint8_t cidr)
+    :IP4Driver{addr, cidr},
+     _drv{drv},
      _arp{new ARPForIP4OnEthernetDriver{_drv, _addr}}
 {
     QObject::connect(_drv, &EthernetDriver::receivedFrame,
@@ -9,6 +12,9 @@ IP4OnEthernetDriver::IP4OnEthernetDriver(EthernetDriver *drv)
     QObject::connect(_arp, &ARPForIP4OnEthernetDriver::receivedReply,
                      this, &IP4OnEthernetDriver::handleARPReply);
 }
+
+IP4OnEthernetDriver::IP4OnEthernetDriver(EthernetDriver *drv)
+    :IP4OnEthernetDriver{drv, 0, 0} {}
 
 void IP4OnEthernetDriver::handleFrame(const EthernetFrame *f)
 {

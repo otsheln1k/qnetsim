@@ -18,6 +18,10 @@ protected:
     uint8_t _cidr = 32;
 
 public:
+    IP4Driver() {}
+    IP4Driver(IP4Address addr, uint8_t cidr)
+        :_addr{addr}, _cidr{cidr} {}
+
     virtual IP4Address address() const { return _addr; }
     virtual void setAddress(IP4Address x) { _addr = x; }
 

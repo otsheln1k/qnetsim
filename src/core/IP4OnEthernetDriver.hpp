@@ -24,7 +24,9 @@ class IP4OnEthernetDriver : public IP4Driver {
     int _timeout = -1;
 
 public:
-    IP4OnEthernetDriver(EthernetDriver *drv);
+    explicit IP4OnEthernetDriver(EthernetDriver *drv);
+
+    IP4OnEthernetDriver(EthernetDriver *drv, IP4Address addr, uint8_t cidr);
 
     virtual GenericNetworkInterface *interface() const override
     {
