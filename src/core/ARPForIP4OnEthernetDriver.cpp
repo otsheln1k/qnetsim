@@ -29,12 +29,14 @@ void ARPForIP4OnEthernetDriver::sendPacket(const ARPPacket &p)
     std::vector<uint8_t> buf (p.size());
     p.write(buf.data());
 
-    // TODO: directed reply
+    MACAddr dest;
+    if (p.operation() == ARPPacket::OP_REQUEST) {
+        dest = MACAddr{MACAddr::BROADCAST_ADDR};
+    } else {
+        dest.read(p.targetHardwareAddr());
+    }
 
-    _drv->sendFrame(MACAddr::BROADCAST_ADDR,
-                    ETHERTYPE_ARP,
-                    buf.begin(),
-                    buf.end());
+    _drv->sendFrame(dest, ETHERTYPE_ARP, buf.begin(), buf.end());
 }
 
 void ARPForIP4OnEthernetDriver::sendRequest(IP4Address lookupAddr)

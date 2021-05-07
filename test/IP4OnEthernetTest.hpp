@@ -16,6 +16,8 @@ private slots:
     void testOneLink();
 
     void testTimeout();
+
+    void testOneSubnet();
 };
 
 #endif
