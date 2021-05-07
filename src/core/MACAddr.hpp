@@ -84,32 +84,32 @@ public:
 
     constexpr bool operator==(const MACAddr &a) const
     {
-        return !memcmp(_bs, a._bs, sizeof(_bs));
+        return asUint64() == a.asUint64();
     }
 
     constexpr bool operator!=(const MACAddr &a) const
     {
-        return !(*this == a);
+        return asUint64() != a.asUint64();
     }
 
     constexpr bool operator<(const MACAddr &a) const
     {
-        return memcmp(_bs, a._bs, sizeof(_bs)) < 0;
+        return asUint64() < a.asUint64();
     }
 
     constexpr bool operator>(const MACAddr &a) const
     {
-        return memcmp(_bs, a._bs, sizeof(_bs)) > 0;
+        return asUint64() > a.asUint64();
     }
 
     constexpr bool operator<=(const MACAddr &a) const
     {
-        return memcmp(_bs, a._bs, sizeof(_bs)) <= 0;
+        return asUint64() <= a.asUint64();
     }
 
     constexpr bool operator>=(const MACAddr &a) const
     {
-        return memcmp(_bs, a._bs, sizeof(_bs)) >= 0;
+        return asUint64() >= a.asUint64();
     }
 
     const char *parse(const char *s);
