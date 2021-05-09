@@ -14,7 +14,9 @@ class IP4OnEthernetDriver : public IP4Driver {
     Q_OBJECT;
 
     EthernetDriver *_drv;
-    ARPForIP4OnEthernetDriver *_arp;
+    ARPForIP4OnEthernetDriver _arp;
+
+    // TODO: ARP cache
 
     struct SendItem {
         IP4Packet packet;
@@ -33,8 +35,6 @@ public:
         return _drv->interface();
     }
 
-    virtual void setAddress(IP4Address addr) override;
-
     virtual void sendPacket(const IP4Packet &p) override;
 
     virtual bool tick() override;
@@ -42,11 +42,12 @@ public:
     int timeout() const { return _timeout; }
     void setTimeout(int x) { _timeout = x; }
 
-    ARPForIP4OnEthernetDriver *arpDriver() { return _arp; }
+    ARPForIP4OnEthernetDriver *arpDriver() { return &_arp; }
 
 private slots:
     void handleFrame(const EthernetFrame *f);
 
+    void handleARPPacket(const ARPPacket &p);
     void handleARPReply(MACAddr hw, IP4Address ip);
 };
 

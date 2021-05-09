@@ -3,13 +3,13 @@
 IP4OnEthernetDriver::IP4OnEthernetDriver(EthernetDriver *drv,
                                          IP4Address addr,
                                          uint8_t cidr)
-    :IP4Driver{addr, cidr},
-     _drv{drv},
-     _arp{new ARPForIP4OnEthernetDriver{_drv, _addr}}
+    :IP4Driver{addr, cidr}, _drv{drv}, _arp{_drv}
 {
     QObject::connect(_drv, &EthernetDriver::receivedFrame,
                      this, &IP4OnEthernetDriver::handleFrame);
-    QObject::connect(_arp, &ARPForIP4OnEthernetDriver::receivedReply,
+    QObject::connect(&_arp, &ARPForIP4OnEthernetDriver::receivedPacket,
+                     this, &IP4OnEthernetDriver::handleARPPacket);
+    QObject::connect(&_arp, &ARPForIP4OnEthernetDriver::receivedReply,
                      this, &IP4OnEthernetDriver::handleARPReply);
 }
 
@@ -35,7 +35,7 @@ void IP4OnEthernetDriver::sendPacket(const IP4Packet &p)
 {
     // TODO: fragmentation
 
-    _arp->sendRequest(p.dstAddr());
+    _arp.sendRequest(p.dstAddr(), _addr);
     _queue.insert(std::make_pair(p.dstAddr(), SendItem{p, _timeout}));
 }
 
@@ -58,6 +58,19 @@ bool IP4OnEthernetDriver::tick()
     return res;
 }
 
+void IP4OnEthernetDriver::handleARPPacket(const ARPPacket &p)
+{
+    IP4Address ta;
+    ta.read(p.targetProtocolAddr());
+
+    // Note: we can respond to multiple addresses here
+    if (ta != _addr) {
+        return;
+    }
+
+    _arp.handlePacket(p);
+}
+
 void IP4OnEthernetDriver::handleARPReply(MACAddr hw, IP4Address ip)
 {
     auto range = _queue.equal_range(ip);
@@ -75,10 +88,4 @@ void IP4OnEthernetDriver::handleARPReply(MACAddr hw, IP4Address ip)
 
         _queue.erase(iter++);
     }
-}
-
-void IP4OnEthernetDriver::setAddress(IP4Address addr)
-{
-    IP4Driver::setAddress(addr);
-    _arp->setAddress(addr);
 }
