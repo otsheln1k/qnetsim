@@ -12,6 +12,7 @@
 #include "IP4AddressTest.hpp"
 #include "IP4PacketTest.hpp"
 #include "IP4OnEthernetTest.hpp"
+#include "ICMPPacketTest.hpp"
 
 int main(int argc, char **argv)
 {
@@ -28,6 +29,7 @@ int main(int argc, char **argv)
         new IP4AddressTest {},
         new IP4PacketTest {},
         new IP4OnEthernetTest {},
+        new ICMPPacketTest {},
     };
 
     int status = 0;

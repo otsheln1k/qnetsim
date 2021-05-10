@@ -18,6 +18,8 @@ enum IPProtocol : uint8_t {
     IPPROTO_RESERVED = 0xFF,
 };
 
+Q_DECLARE_METATYPE(IPProtocol);
+
 class IP4Checksum {
     uint16_t _acc = 0;
 
@@ -109,6 +111,7 @@ public:
     // TODO: fragmentation & reassembly
 };
 
-// TODO: metatype
+Q_DECLARE_METATYPE(IP4Packet *);
+Q_DECLARE_METATYPE(const IP4Packet *);
 
 #endif

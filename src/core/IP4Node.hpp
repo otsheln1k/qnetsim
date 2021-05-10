@@ -25,6 +25,11 @@ public:
 
     IP4Driver *driverByInterface(GenericNetworkInterface *iface) const;
 
+    // TODO: routing (table and procedure)
+    // TODO: packet forwarding
+    // TODO: fragmentation and reassembly
+    // TODO: ICMP
+
 public slots:
     // TODO: do we even need this one? I mean, it’s just ‘drv->sendPacket(p)’
     void sendPacket(IP4Driver *, const IP4Packet &);

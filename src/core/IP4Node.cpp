@@ -49,7 +49,7 @@ void IP4Node::handlePacket(const IP4Packet &p)
 {
     auto *drv = dynamic_cast<IP4Driver *>(sender());
 
-    // TODO: we don’t support packet reassembly
+    // TODO: packet reassembly
     if ((p.flags() & IP4Packet::FLAG_MORE_FRAGMENTS) != 0
         || p.fragmentOffset() != 0) {
         return;
