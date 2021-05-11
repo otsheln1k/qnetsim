@@ -21,7 +21,7 @@ void SwitchNode::removeInterface(GenericNetworkInterface *iface){
     }else{
         // удаление записи из таблицы
         for(auto i: table){
-            if(i.second == eiface){
+            if(i.second.first == eiface){
                 table.erase(i.first);
             }
         }
@@ -32,12 +32,21 @@ void SwitchNode::removeInterface(GenericNetworkInterface *iface){
 
 void SwitchNode::redirection(const EthernetFrame *f){
     EthernetInterface* interface = dynamic_cast<EthernetInterface*>(sender());
-    table.insert({(f->srcAddr()), interface});
+    if(!table.empty()){
+        table.insert({(f->srcAddr()), {interface,std::prev(table.end())->second.second + 1}});
+        if(std::prev(table.end())->second.second == 4){ //50!
+            cleanTable();
+        }
+
+    }
+    else {
+        table.insert({(f->srcAddr()), {interface,0}});
+    }
 
     const MACAddr a = f->dstAddr();
     auto path = table.find(a);
     if(path != table.end()){
-        path->second->sendFrame(*f);
+        path->second.first->sendFrame(*f);
     }
     else {
         for(auto *i: *this){
@@ -46,4 +55,18 @@ void SwitchNode::redirection(const EthernetFrame *f){
             }
         }
     }
+}
+
+void SwitchNode::cleanTable(){
+
+    auto MACRecord = std::prev(table.end())->first;
+    auto interfaceRecord = std::prev(table.end())->second.first;
+    auto numRecord = 0;
+
+    table.clear();
+    table.insert({MACRecord,{interfaceRecord,numRecord}});
+}
+
+std::map<MACAddr, std::pair<EthernetInterface*,int>> SwitchNode::getTable(){
+    return table;
 }
