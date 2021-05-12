@@ -21,6 +21,7 @@ SOURCES += nsgraphicsview.cpp
 SOURCES += main.cpp
 SOURCES += NSWindow.cpp
 SOURCES += Serialization.cpp
+SOURCES += graphicsnodebutton.cpp
 
 HEADERS += ECTPPingDialog.h
 HEADERS += EthernetInterfaceSettingsDialog.h
@@ -31,6 +32,7 @@ HEADERS += NSGraphicsSwitchNode.h
 HEADERS += nsgraphicsview.h
 HEADERS += NSWindow.hpp
 HEADERS += Serialization.h
+HEADERS += graphicsnodebutton.h
 
 FORMS += ECTPPingDialog.ui
 FORMS += ethernetInterfacesettingsdialog.ui
