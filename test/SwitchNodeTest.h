@@ -11,6 +11,7 @@ class SwitchNodeTest: public QObject{
 
 private slots:
     void testSwitch();
+    void testCleanTable();
 };
 
 #endif // SWITCHNODETEST_H
