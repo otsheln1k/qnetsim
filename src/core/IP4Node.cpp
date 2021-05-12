@@ -40,6 +40,15 @@ IP4Driver *IP4Node::driverByInterface(GenericNetworkInterface *iface) const
     return nullptr;
 }
 
+bool IP4Node::tick()
+{
+    bool res = false;
+    for (IP4Driver *drv : *this) {
+        res = drv->tick() || res;
+    }
+    return res;
+}
+
 void IP4Node::sendPacket(IP4Driver *drv, const IP4Packet &p)
 {
     drv->sendPacket(p);

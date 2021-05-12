@@ -3,10 +3,13 @@
 
 #include <set>
 
+#include "Tickable.hpp"
 #include "IP4Driver.hpp"
 #include "IP4Packet.hpp"
 
-class IP4Node : public QObject {
+class IP4Node : public QObject,
+                public Tickable
+{
     Q_OBJECT;
 
     std::set<IP4Driver *> _drivers {};
@@ -29,6 +32,8 @@ public:
     // TODO: packet forwarding
     // TODO: fragmentation and reassembly
     // TODO: ICMP
+
+    virtual bool tick() override;
 
 public slots:
     // TODO: do we even need this one? I mean, it’s just ‘drv->sendPacket(p)’
