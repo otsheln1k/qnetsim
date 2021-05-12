@@ -262,3 +262,91 @@ void IP4OnEthernetTest::testARPCache()
     QCOMPARE(ip4drv.arpTable()->query(ip2), m2_moved);
     QCOMPARE(ip4drv.arpTable()->currentSize(), (size_t)2);
 }
+
+void IP4OnEthernetTest::testARPCacheEntryLifetime()
+{
+    MACAddr m1 {0x121314151618};
+    IP4Address ip1 {192,168,0,3};
+
+    IP4OnEthernetDriver::ARPTable tab {};
+    tab.setDefaultLifetime(3);
+
+    tab.addEntry(ip1, m1);
+
+    tab.tick();
+    QCOMPARE(tab.currentSize(), (size_t)1);
+    QCOMPARE(std::get<2>(*tab.begin()), 2);
+
+    tab.tick();
+    QCOMPARE(tab.currentSize(), (size_t)1);
+    QCOMPARE(std::get<2>(*tab.begin()), 1);
+
+    tab.tick();
+    QCOMPARE(tab.currentSize(), (size_t)1);
+    QCOMPARE(std::get<2>(*tab.begin()), 0);
+
+    tab.tick();
+    QCOMPARE(tab.currentSize(), (size_t)0);
+    QVERIFY(tab.begin() == tab.end());
+
+    tab.addPermanentEntry(ip1, m1);
+
+    tab.tick();
+    QCOMPARE(tab.currentSize(), (size_t)1);
+    QCOMPARE(std::get<2>(*tab.begin()), -1);
+
+    tab.tick();
+    QCOMPARE(tab.currentSize(), (size_t)1);
+    QCOMPARE(std::get<2>(*tab.begin()), -1);
+
+    tab.clearTable();
+    QCOMPARE(tab.currentSize(), (size_t)0);
+    QVERIFY(tab.begin() == tab.end());
+}
+
+void IP4OnEthernetTest::testARPCacheMaxSize()
+{
+    MACAddr m1 {0x121314151618};
+    IP4Address ip1 {192,168,0,3};
+
+    MACAddr m2 {0x121314151619};
+    IP4Address ip2 {192,168,0,4};
+
+    MACAddr m3 {0x12131415161A};
+    IP4Address ip3 {192,168,0,5};
+
+    MACAddr m4 {0x12131415161B};
+    IP4Address ip4 {192,168,0,6};
+
+    IP4OnEthernetDriver::ARPTable tab {};
+    tab.setMaxSize(2);
+    tab.setDefaultLifetime(10);
+
+    tab.addEntry(ip1, m1);
+    tab.tick();
+    QCOMPARE(tab.currentSize(), (size_t)1);
+
+    tab.addEntry(ip2, m2);
+    tab.tick();
+    QCOMPARE(tab.currentSize(), (size_t)2);
+
+    tab.addEntry(ip3, m3);
+    tab.tick();
+    QCOMPARE(tab.currentSize(), (size_t)2);
+    QVERIFY(!tab.query(ip1).has_value());
+
+    tab.addPermanentEntry(ip4, m4);
+    tab.tick();
+    QCOMPARE(tab.currentSize(), (size_t)2);
+
+    tab.addEntry(ip1, m1);
+    tab.tick();
+    QCOMPARE(tab.currentSize(), (size_t)2);
+
+    tab.addEntry(ip2, m2);
+    tab.tick();
+    QCOMPARE(tab.currentSize(), (size_t)2);
+    QVERIFY(tab.query(ip4).has_value());
+    QVERIFY(tab.query(ip2).has_value());
+    QVERIFY(!tab.query(ip1).has_value());
+}

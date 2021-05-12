@@ -104,9 +104,10 @@ public:
         inner_t x;
 
     public:
+        iterator(inner_t x) :x{x} {}
+
         using value_type = std::tuple<PrAddr, HwAddr, int>;
-        using reference = const value_type &;
-        using pointer = const value_type *;
+        using reference = value_type;
         using difference_type = ptrdiff_t;
         using iterator_category = std::forward_iterator_tag;
 
@@ -115,8 +116,10 @@ public:
         reference operator*() const
         {
             auto p = *x;
-            return std::make_tuple(p->first, p->second.hw, p->second.remain);
+            return std::make_tuple(p.first, p.second.hw, p.second.remain);
         }
+        bool operator==(const iterator &i) { return x == i.x; }
+        bool operator!=(const iterator &i) { return x != i.x; }
     };
 
     iterator begin() const { return iterator {_map.begin()}; }
