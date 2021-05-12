@@ -211,3 +211,54 @@ void IP4OnEthernetTest::testOneSubnet()
     QCOMPARE(recv, 1);
     QCOMPARE(good, recv);
 }
+
+void IP4OnEthernetTest::testARPCache()
+{
+    MACAddr m0 {0x121314151617};
+    IP4Address ip0 {192,168,0,2};
+
+    MACAddr m1 {0x121314151618};
+    IP4Address ip1 {192,168,0,3};
+
+    MACAddr m2 {0x121314151619};
+    MACAddr m2_moved {0x12131415161A};
+    IP4Address ip2 {192,168,0,4};
+
+    EthernetInterface iface {};
+    EthernetDriver ethdrv {m0, &iface};
+    IP4OnEthernetDriver ip4drv {&ethdrv, ip0, 24};
+    ip4drv.setArpCacheEnabled(true);
+
+    ARPPacket p {};
+    p.setHardwareType(HWTYPE_ETHERNET);
+    p.setProtocolType(ETHERTYPE_IPV4);
+    p.setAddrSizes(6, 4);
+
+    p.setOperation(ARPPacket::OP_REPLY);
+    m1.write(p.senderHardwareAddr());
+    ip1.write(p.senderProtocolAddr());
+    m0.write(p.targetHardwareAddr());
+    ip0.write(p.targetProtocolAddr());
+
+    emit ip4drv.arpDriver()->receivedPacket(p);
+
+    QCOMPARE(ip4drv.arpTable()->query(ip1).value(), m1);
+    QCOMPARE(ip4drv.arpTable()->currentSize(), (size_t)1);
+
+    m2.write(p.senderHardwareAddr());
+    ip2.write(p.senderProtocolAddr());
+
+    emit ip4drv.arpDriver()->receivedPacket(p);
+
+    QCOMPARE(ip4drv.arpTable()->query(ip2).value(), m2);
+    QCOMPARE(ip4drv.arpTable()->currentSize(), (size_t)2);
+
+    p.setOperation(ARPPacket::OP_REQUEST);
+    m2_moved.write(p.senderHardwareAddr());
+    memset(p.targetProtocolAddr(), 0, 4);
+
+    emit ip4drv.arpDriver()->receivedPacket(p);
+
+    QCOMPARE(ip4drv.arpTable()->query(ip2), m2_moved);
+    QCOMPARE(ip4drv.arpTable()->currentSize(), (size_t)2);
+}
