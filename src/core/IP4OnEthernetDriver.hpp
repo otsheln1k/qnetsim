@@ -35,6 +35,8 @@ private:
 
     void sendPacketTo(const IP4Packet &p, MACAddr hwaddr);
 
+    bool tickQueue();
+
 public:
     explicit IP4OnEthernetDriver(EthernetDriver *drv);
 

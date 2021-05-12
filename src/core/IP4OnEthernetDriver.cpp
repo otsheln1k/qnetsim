@@ -43,7 +43,7 @@ void IP4OnEthernetDriver::sendPacket(const IP4Packet &p)
     _queue.insert(std::make_pair(p.dstAddr(), SendItem{p, _timeout}));
 }
 
-bool IP4OnEthernetDriver::tick()
+bool IP4OnEthernetDriver::tickQueue()
 {
     bool res = !_queue.empty();
 
@@ -59,6 +59,14 @@ bool IP4OnEthernetDriver::tick()
         }
     }
 
+    return res;
+}
+
+bool IP4OnEthernetDriver::tick()
+{
+    bool res = false;
+    res = tickQueue() || res;
+    res = _table.tick() || res;
     return res;
 }
 
