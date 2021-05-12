@@ -2,6 +2,7 @@
 #define _NS_ARP_TABLE_HPP_
 
 #include <map>
+#include <iterator>
 
 #include "Tickable.hpp"
 #include "EthernetFrame.hpp"    // EtherType
@@ -95,6 +96,31 @@ public:
 
     int maxSize() const { return _maxsize; }
     void setMaxSize(int x) { _maxsize = x; }
+
+    size_t currentSize() const { return _map.size(); }
+
+    class iterator {
+        using inner_t = typename std::map<PrAddr, Entry>::const_iterator;
+        inner_t x;
+
+    public:
+        using value_type = std::tuple<PrAddr, HwAddr, int>;
+        using reference = const value_type &;
+        using pointer = const value_type *;
+        using difference_type = ptrdiff_t;
+        using iterator_category = std::forward_iterator_tag;
+
+        iterator &operator++() { ++x; return *this; }
+        iterator operator++(int) { return {x++}; }
+        reference operator*() const
+        {
+            auto p = *x;
+            return std::make_tuple(p->first, p->second.hw, p->second.remain);
+        }
+    };
+
+    iterator begin() const { return iterator {_map.begin()}; }
+    iterator end() const { return iterator {_map.end()}; }
 
     virtual bool tick() override
     {
