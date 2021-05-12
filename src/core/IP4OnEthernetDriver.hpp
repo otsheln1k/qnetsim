@@ -9,14 +9,17 @@
 #include "EthernetFrame.hpp"
 #include "EthernetDriver.hpp"
 #include "ARPForIP4OnEthernetDriver.hpp"
+#include "ARPTable.hpp"
 
 class IP4OnEthernetDriver : public IP4Driver {
     Q_OBJECT;
 
+public:
+    using ARPTable = ::ARPTable<MACAddr, IP4Address>;
+
+private:
     EthernetDriver *_drv;
     ARPForIP4OnEthernetDriver _arp;
-
-    // TODO: ARP cache
 
     struct SendItem {
         IP4Packet packet;
@@ -24,6 +27,13 @@ class IP4OnEthernetDriver : public IP4Driver {
     };
     std::multimap<IP4Address, SendItem> _queue {};
     int _timeout = -1;
+
+    bool _arpCacheEnabled = false;
+    ARPTable _table {};
+
+    void flushAwaitingPackets(MACAddr hw, IP4Address ip);
+
+    void sendPacketTo(const IP4Packet &p, MACAddr hwaddr);
 
 public:
     explicit IP4OnEthernetDriver(EthernetDriver *drv);
@@ -44,11 +54,16 @@ public:
 
     ARPForIP4OnEthernetDriver *arpDriver() { return &_arp; }
 
+    // TODO: separate toggles for read and write?
+    bool arpCacheEnabled() const { return _arpCacheEnabled; }
+    void setArpCacheEnabled(bool x) { _arpCacheEnabled = x; }
+
+    ARPTable *arpTable() { return &_table; }
+
 private slots:
     void handleFrame(const EthernetFrame *f);
 
     void handleARPPacket(const ARPPacket &p);
-    void handleARPReply(MACAddr hw, IP4Address ip);
 };
 
 #endif

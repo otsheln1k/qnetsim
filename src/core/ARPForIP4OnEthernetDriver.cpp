@@ -57,28 +57,23 @@ void ARPForIP4OnEthernetDriver::handleFrame(const EthernetFrame *f)
         return;
     }
 
+    // Ethernet <-> IPv4 only
+    if (p.hardwareType() != HWTYPE_ETHERNET
+        || p.protocolType() != ETHERTYPE_IPV4
+        || p.hardwareAddrSize() != 6
+        || p.protocolAddrSize() != 4) {
+        return;
+    }
+
     // We cannot decide if the packet is meant for us here
     emit receivedPacket(p);
 }
 
 void ARPForIP4OnEthernetDriver::handlePacket(const ARPPacket &p)
 {
-    switch (p.operation()) {
-    case ARPPacket::OP_REQUEST: {
+    if (p.operation() == ARPPacket::OP_REQUEST) {
         uint8_t buf[6];
         _drv->address().write(buf);
         sendPacket(p.makeReply(buf));
-        break;
-    }
-    case ARPPacket::OP_REPLY: {
-        MACAddr hw;
-        hw.read(p.senderHardwareAddr());
-
-        IP4Address ip;
-        ip.read(p.senderProtocolAddr());
-
-        emit receivedReply(hw, ip);
-        break;
-    }
     }
 }

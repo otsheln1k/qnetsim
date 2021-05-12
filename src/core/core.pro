@@ -30,6 +30,7 @@ SOURCES += util.cpp
 
 HEADERS += ARPForIP4OnEthernetDriver.hpp
 HEADERS += ARPPacket.hpp
+HEADERS += ARPTable.hpp
 HEADERS += ECTPDriver.hpp
 HEADERS += EthernetDriver.hpp
 HEADERS += EthernetFrame.hpp

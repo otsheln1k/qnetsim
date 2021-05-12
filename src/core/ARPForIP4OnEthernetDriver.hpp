@@ -25,7 +25,6 @@ public:
 
 signals:
     void receivedPacket(const ARPPacket &p);
-    void receivedReply(MACAddr hw, IP4Address ip);
 
 public slots:
     void handleFrame(const EthernetFrame *f);
