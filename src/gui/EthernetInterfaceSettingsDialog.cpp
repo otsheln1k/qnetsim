@@ -14,6 +14,7 @@ EthernetInterfaceSettingsDialog::EthernetInterfaceSettingsDialog(MACAddr mac, IP
 
     ui->arpTableWidget->setColumnWidth(0, 200);
     ui->arpTableWidget->setColumnWidth(1, 200);
+    ui->arpTableWidget->setColumnWidth(2, 100);
     ui->arpTableWidget->horizontalHeader()->setStretchLastSection(true);
 
 }
@@ -61,4 +62,9 @@ void EthernetInterfaceSettingsDialog::accept()
 void EthernetInterfaceSettingsDialog::on_arpSwith_stateChanged(int arg1)
 {
     ui->arpTableWidget->setEnabled(arg1);
+}
+
+void EthernetInterfaceSettingsDialog::on_checkBox_stateChanged(int arg1)
+{
+    ui->spinBox->setEnabled(arg1);
 }

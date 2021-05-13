@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>614</width>
-    <height>309</height>
+    <width>698</width>
+    <height>325</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -130,10 +130,39 @@
          <item>
           <widget class="QLineEdit" name="lineEdit_2">
            <property name="inputMask">
-            <string>009.009.009.009</string>
+            <string>HH:HH:HH:HH:HH:HH</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBox">
+           <property name="text">
+            <string>Ограничение времени жизни</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinBox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>2147483647</number>
+           </property>
+           <property name="value">
+            <number>1</number>
            </property>
           </widget>
          </item>
@@ -152,7 +181,7 @@
           <number>0</number>
          </property>
          <property name="columnCount">
-          <number>3</number>
+          <number>4</number>
          </property>
          <column>
           <property name="text">
@@ -162,6 +191,11 @@
          <column>
           <property name="text">
            <string>MAC</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Время жизни</string>
           </property>
          </column>
          <column>
