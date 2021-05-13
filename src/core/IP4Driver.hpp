@@ -44,6 +44,9 @@ public slots:
 signals:
     void receivedPacket(const IP4Packet &);
     // TODO: use refs instead of pointers in EthernetInterface::receivedFrame
+    // TODO: or use pointers everywhere?
+
+    void packetDestUnreachable(const IP4Packet &);
 };
 
 #endif

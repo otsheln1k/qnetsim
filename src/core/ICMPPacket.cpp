@@ -59,3 +59,37 @@ uint8_t *ICMPPacket::write(uint8_t *dest) const
 
     return e;
 }
+
+ICMPPacket makeICMPEchoRequest(uint16_t ident, uint16_t seq)
+{
+    uint32_t roh = ((uint32_t)ident << 16) | seq;
+
+    ICMPPacket p {};
+    p.setType(ICMP_MSG_ECHO_REQUEST);
+    p.setCode(0);
+    p.setRestOfHeader(roh);
+
+    return p;
+}
+
+ICMPPacket makeICMPEchoReply(const ICMPPacket &req)
+{
+    ICMPPacket p {req};
+    // Yep, it’s that simple
+    p.setType(ICMP_MSG_ECHO_REPLY);
+    return p;
+}
+
+std::vector<uint8_t> takePacketHead(const IP4Packet &p, size_t size)
+{
+    size_t psz = p.size();
+    std::vector<uint8_t> buf (psz);
+    p.write(buf.data());
+
+    size_t dsz = std::max((size_t)8, size);
+    size_t msz = std::min(p.headerSize() + dsz, (size_t)(ICMP_MAX_SIZE - 16));
+    size_t sz = std::min(msz, psz);
+    buf.resize(sz);
+
+    return buf;
+}

@@ -8,6 +8,8 @@
 
 #include <QMetaType>
 
+#include "IP4Packet.hpp"
+
 enum ICMPMessageType : uint8_t {
     ICMP_MSG_ECHO_REPLY = 0,
     ICMP_MSG_DESTINATION_UNREACHEBLE = 3,
@@ -20,6 +22,8 @@ enum ICMPMessageType : uint8_t {
     ICMP_MSG_TEST1 = 253,
     ICMP_MSG_TEST2 = 254,
 };
+
+#define ICMP_MAX_SIZE 576
 
 Q_DECLARE_METATYPE(ICMPMessageType);
 
@@ -70,5 +74,9 @@ public:
 
 Q_DECLARE_METATYPE(ICMPPacket *);
 Q_DECLARE_METATYPE(const ICMPPacket *);
+
+ICMPPacket makeICMPEchoRequest(uint16_t ident, uint16_t seq);
+ICMPPacket makeICMPEchoReply(const ICMPPacket &req);
+std::vector<uint8_t> takePacketHead(const IP4Packet &p, size_t size);
 
 #endif
