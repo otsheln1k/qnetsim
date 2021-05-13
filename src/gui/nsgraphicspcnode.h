@@ -4,6 +4,8 @@
 #include "PCNode.h"
 #include "NetworkNode.h"
 #include "nsgraphicsnode.h"
+#include "IP4OnEthernetDriver.hpp"
+
 
 class NSGraphicsPCNode : public NSGraphicsNode
 {

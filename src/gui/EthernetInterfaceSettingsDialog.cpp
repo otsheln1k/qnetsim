@@ -3,15 +3,19 @@
 #include "EthernetInterfaceSettingsDialog.h"
 #include "ui_ethernetInterfacesettingsdialog.h"
 
-EthernetInterfaceSettingsDialog::EthernetInterfaceSettingsDialog(MACAddr mac, IP4Address ip4, uint8_t mask, QWidget *parent) :
+EthernetInterfaceSettingsDialog::EthernetInterfaceSettingsDialog(EthernetDriver* drv, IP4OnEthernetDriver* ip4drv, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::EthernetInterfaceSettingsDialog)
 {
-    ui->setupUi(this);
-    ui->macInput->setText(mac);
-    ui->ipInput->setText(QString{"%1.%2.%3.%4"}.arg(ip4[0]).arg(ip4[1]).arg(ip4[2]).arg(ip4[3]));
-    ui->cidrInput->setValue(mask);
+    this->drv = drv;
+    this->ip4drv = ip4drv;
 
+    ui->setupUi(this);
+    ui->macInput->setText(drv->address());
+    ui->ipInput->setText(ip4drv->address());
+    ui->cidrInput->setValue(ip4drv->cidr());
+
+    ui->arpSwitch->setChecked(ip4drv->arpCacheEnabled());
     ui->arpTableWidget->setColumnWidth(0, 200);
     ui->arpTableWidget->setColumnWidth(1, 200);
     ui->arpTableWidget->setColumnWidth(2, 100);
@@ -54,7 +58,14 @@ void EthernetInterfaceSettingsDialog::accept()
         return;
     }
 
-    emit info(hw, ip, (uint8_t)cidr);
+    this->drv->setAddress(hw);
+    this->ip4drv->setCidr(cidr);
+    IP4Address tmp;
+    tmp.parseQString(ip);
+    this->ip4drv->setAddress(tmp);
+    this->ip4drv->setArpCacheEnabled(ui->arpSwitch->isChecked());
+    //this->ip4drv->arpDriver()->
+
 
     QDialog::accept();
 }
@@ -76,7 +87,7 @@ void EthernetInterfaceSettingsDialog::on_arpSwitch_stateChanged(int arg1)
     ui->checkBox_2->setEnabled(arg1);
     ui->label_4->setEnabled(arg1);
     ui->label_5->setEnabled(arg1);
-    arg1 ? ui->spinBox->setEnabled(ui->checkBox_2->isChecked()) : ui->spinBox->setEnabled(arg1);
+    arg1 ? ui->spinBox->setEnabled(ui->checkBox->isChecked()) : ui->spinBox->setEnabled(arg1);
     arg1 ? ui->spinBox_2->setEnabled(ui->checkBox_2->isChecked()) : ui->spinBox_2->setEnabled(arg1);
     ui->toolButton->setEnabled(arg1);
     ui->lineEdit->setEnabled(arg1);

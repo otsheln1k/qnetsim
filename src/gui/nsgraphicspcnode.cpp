@@ -76,11 +76,10 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
             {
                 auto *iface = action->data().value<GenericNetworkInterface *>();
                 auto *drv = node->getDriver(dynamic_cast<EthernetInterface *>(iface));
-                auto *ipdrv = node->getIP4Driver(dynamic_cast<EthernetInterface *>(iface));
+                auto *ipdrv = dynamic_cast<IP4OnEthernetDriver*>(node->getIP4Driver(dynamic_cast<EthernetInterface *>(iface)));
                 auto *dialog = new EthernetInterfaceSettingsDialog {
-                    drv->address(),
-                    ipdrv->address(),
-                    ipdrv->cidr(),
+                    drv,
+                    ipdrv,
                     widget->window()};
                 QObject::connect(
                     dialog, &EthernetInterfaceSettingsDialog::info,
