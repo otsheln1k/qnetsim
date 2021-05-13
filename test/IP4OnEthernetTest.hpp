@@ -18,6 +18,12 @@ private slots:
     void testTimeout();
 
     void testOneSubnet();
+
+    void testARPCache();
+
+    void testARPCacheEntryLifetime();
+
+    void testARPCacheMaxSize();
 };
 
 #endif
