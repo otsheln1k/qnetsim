@@ -45,7 +45,7 @@
         </property>
         <property name="icon">
          <iconset>
-          <normalon>icons/020-paper.svg</normalon>
+          <normalon>res/icons/020-paper.svg</normalon>
          </iconset>
         </property>
         <property name="iconSize">
@@ -92,7 +92,7 @@ padding: 3px;</string>
           </property>
           <property name="icon">
            <iconset>
-            <normalon>icons/015-file storage.svg</normalon>
+            <normalon>res/icons/015-file storage.svg</normalon>
            </iconset>
           </property>
          </widget>
@@ -113,7 +113,7 @@ padding: 3px;</string>
           </property>
           <property name="icon">
            <iconset>
-            <normalon>icons/007-floppy disk.svg</normalon>
+            <normalon>res/icons/007-floppy disk.svg</normalon>
            </iconset>
           </property>
          </widget>
@@ -174,8 +174,8 @@ padding: 3px;</string>
             <property name="geometry">
              <rect>
               <x>0</x>
-              <y>-57</y>
-              <width>235</width>
+              <y>0</y>
+              <width>229</width>
               <height>135</height>
              </rect>
             </property>
