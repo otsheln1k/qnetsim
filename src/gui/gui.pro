@@ -41,7 +41,7 @@ FORMS += NSWindow.ui
 COPIES += icons models
 
 icons.files = $$files(res/icons/*)
-icons.path = $$OUT_PWD/icons
+icons.path = $$OUT_PWD/res/icons
 
 models.files = $$files(res/models/*)
 models.path = $$OUT_PWD/models

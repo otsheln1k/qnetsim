@@ -174,9 +174,9 @@ padding: 3px;</string>
             <property name="geometry">
              <rect>
               <x>0</x>
-              <y>0</y>
+              <y>-57</y>
               <width>235</width>
-              <height>138</height>
+              <height>135</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
@@ -200,6 +200,10 @@ padding: 3px;</string>
               <widget class="GraphicsNodeButton" name="toolButton_3">
                <property name="text">
                 <string>Провод</string>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>res/icons/wire.svg</normaloff>res/icons/wire.svg</iconset>
                </property>
               </widget>
              </item>
@@ -248,7 +252,7 @@ padding: 3px;</string>
                   </property>
                   <property name="icon">
                    <iconset>
-                    <normaloff>icons/018-monitor screen.svg</normaloff>icons/018-monitor screen.svg</iconset>
+                    <normaloff>res/icons/018-monitor screen.svg</normaloff>res/icons/018-monitor screen.svg</iconset>
                   </property>
                   <property name="checked">
                    <bool>false</bool>
@@ -265,7 +269,7 @@ padding: 3px;</string>
                   </property>
                   <property name="icon">
                    <iconset>
-                    <normaloff>icons/017-hub.svg</normaloff>icons/017-hub.svg</iconset>
+                    <normaloff>res/icons/017-hub.svg</normaloff>res/icons/017-hub.svg</iconset>
                   </property>
                  </widget>
                 </item>
@@ -279,7 +283,7 @@ padding: 3px;</string>
                </property>
                <property name="icon">
                 <iconset>
-                 <normaloff>icons/016-switch.svg</normaloff>icons/016-switch.svg</iconset>
+                 <normaloff>res/icons/016-switch.svg</normaloff>res/icons/016-switch.svg</iconset>
                </property>
               </widget>
              </item>
