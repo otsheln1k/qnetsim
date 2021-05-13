@@ -13,6 +13,7 @@
 #include "NetworkNode.h"
 #include "GenericNetworkInterface.hpp"
 #include "nsgraphicspcnode.h"
+#include "SerializationInterfaceView.h"
 
 enum NSGraphicsViewMode{
     NONE,
@@ -26,10 +27,9 @@ enum NSGraphicsViewNode{
     SWITCH=3,
 };
 
-class NSGraphicsView : public QGraphicsView
+class NSGraphicsView : public QGraphicsView, public SerializationInterfaceView
 {
     Q_OBJECT;
-    friend class Serialization;
     static QMenu *makeInterfacesMenu(NetworkNode *node);
 
 public:
@@ -60,6 +60,15 @@ private:
     SimulationStepper stepper {};
     std::map<NetworkNode *, NSGraphicsNode *> nodetab;
     std::map<std::pair<QObject *, QObject *>, QGraphicsLineItem *> edgetab;
+
+    QGraphicsScene* getScene() override;
+    std::map<NetworkNode *, NSGraphicsNode *>* getNodetab() override;
+    void moveToThread(NetworkNode *nd) override;
+    NetworkModel* getNetworkModel() override;
+    void connectNodeWithRemoving(NSGraphicsNode *gnode) override;
+    int getCountEdges() override;
+    std::map<std::pair<QObject *, QObject *>, QGraphicsLineItem *>* getEdgetab() override;
+
 
 private slots:
     void onNodeAdded(NetworkNode *node);

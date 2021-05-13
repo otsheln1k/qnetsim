@@ -9,14 +9,19 @@
 #include <QMenu>
 #include <QWidget>
 #include <QGraphicsSceneMouseEvent>
+#include "SerializationInterfaceNode.h"
 
 #include "NetworkNode.h"
 
 class NSGraphicsNode : public QObject,
-                       public QGraphicsItem {
+                       public QGraphicsItem,
+                       public SerializationInterfaceNode
+                       {
     Q_OBJECT;
     Q_INTERFACES(QGraphicsItem);
-    friend class Serialization;
+
+    virtual QString* getName() override;
+    virtual QSize getSize() override;
 
 public:
     NSGraphicsNode(QObject *parent,
