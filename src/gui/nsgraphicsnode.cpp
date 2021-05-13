@@ -63,3 +63,13 @@ void NSGraphicsNode::fillInterfacesMenu(QMenu *menu, NetworkNode *node)
         action->setData(QVariant::fromValue(iface));
     }
 }
+
+QString* NSGraphicsNode::getName()
+{
+    return name;
+}
+
+QSize NSGraphicsNode::getSize()
+{
+    return size;
+}

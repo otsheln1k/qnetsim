@@ -5,9 +5,11 @@
 
 #include "nsgraphicsview.h"
 #include "nsgraphicshubnode.h"
+#include "NSGraphicsSwitchNode.h"
 
 class Serialization
 {
+    SerializationInterfaceView* interfaceView;
     NSGraphicsView* view;
     QString path;
 
