@@ -12,7 +12,7 @@ class EthernetInterface : public GenericNetworkInterface {
     Q_OBJECT
 
     EthernetInterface *_peer = nullptr;
-    std::queue<std::vector<uint8_t>> _sq, _rq, _bq;
+    std::queue<std::vector<uint8_t>> _sq, _rq;
 
 public:
     virtual bool connect(GenericNetworkInterface *iface) override;

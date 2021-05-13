@@ -25,6 +25,8 @@ private:
 
 signals:
     void info(MACAddr hw, IP4Address ip, uint8_t cidr);
+private slots:
+    void on_arpSwith_stateChanged(int arg1);
 };
 
 #endif // ETHERNETINTERFACESETTINGSDIALOG_H

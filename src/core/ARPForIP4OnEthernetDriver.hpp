@@ -12,24 +12,23 @@ class ARPForIP4OnEthernetDriver : public QObject {
     Q_OBJECT;
 
     EthernetDriver *_drv;
-    IP4Address _addr;
 
 public:
-    ARPForIP4OnEthernetDriver(EthernetDriver *drv, IP4Address addr);
+    ARPForIP4OnEthernetDriver(EthernetDriver *drv);
 
-    IP4Address address() const { return _addr; }
-    void setAddress(IP4Address x) { _addr = x; }
-
-    ARPPacket makeRequestPacket(IP4Address lookupAddr);
+    ARPPacket makeRequestPacket(IP4Address lookupAddr,
+                                IP4Address ourAddr);
 
     void sendPacket(const ARPPacket &p);
-    void sendRequest(IP4Address lookupAddr);
+    void sendRequest(IP4Address lookupAddr,
+                     IP4Address ourAddr);
 
 signals:
-    void receivedReply(MACAddr hw, IP4Address ip);
+    void receivedPacket(const ARPPacket &p);
 
 public slots:
     void handleFrame(const EthernetFrame *f);
+    void handlePacket(const ARPPacket &p);
 };
 
 #endif

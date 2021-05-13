@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#include <optional>
 #include <vector>
 
 #include "IP4Address.hpp"
@@ -12,7 +13,25 @@
 
 enum IPProtocol : uint8_t {
     IPPROTO_ICMP = 1,
+    IPPROTO_TEST1 = 0xFD,
+    IPPROTO_TEST2 = 0xFE,
     IPPROTO_RESERVED = 0xFF,
+};
+
+Q_DECLARE_METATYPE(IPProtocol);
+
+class IP4Checksum {
+    uint16_t _acc = 0;
+
+public:
+    IP4Checksum() {};
+
+    void feedWord(uint16_t w);
+    void feedBytes(const uint8_t *start, size_t n);
+
+    uint16_t result() const;
+
+    static uint16_t ofBytes(const uint8_t *start, size_t n);
 };
 
 class IP4Packet {
@@ -31,13 +50,17 @@ private:
     Flags _flags = (Flags)0;
     uint16_t _frag_offset = 0;
     uint8_t _ttl = 0;
-    IPProtocol _proto = IPPROTO_RESERVED;
-    uint16_t _hcs = 0;
+    IPProtocol _proto = IPPROTO_TEST1;
+
+    std::optional<uint16_t> _hcs {};
+    uint16_t _calchcs = 0;
 
     IP4Address _srca {};
     IP4Address _dsta {};
 
     std::vector<uint8_t> _payload {};
+
+    uint8_t *writeHeaderNoChecksum(uint8_t *dest) const;
 
 public:
     IP4Packet() {}
@@ -57,8 +80,17 @@ public:
     IPProtocol protocol() const { return _proto; }
     void setProtocol(IPProtocol x) { _proto = x; }
 
-    uint16_t headerChecksum() const { return _hcs; }
-    void setHeaderChecksum(uint16_t x) { _hcs = x; }
+    uint16_t headerChecksum() const { return _hcs.value(); }
+    void setHeaderChecksum(uint16_t x) { _hcs.emplace(x); }
+    void unsetHeaderChecksum() { _hcs.reset(); }
+    uint16_t calculatedHeaderChecksum() const { return _calchcs; }
+
+    bool headerChecksumCorrect() const
+    {
+        return _hcs && _calchcs == _hcs.value();
+    }
+
+    uint16_t calculateHeaderChecksum() const;
 
     IP4Address srcAddr() const { return _srca; }
     void setSrcAddr(IP4Address x) { _srca = x; }
@@ -73,8 +105,13 @@ public:
     const uint8_t *read(const uint8_t *src, size_t len);
     uint8_t *write(uint8_t *dest) const;
 
-    // TODO: checksumming
-    // TODO: fragmentation & reconstruction
+    size_t headerSize() const;
+    uint8_t *writeHeader(uint8_t *dest) const;
+
+    // TODO: fragmentation & reassembly
 };
+
+Q_DECLARE_METATYPE(IP4Packet *);
+Q_DECLARE_METATYPE(const IP4Packet *);
 
 #endif

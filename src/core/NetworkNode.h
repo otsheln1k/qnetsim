@@ -6,10 +6,13 @@
 
 #include <QObject>
 
+#include "Steppable.hpp"
+#include "Tickable.hpp"
 #include "GenericNetworkInterface.hpp"
 
 class NetworkNode : public QObject,
-                    public Steppable
+                    public Steppable,
+                    public Tickable
 {
     Q_OBJECT;
 private:
@@ -28,6 +31,7 @@ public:
 
     virtual bool stepSend() override;
     virtual bool stepRecv() override;
+    virtual bool tick() override { return false; }
 
 public slots:
     virtual void addInterface(GenericNetworkInterface* iface);

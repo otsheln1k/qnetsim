@@ -135,8 +135,6 @@ void EthernetInterfaceTest::testSendFrame() {
 
     is[0]->sendFrame(f);
 
-    stepInterfaces(std::begin(is), std::end(is));
-
     status = 1;
     stepInterfaces(std::begin(is), std::end(is));
 
@@ -151,7 +149,7 @@ void EthernetInterfaceTest::testMultipleFrames() {
         new EthernetInterface {},
     };
 
-    uint32_t fcs[4] = {0};
+    uint32_t fcs[3] = {0};
     int received = 0;
     std::vector<uint8_t> payload2;
 
@@ -159,7 +157,7 @@ void EthernetInterfaceTest::testMultipleFrames() {
         is[0], &EthernetInterface::receivedFrame,
         [&fcs, &received, &payload2](const EthernetFrame *f)
         {
-            QVERIFY(received >= 0 && received < 4);
+            QVERIFY(received >= 0 && received < 3);
             QVERIFY(f->checksumCorrect());
             QCOMPARE(f->calculatedChecksum(),
                      fcs[(received < 2) ? 1 : received]);
@@ -182,12 +180,9 @@ void EthernetInterfaceTest::testMultipleFrames() {
     // script:
     // 1. 0 -> 1
     // 2. 1 -> 0
-    // 3. step
-    // 4. 1 -> 0 (another one)
-    // 5. step (1 and 2 must finish by now)
-    // 6. increase skipCount, 1 -> 0 (reply)
-    // 7. step (4 must finish by now)
-    // 8. step (6 must finish by now)
+    // 3. step (1 and 2 must finish by now)
+    // 4. increase skipCount, 1 -> 0 (reply)
+    // 5. step (4 must finish by now)
 
     is[0]->connect(is[1]);
 
@@ -213,27 +208,15 @@ void EthernetInterfaceTest::testMultipleFrames() {
 
     stepInterfaces(std::begin(is), std::end(is));
 
-    f2.payload().assign({
-            0,0,1,0,31,0,'g','h','i',
-        });
+    QCOMPARE(received, 2);
+    payload2[0] += 8;
+    f2.payload() = std::move(payload2);
     f2.setChecksum(fcs[2] = f2.calculateChecksum());
     is[1]->sendFrame(f2);
 
     stepInterfaces(std::begin(is), std::end(is));
 
-    QCOMPARE(received, 2);
-    payload2[0] += 8;
-    f2.payload() = std::move(payload2);
-    f2.setChecksum(fcs[3] = f2.calculateChecksum());
-    is[1]->sendFrame(f2);
-
-    stepInterfaces(std::begin(is), std::end(is));
-
     QCOMPARE(received, 3);
-
-    stepInterfaces(std::begin(is), std::end(is));
-
-    QCOMPARE(received, 4);
 
     deleteAll(std::begin(is), std::end(is));
 }

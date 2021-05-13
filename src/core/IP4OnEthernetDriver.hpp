@@ -9,34 +9,63 @@
 #include "EthernetFrame.hpp"
 #include "EthernetDriver.hpp"
 #include "ARPForIP4OnEthernetDriver.hpp"
+#include "ARPTable.hpp"
 
 class IP4OnEthernetDriver : public IP4Driver {
     Q_OBJECT;
 
+public:
+    using ARPTable = ::ARPTable<MACAddr, IP4Address>;
+
+private:
     EthernetDriver *_drv;
-    ARPForIP4OnEthernetDriver *_arp;
+    ARPForIP4OnEthernetDriver _arp;
 
-    std::multimap<IP4Address, IP4Packet> _queue {};
+    struct SendItem {
+        IP4Packet packet;
+        int timeout;
+    };
+    std::multimap<IP4Address, SendItem> _queue {};
+    int _timeout = -1;
 
-    // TODO: ARP cache
-    // TODO: ARP driver or something
+    bool _arpCacheEnabled = false;
+    ARPTable _table {};
+
+    void flushAwaitingPackets(MACAddr hw, IP4Address ip);
+
+    void sendPacketTo(const IP4Packet &p, MACAddr hwaddr);
+
+    bool tickQueue();
 
 public:
-    IP4OnEthernetDriver(EthernetDriver *drv);
+    explicit IP4OnEthernetDriver(EthernetDriver *drv);
+
+    IP4OnEthernetDriver(EthernetDriver *drv, IP4Address addr, uint8_t cidr);
 
     virtual GenericNetworkInterface *interface() const override
     {
         return _drv->interface();
     }
 
-    virtual void setAddress(IP4Address addr) override;
-
     virtual void sendPacket(const IP4Packet &p) override;
+
+    virtual bool tick() override;
+
+    int timeout() const { return _timeout; }
+    void setTimeout(int x) { _timeout = x; }
+
+    ARPForIP4OnEthernetDriver *arpDriver() { return &_arp; }
+
+    // TODO: separate toggles for read and write?
+    bool arpCacheEnabled() const { return _arpCacheEnabled; }
+    void setArpCacheEnabled(bool x) { _arpCacheEnabled = x; }
+
+    ARPTable *arpTable() { return &_table; }
 
 private slots:
     void handleFrame(const EthernetFrame *f);
 
-    void handleARPReply(MACAddr hw, IP4Address ip);
+    void handleARPPacket(const ARPPacket &p);
 };
 
 #endif

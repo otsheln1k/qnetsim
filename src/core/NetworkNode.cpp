@@ -43,5 +43,7 @@ bool NetworkNode::stepRecv()
         res = iface->stepRecv() || res;
     }
 
+    res = tick() || res;
+
     return res;
 }

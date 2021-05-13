@@ -9,9 +9,13 @@ EthernetInterfaceSettingsDialog::EthernetInterfaceSettingsDialog(MACAddr mac, IP
 {
     ui->setupUi(this);
     ui->macInput->setText(mac);
-    auto *tmp = ip4.bytes();
-    ui->ipInput->setText(QString{"%1.%2.%3.%4"}.arg(tmp[0]).arg(tmp[1]).arg(tmp[2]).arg(tmp[3]));
+    ui->ipInput->setText(QString{"%1.%2.%3.%4"}.arg(ip4[0]).arg(ip4[1]).arg(ip4[2]).arg(ip4[3]));
     ui->cidrInput->setValue(mask);
+
+    ui->arpTableWidget->setColumnWidth(0, 200);
+    ui->arpTableWidget->setColumnWidth(1, 200);
+    ui->arpTableWidget->horizontalHeader()->setStretchLastSection(true);
+
 }
 
 EthernetInterfaceSettingsDialog::~EthernetInterfaceSettingsDialog()
@@ -52,4 +56,9 @@ void EthernetInterfaceSettingsDialog::accept()
     emit info(hw, ip, (uint8_t)cidr);
 
     QDialog::accept();
+}
+
+void EthernetInterfaceSettingsDialog::on_arpSwith_stateChanged(int arg1)
+{
+    ui->arpTableWidget->setEnabled(arg1);
 }

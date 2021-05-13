@@ -6,8 +6,11 @@
 #include "MACAddr.hpp"
 #include "EthernetInterface.hpp"
 #include "ECTPDriver.hpp"
+#include "InterfaceBound.hpp"
 
-class EthernetDriver : public QObject {
+class EthernetDriver : public QObject,
+                       public InterfaceBound
+{
     Q_OBJECT;
 
     Q_PROPERTY(MACAddr address
