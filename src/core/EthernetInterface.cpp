@@ -62,12 +62,9 @@ EthernetInterface::connectionByIndex(size_t index) const
 
 bool EthernetInterface::sendFrame(const EthernetFrame &frame)
 {
-    SimulationLogger::currentLogger()->setCurrentInterface(this);
-
     std::vector<uint8_t> bytes;
     bytes.resize(frame.size());
     if (!frame.write(bytes.data())) {
-        SimulationLogger::currentLogger()->unsetCurrentInterface();
         return false;
     }
 
@@ -75,7 +72,6 @@ bool EthernetInterface::sendFrame(const EthernetFrame &frame)
 
     emit started();
 
-    SimulationLogger::currentLogger()->unsetCurrentInterface();
     return true;
 }
 
@@ -102,8 +98,6 @@ bool EthernetInterface::stepRecv()
         return false;
     }
 
-    SimulationLogger::currentLogger()->setCurrentInterface(this);
-
     while (!_rq.empty()) {
         const auto &bytes = _rq.front();
 
@@ -114,8 +108,6 @@ bool EthernetInterface::stepRecv()
 
         _rq.pop();
     }
-
-    SimulationLogger::currentLogger()->unsetCurrentInterface();
 
     return true;
 }

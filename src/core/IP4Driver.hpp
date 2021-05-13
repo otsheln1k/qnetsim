@@ -7,9 +7,11 @@
 #include "GenericNetworkInterface.hpp"
 #include "IP4Packet.hpp"
 #include "IP4Address.hpp"
+#include "InterfaceBound.hpp"
 
 class IP4Driver : public QObject,
-                  public Tickable
+                  public Tickable,
+                  public InterfaceBound
 {
     Q_OBJECT;
 

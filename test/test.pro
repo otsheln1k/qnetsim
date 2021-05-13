@@ -25,7 +25,6 @@ HEADERS += IP4NodeTest.hpp
 HEADERS += IP4OnEthernetTest.hpp
 HEADERS += IP4PacketTest.hpp
 HEADERS += MACAddrTest.hpp
-HEADERS += SimulationLoggerTest.hpp
 HEADERS += SimulationStepperTest.hpp
 HEADERS += SwitchNodeTest.h
 
@@ -40,6 +39,5 @@ SOURCES += IP4NodeTest.cpp
 SOURCES += IP4OnEthernetTest.cpp
 SOURCES += IP4PacketTest.cpp
 SOURCES += MACAddrTest.cpp
-SOURCES += SimulationLoggerTest.cpp
 SOURCES += SimulationStepperTest.cpp
 SOURCES += SwitchNodeTest.cpp

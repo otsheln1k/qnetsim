@@ -27,9 +27,11 @@ void PCNode::addInterface(GenericNetworkInterface *iface){
 
         driver->setParent(this);
         interfaces[eiface] = driver;
+        driver->setBoundInterface(eiface);
 
         IP4Driver *drv = new IP4OnEthernetDriver {driver};
         ipNode.addDriver(drv);
+        drv->setBoundInterface(eiface);
     }
 }
 
@@ -83,6 +85,7 @@ void PCNode::sendECTPLoopback(GenericNetworkInterface *iface,
                              std::back_inserter(bytes));
 
     SimulationLogger::currentLogger()->log(
+        this,
         QString{"Prepared loopback ECTP message: dest=%1, seq=%2"}
         .arg(drv->address())
         .arg(seq));

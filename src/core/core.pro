@@ -38,6 +38,7 @@ HEADERS += EthernetInterface.hpp
 HEADERS += GenericNetworkInterface.hpp
 HEADERS += HubNode.h
 HEADERS += ICMPPacket.hpp
+HEADERS += InterfaceBound.hpp
 HEADERS += IP4Address.hpp
 HEADERS += IP4Driver.hpp
 HEADERS += IP4Node.hpp
