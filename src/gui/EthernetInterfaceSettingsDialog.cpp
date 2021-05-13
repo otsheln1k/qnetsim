@@ -59,12 +59,26 @@ void EthernetInterfaceSettingsDialog::accept()
     QDialog::accept();
 }
 
-void EthernetInterfaceSettingsDialog::on_arpSwith_stateChanged(int arg1)
-{
-    ui->arpTableWidget->setEnabled(arg1);
-}
-
 void EthernetInterfaceSettingsDialog::on_checkBox_stateChanged(int arg1)
 {
     ui->spinBox->setEnabled(arg1);
+}
+
+void EthernetInterfaceSettingsDialog::on_checkBox_2_stateChanged(int arg1)
+{
+    ui->spinBox_2->setEnabled(arg1);
+}
+
+void EthernetInterfaceSettingsDialog::on_arpSwitch_stateChanged(int arg1)
+{
+    ui->arpTableWidget->setEnabled(arg1);
+    ui->checkBox->setEnabled(arg1);
+    ui->checkBox_2->setEnabled(arg1);
+    ui->label_4->setEnabled(arg1);
+    ui->label_5->setEnabled(arg1);
+    arg1 ? ui->spinBox->setEnabled(ui->checkBox_2->isChecked()) : ui->spinBox->setEnabled(arg1);
+    arg1 ? ui->spinBox_2->setEnabled(ui->checkBox_2->isChecked()) : ui->spinBox_2->setEnabled(arg1);
+    ui->toolButton->setEnabled(arg1);
+    ui->lineEdit->setEnabled(arg1);
+    ui->lineEdit_2->setEnabled(arg1);
 }
