@@ -18,6 +18,9 @@ private slots:
 
     void testParse();
     void testParse_data();
+
+    void testNetworks();
+    void testNetworks_data();
 };
 
 #endif

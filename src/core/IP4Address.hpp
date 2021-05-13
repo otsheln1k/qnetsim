@@ -16,6 +16,12 @@ public:
     constexpr IP4Address(uint32_t x)
         :_bits{x} {}
 
+    constexpr IP4Address(IP4Address net, IP4Address node, uint8_t cidr)
+        :_bits{
+                (net.networkAddr(cidr).asUint32())
+                | node.nodeAddr(cidr).asUint32()
+            } {}
+
     constexpr IP4Address() :IP4Address{0} {}
 
     constexpr uint8_t octet(int i) const
@@ -27,6 +33,25 @@ public:
     constexpr uint32_t asUint32() const
     {
         return _bits;
+    }
+
+    constexpr IP4Address networkAddr(uint8_t cidr) const
+    {
+        return {(cidr < 32)
+            ? _bits & (((1 << cidr) - 1) << (32 - cidr))
+            : _bits};
+    }
+
+    constexpr IP4Address nodeAddr(uint8_t cidr) const
+    {
+        return {(cidr < 32)
+            ? _bits & ((1 << (32 - cidr)) - 1)
+            : 0};
+    }
+
+    constexpr bool inNetwork(IP4Address addr, int cidr) const
+    {
+        return networkAddr(cidr) == addr.networkAddr(cidr);
     }
 
     uint8_t *write(uint8_t *dest) const;

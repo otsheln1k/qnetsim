@@ -146,3 +146,43 @@ void IP4AddressTest::testParse_data()
     QTest::newRow("192.168.700.65") << QString{"192.168.0.256"} << false << -1;
     QTest::newRow("0.0.-1.2") << QString{"0.0.-1.2"} << false << -1;
 }
+
+void IP4AddressTest::testNetworks()
+{
+    QFETCH(IP4Address, addr);
+    QFETCH(uint8_t, cidr);
+
+    QFETCH(IP4Address, net);
+    QFETCH(IP4Address, node);
+
+    QCOMPARE(addr.networkAddr(cidr), net);
+    QCOMPARE(addr.nodeAddr(cidr), node);
+
+    QFETCH(IP4Address, otherNet);
+    QFETCH(uint8_t, maxCidr);
+
+    for (uint8_t otherCidr = 1; otherCidr <= maxCidr; ++otherCidr) {
+        QVERIFY(addr.inNetwork(otherNet, otherCidr));
+    }
+
+    QCOMPARE(IP4Address(net, node, cidr), addr);
+}
+
+void IP4AddressTest::testNetworks_data()
+{
+    QTest::addColumn<IP4Address>("addr");
+    QTest::addColumn<uint8_t>("cidr");
+    QTest::addColumn<IP4Address>("net");
+    QTest::addColumn<IP4Address>("node");
+    QTest::addColumn<IP4Address>("otherNet");
+    QTest::addColumn<uint8_t>("maxCidr");
+
+    QTest::newRow("192.168.0.106/24 in 192.0.0.0/8")
+        << IP4Address{192,168,0,106} << (uint8_t)24
+        << IP4Address{192,168,0,0} << IP4Address{0,0,0,106}
+        << IP4Address{192,0,0,0} << (uint8_t)8;
+    QTest::newRow("10.54.13.129/12 in 10.54.13.128/31")
+        << IP4Address{10,54,13,129} << (uint8_t)12
+        << IP4Address{10,48,0,0} << IP4Address{0,6,13,129}
+        << IP4Address{10,54,13,128} << (uint8_t)31;
+}
