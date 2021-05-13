@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>285</width>
-    <height>147</height>
+    <width>614</width>
+    <height>309</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,68 +15,130 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>MAC-адрес</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="macInput">
-       <property name="inputMask">
-        <string>HH:HH:HH:HH:HH:HH</string>
-       </property>
-       <property name="text">
-        <string>00:00:00:00:00:00</string>
-       </property>
-       <property name="cursorPosition">
-        <number>17</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>IP - адрес</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="ipInput">
-       <property name="inputMask">
-        <string>009.009.009.009</string>
-       </property>
-       <property name="text">
-        <string>192.168.1.1</string>
-       </property>
-       <property name="cursorPosition">
-        <number>15</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Маска подсети</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QSpinBox" name="cidrInput">
-       <property name="maximum">
-        <number>32</number>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="tab_1">
+      <attribute name="title">
+       <string>MAC/IP4</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>MAC-адрес</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="macInput">
+         <property name="inputMask">
+          <string>HH:HH:HH:HH:HH:HH</string>
+         </property>
+         <property name="text">
+          <string>00:00:00:00:00:00</string>
+         </property>
+         <property name="cursorPosition">
+          <number>17</number>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>IP - адрес</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="ipInput">
+         <property name="inputMask">
+          <string>009.009.009.009</string>
+         </property>
+         <property name="text">
+          <string>192.168.1.1</string>
+         </property>
+         <property name="cursorPosition">
+          <number>15</number>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Маска подсети</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QSpinBox" name="cidrInput">
+         <property name="maximum">
+          <number>32</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>ARP</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QCheckBox" name="arpSwith">
+         <property name="text">
+          <string>Включить ARP</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="arpTableWidget">
+         <property name="rowCount">
+          <number>10</number>
+         </property>
+         <property name="columnCount">
+          <number>3</number>
+         </property>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <column>
+          <property name="text">
+           <string>IP4</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>MAC</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Тип записи</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
