@@ -28,6 +28,11 @@ public:
     virtual uint8_t cidr() const { return _cidr; }
     virtual void setCidr(uint8_t x) { _cidr = x; }
 
+    IP4Address networkAddress() const
+    {
+        return address().networkAddr(cidr());
+    }
+
     virtual GenericNetworkInterface *interface() const =0;
 
     virtual bool tick() override { return false; }

@@ -49,9 +49,29 @@ bool IP4Node::tick()
     return res;
 }
 
+IP4Driver *IP4Node::pickRoute(IP4Address addr) const
+{
+    for (IP4Driver *drv : *this) {
+        if (addr.inNetwork(drv->address(), drv->cidr())) {
+            return drv;
+        }
+    }
+
+    // TODO: routing
+
+    return nullptr;
+}
+
 void IP4Node::sendPacket(IP4Driver *drv, const IP4Packet &p)
 {
     drv->sendPacket(p);
+}
+
+void IP4Node::sendPacket(const IP4Packet &p)
+{
+    if (IP4Driver *drv = pickRoute(p.dstAddr())) {
+        sendPacket(drv, p);
+    }
 }
 
 void IP4Node::handlePacket(const IP4Packet &p)
@@ -64,7 +84,7 @@ void IP4Node::handlePacket(const IP4Packet &p)
         return;
     }
 
-    // TODO: routing
+    // TODO: forwarding
     if (p.dstAddr() != drv->address()) {
         return;
     }

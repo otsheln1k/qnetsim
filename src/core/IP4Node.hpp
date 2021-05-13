@@ -35,9 +35,11 @@ public:
 
     virtual bool tick() override;
 
+    IP4Driver *pickRoute(IP4Address addr) const;
+
 public slots:
-    // TODO: do we even need this one? I mean, it’s just ‘drv->sendPacket(p)’
     void sendPacket(IP4Driver *, const IP4Packet &);
+    void sendPacket(const IP4Packet &);
 
 signals:
     void receivedPacket(IP4Driver *, const IP4Packet &);
