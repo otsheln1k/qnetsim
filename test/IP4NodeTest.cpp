@@ -83,7 +83,8 @@ void IP4NodeTest::testDestUnreachable()
                                            p.payload().size()) != nullptr);
                          QCOMPARE(icmp.type(),
                                   ICMP_MSG_DESTINATION_UNREACHEBLE);
-                         QCOMPARE(icmp.code(), 3);
+                         QCOMPARE(icmp.code(),
+                                  ICMP_DU_CODE_HOST_UNREACHABLE);
 
                          ++duCount;
                      });

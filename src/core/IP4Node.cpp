@@ -51,17 +51,29 @@ bool IP4Node::tick()
     return res;
 }
 
-IP4Driver *IP4Node::pickRoute(IP4Address addr) const
+IP4Driver *IP4Node::pickLocalRoute(IP4Address addr) const
 {
     for (IP4Driver *drv : *this) {
         if (addr.inNetwork(drv->address(), drv->cidr())) {
             return drv;
         }
     }
-
-    // TODO: routing
-
     return nullptr;
+}
+
+IP4Driver *IP4Node::pickRoute(IP4Address addr) const
+{
+    if (IP4Driver *drv = pickLocalRoute(addr)) {
+        return drv;
+    }
+
+    auto it = _table.pickRoute(addr);
+    if (it == _table.end()) {
+        return nullptr;
+    }
+
+    IP4Address dest = it->dest;
+    return pickLocalRoute(dest);
 }
 
 void IP4Node::sendPacket(IP4Driver *drv, const IP4Packet &p)
@@ -69,11 +81,23 @@ void IP4Node::sendPacket(IP4Driver *drv, const IP4Packet &p)
     drv->sendPacket(p);
 }
 
-void IP4Node::sendPacket(const IP4Packet &p)
+bool IP4Node::sendPacket(const IP4Packet &p)
 {
     if (IP4Driver *drv = pickRoute(p.dstAddr())) {
         sendPacket(drv, p);
+        return true;
     }
+    return false;
+}
+
+IP4Driver *IP4Node::pickForwardRoute(IP4Driver *from, const IP4Packet &p)
+{
+    IP4Driver *drv = pickRoute(p.dstAddr());
+    if (drv != nullptr
+        && drv != from) {       // Should we make this check?
+        return drv;
+    }
+    return nullptr;
 }
 
 void IP4Node::handlePacket(const IP4Packet &p)
@@ -86,15 +110,23 @@ void IP4Node::handlePacket(const IP4Packet &p)
         return;
     }
 
-    // TODO: forwarding
     if (p.dstAddr() != drv->address()) {
-        return;
+        if (_forwardPackets) {
+            if (IP4Driver *to = pickForwardRoute(drv, p)) {
+                sendPacket(to, p);
+                emit forwardedPacket(drv, to, p);
+            } else {
+                handleNetUnreachable(drv, p);
+            }
+        } else {
+            emit droppedForeignPacket(drv, p);
+        }
     }
 
     emit receivedPacket(drv, p);
 }
 
-void IP4Node::sendICMPPacket(IP4Driver *drv, IP4Address dst,
+bool IP4Node::sendICMPPacket(IP4Driver *drv, IP4Address dst,
                              const ICMPPacket &icmp)
 {
     IP4Packet p {};
@@ -105,7 +137,7 @@ void IP4Node::sendICMPPacket(IP4Driver *drv, IP4Address dst,
     p.payload().resize(icmp.size());
     icmp.write(p.payload().data());
 
-    sendPacket(p);
+    return sendPacket(p);
 }
 
 ICMPPacket IP4Node::makeICMPError(ICMPMessageType mt, uint8_t code,
@@ -119,6 +151,8 @@ ICMPPacket IP4Node::makeICMPError(ICMPMessageType mt, uint8_t code,
 
 void IP4Node::handleDestUnreachable(const IP4Packet &p)
 {
+    // TODO: emit something?
+
     if (p.protocol() == IPPROTO_ICMP
         || !_hostUnreachableEnabled) {
         return;
@@ -130,5 +164,22 @@ void IP4Node::handleDestUnreachable(const IP4Packet &p)
     }
 
     sendICMPPacket(s, p.srcAddr(),
-                   makeICMPError(ICMP_MSG_DESTINATION_UNREACHEBLE, 3, p));
+                   makeICMPError(ICMP_MSG_DESTINATION_UNREACHEBLE,
+                                 ICMP_DU_CODE_HOST_UNREACHABLE,
+                                 p));
+}
+
+void IP4Node::handleNetUnreachable(IP4Driver *drv, const IP4Packet &p)
+{
+    // TODO: emit something?
+
+    if (p.protocol() == IPPROTO_ICMP
+        || !_hostUnreachableEnabled) {
+        return;
+    }
+
+    sendICMPPacket(drv, p.srcAddr(),
+                   makeICMPError(ICMP_MSG_DESTINATION_UNREACHEBLE,
+                                 ICMP_DU_CODE_NET_UNREACHABLE,
+                                 p));
 }
