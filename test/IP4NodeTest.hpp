@@ -9,6 +9,7 @@ class IP4NodeTest : public QObject {
 private slots:
     void testOneSubnet();
     void testDestUnreachable();
+    void testForwarding();
 };
 
 #endif

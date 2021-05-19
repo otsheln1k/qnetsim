@@ -135,6 +135,8 @@ class DummyIP4Driver : public IP4Driver {
     mutable DummyInterface _iface; // empty
 
 public:
+    int counter = 0;
+
     using IP4Driver::IP4Driver;
 
     virtual GenericNetworkInterface *interface() const override
@@ -143,6 +145,7 @@ public:
     }
     virtual void sendPacket(const IP4Packet &p) override
     {
+        ++counter;
         emit packetSent(p);
     }
 
