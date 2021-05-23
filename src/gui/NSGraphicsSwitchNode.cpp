@@ -15,6 +15,10 @@ NSGraphicsSwitchNode::NSGraphicsSwitchNode(
                      position, size, name),
       node{node}
 {
+    QObject::connect(this, &NSGraphicsNode::addingInterface,
+                     node, &NetworkNode::addInterface);
+    QObject::connect(this, &NSGraphicsNode::removingInterface,
+                     node, &NetworkNode::removeInterface);
     QObject::connect(node, &QObject::destroyed,
                      this, &NSGraphicsSwitchNode::onNodeDestroyed);
 }
@@ -34,14 +38,15 @@ void NSGraphicsSwitchNode::populateMenu(QMenu *menu, QWidget *)
     QObject::connect(menu->addAction("Удалить"), &QAction::triggered,
                      [this]()
                      {
-                         delete node;
+                         emit removingNode();
                      });
 
     QObject::connect(menu->addAction("Добавить порт Ethernet"),
                      &QAction::triggered,
                      [this]()
                      {
-                         // TODO: change for threading
-                         node->addInterface(new EthernetInterface {});
+                         auto *iface = new EthernetInterface {};
+                         iface->moveToThread(node->thread());
+                         emit addingInterface((GenericNetworkInterface *)iface);
                      });
 }
