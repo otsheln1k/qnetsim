@@ -5,7 +5,6 @@
 #include "EthernetInterfaceTest.hpp"
 #include "EthernetDriverTest.hpp"
 #include "SimulationStepperTest.hpp"
-#include "SimulationLoggerTest.hpp"
 #include "ECTPDriverTest.hpp"
 #include "SwitchNodeTest.h"
 #include "ARPPacketTest.hpp"
@@ -13,6 +12,8 @@
 #include "IP4PacketTest.hpp"
 #include "IP4OnEthernetTest.hpp"
 #include "ICMPPacketTest.hpp"
+#include "IP4NodeTest.hpp"
+#include "IP4RoutingTableTest.hpp"
 
 int main(int argc, char **argv)
 {
@@ -22,7 +23,6 @@ int main(int argc, char **argv)
         new EthernetInterfaceTest {},
         new EthernetDriverTest {},
         new SimulationStepperTest {},
-        new SimulationLoggerTest {},
         new ECTPDriverTest {},
         new SwitchNodeTest{},
         new ARPPacketTest {},
@@ -30,6 +30,8 @@ int main(int argc, char **argv)
         new IP4PacketTest {},
         new IP4OnEthernetTest {},
         new ICMPPacketTest {},
+        new IP4NodeTest {},
+        new IP4RoutingTableTest {},
     };
 
     int status = 0;

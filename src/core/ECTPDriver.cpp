@@ -42,7 +42,7 @@ void ECTPDriver::handleData(const uint8_t *data, size_t size)
         const uint8_t *payload = &data[off+4];
         size_t payloadSize = size - (off+4);
 
-        SimulationLogger::currentLogger()->log(QString{
+        SimulationLogger::currentLogger()->log(this, QString{
                 "Received ECTP reply: seq=%2"}
             .arg(seq));
 
@@ -65,7 +65,7 @@ void ECTPDriver::handleData(const uint8_t *data, size_t size)
         ndata[1] = (nskip >> 8) & 0xFF;
         std::copy(data + 2, data + size, ndata.begin()+2);
 
-        SimulationLogger::currentLogger()->log(QString{
+        SimulationLogger::currentLogger()->log(this, QString{
                 "Received ECTP Forward: forwarding to %1"}
             .arg(dest));
 

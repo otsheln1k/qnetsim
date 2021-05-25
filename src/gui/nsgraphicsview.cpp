@@ -300,3 +300,41 @@ void NSGraphicsView::onRemovingGraphicsNode()
 
     emit removingNode(node);
 }
+
+QGraphicsScene* NSGraphicsView::getScene()
+{
+    return scene;
+}
+
+std::map<NetworkNode *, NSGraphicsNode *>* NSGraphicsView::getNodetab()
+{
+    return &nodetab;
+}
+
+void NSGraphicsView::moveToThread(NetworkNode *nd)
+{
+    nd->moveToThread(&simulationThread);
+}
+
+NetworkModel* NSGraphicsView::getNetworkModel()
+{
+    return model;
+}
+
+void NSGraphicsView::connectNodeWithRemoving(NSGraphicsNode *gnode)
+{
+    QObject::connect(gnode, &NSGraphicsNode::removingNode,
+                                 this, &NSGraphicsView::onRemovingGraphicsNode);
+}
+
+
+int NSGraphicsView::getCountEdges()
+{
+    return edgetab.size();
+}
+
+std::map<std::pair<QObject *, QObject *>, QGraphicsLineItem *>* NSGraphicsView::getEdgetab()
+{
+    return &edgetab;
+}
+

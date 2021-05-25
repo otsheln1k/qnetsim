@@ -5,6 +5,8 @@
 
 #include "Tickable.hpp"
 #include "Steppable.hpp"
+#include "GenericNetworkInterface.hpp"
+#include "IP4Driver.hpp"
 
 #include <QObject>
 
@@ -100,6 +102,55 @@ public slots:
     {
         emit triggered();
     }
+};
+
+class DummyInterface : public GenericNetworkInterface {
+    Q_OBJECT;
+
+public:
+    virtual bool connect(GenericNetworkInterface *) override
+    {
+        return false;
+    }
+    virtual bool disconnect(GenericNetworkInterface *) override
+    {
+        return false;
+    }
+    virtual size_t connectionsCount() const override
+    {
+        return 0;
+    }
+    virtual GenericNetworkInterface *
+    connectionByIndex(size_t) const override
+    {
+        return nullptr;
+    }
+    virtual bool stepSend() override { return false; }
+    virtual bool stepRecv() override { return false; }
+};
+
+class DummyIP4Driver : public IP4Driver {
+    Q_OBJECT;
+
+    mutable DummyInterface _iface; // empty
+
+public:
+    int counter = 0;
+
+    using IP4Driver::IP4Driver;
+
+    virtual GenericNetworkInterface *interface() const override
+    {
+        return &_iface;
+    }
+    virtual void sendPacket(const IP4Packet &p) override
+    {
+        ++counter;
+        emit packetSent(p);
+    }
+
+signals:
+    void packetSent(const IP4Packet &);
 };
 
 #endif

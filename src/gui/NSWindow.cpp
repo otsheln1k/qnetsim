@@ -70,12 +70,28 @@ void NSWindow::on_toolButton_3_clicked()
 
 void NSWindow::onLoggerMessage(const SimulationLoggerMessage &msg)
 {
+    QObject *obj = msg.object();
+
+    GenericNetworkInterface *iface = nullptr;
+    NetworkNode *node = nullptr;
+
+    for (; obj; obj = obj->parent()) {
+        if (auto *i = dynamic_cast<GenericNetworkInterface *>(obj)) {
+            iface = i;
+        } else if (auto *n = dynamic_cast<NetworkNode *>(obj)) {
+            node = n;
+        } else if (auto *ib = dynamic_cast<InterfaceBound *>(obj)) {
+            iface = ib->boundInterface();
+        }
+    }
+
+    if (node == nullptr) {
+        return;
+    }
+
     int row = ui->logTable->rowCount();
 
     ui->logTable->setRowCount(row + 1);
-
-    auto *iface = msg.interface();
-    auto *node = dynamic_cast<NetworkNode *>(iface->parent());
 
     auto *i0 = new QTableWidgetItem(
         QString{"Узел @ 0x%1"}

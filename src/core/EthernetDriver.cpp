@@ -19,6 +19,7 @@ EthernetDriver::EthernetDriver(MACAddr a, EthernetInterface *iface)
 void EthernetDriver::sendFrame(const EthernetFrame &frame)
 {
     SimulationLogger::currentLogger()->log(
+        this,
         QString{"Sending frame from %1 to %2"}
         .arg(frame.srcAddr())
         .arg(frame.dstAddr()));
@@ -29,6 +30,7 @@ void EthernetDriver::sendFrame(const EthernetFrame &frame)
 void EthernetDriver::handleFrame(const EthernetFrame *frame)
 {
     SimulationLogger::currentLogger()->log(
+        this,
         QString{"Received frame from %1 to %2"}
         .arg(frame->srcAddr())
         .arg(frame->dstAddr()));
@@ -51,6 +53,7 @@ void EthernetDriver::handleECTPForward(MACAddr dest,
                                        size_t size)
 {
     SimulationLogger::currentLogger()->log(
+        this,
         QString{"Forwarding ECTP message to %1"}
         .arg(dest));
 

@@ -49,8 +49,12 @@ bool IP4OnEthernetDriver::tickQueue()
 
     for (auto iter = _queue.begin(); iter != _queue.end();) {
         SendItem &item = iter->second;
+
         if (item.timeout == 0) {
+            emit packetDestUnreachable(item.packet);
+
             _queue.erase(iter++);
+
         } else {
             if (item.timeout > 0) {
                 --item.timeout;
