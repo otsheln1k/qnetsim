@@ -10,6 +10,7 @@ private slots:
     void testOneSubnet();
     void testDestUnreachable();
     void testForwarding();
+    void testPing();
 };
 
 #endif

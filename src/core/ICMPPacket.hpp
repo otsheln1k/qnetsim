@@ -85,5 +85,7 @@ Q_DECLARE_METATYPE(const ICMPPacket *);
 ICMPPacket makeICMPEchoRequest(uint16_t ident, uint16_t seq);
 ICMPPacket makeICMPEchoReply(const ICMPPacket &req);
 std::vector<uint8_t> takePacketHead(const IP4Packet &p, size_t size);
+uint16_t getICMPEchoIdent(const ICMPPacket &p);
+uint16_t getICMPEchoSequence(const ICMPPacket &p);
 
 #endif

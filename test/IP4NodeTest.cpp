@@ -159,3 +159,49 @@ void IP4NodeTest::testForwarding()
     QCOMPARE(drvs[0].counter, 1);
     QCOMPARE(drvs[1].counter, 2);
 }
+
+void IP4NodeTest::testPing()
+{
+    IP4Node n {};
+    n.setEchoEnabled(true);
+
+    DummyIP4Driver drvs[] = {
+        DummyIP4Driver{{192,168,0,2}, 24},
+    };
+
+    for (DummyIP4Driver &d : drvs) {
+        n.addDriver(&d);
+    }
+
+    IP4Packet p {};
+    p.setSrcAddr({192,168,0,3});
+    p.setDstAddr(drvs[0].address());
+    p.setTtl(255);
+    p.setProtocol(IPPROTO_ICMP);
+
+    ICMPPacket icmp = makeICMPEchoRequest(0xFEED, 13);
+    p.payload().resize(icmp.size());
+    icmp.write(p.payload().data());
+
+    int recv = 0;
+    int good = 0;
+    QObject::connect(&drvs[0], &DummyIP4Driver::packetSent,
+                     [&recv, &good](const IP4Packet &p)
+                     {
+                         ++recv;
+                         QCOMPARE(p.protocol(), IPPROTO_ICMP);
+                         ICMPPacket icmp;
+                         QVERIFY(icmp.read(p.payload().data(),
+                                           p.payload().size()) != nullptr);
+                         QCOMPARE(icmp.type(), ICMP_MSG_ECHO_REPLY);
+                         QCOMPARE(icmp.code(), 0);
+                         QCOMPARE(getICMPEchoIdent(icmp), 0xFEED);
+                         QCOMPARE(getICMPEchoSequence(icmp), 13);
+                         ++good;
+                     });
+
+    drvs[0].receivePacket(p);
+    QCOMPARE(drvs[0].counter, 1);
+    QCOMPARE(recv, 1);
+    QCOMPARE(good, 1);
+}

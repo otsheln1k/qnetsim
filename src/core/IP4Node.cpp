@@ -1,4 +1,11 @@
+#include "ICMPPacket.hpp"
 #include "IP4Node.hpp"
+
+IP4Node::IP4Node()
+{
+    QObject::connect(this, &IP4Node::receivedPacket,
+                     &IP4Node::handleICMPEcho);
+}
 
 void IP4Node::addDriver(IP4Driver *drv)
 {
@@ -24,6 +31,8 @@ void IP4Node::removeDriver(IP4Driver *drv)
 
     QObject::disconnect(drv, &IP4Driver::receivedPacket,
                         this, &IP4Node::handlePacket);
+    QObject::disconnect(drv, &IP4Driver::packetDestUnreachable,
+                        this, &IP4Node::handleDestUnreachable);
 }
 
 size_t IP4Node::driversCount() const
@@ -121,9 +130,9 @@ void IP4Node::handlePacket(const IP4Packet &p)
         } else {
             emit droppedForeignPacket(drv, p);
         }
+    } else {
+        emit receivedPacket(drv, p);
     }
-
-    emit receivedPacket(drv, p);
 }
 
 bool IP4Node::sendICMPPacket(IP4Driver *drv, IP4Address dst,
@@ -182,4 +191,20 @@ void IP4Node::handleNetUnreachable(IP4Driver *drv, const IP4Packet &p)
                    makeICMPError(ICMP_MSG_DESTINATION_UNREACHEBLE,
                                  ICMP_DU_CODE_NET_UNREACHABLE,
                                  p));
+}
+
+void IP4Node::handleICMPEcho(IP4Driver *drv, const IP4Packet &p)
+{
+    ICMPPacket icmp;
+
+    if (!_icmpEchoRespond
+        || p.protocol() != IPPROTO_ICMP
+        || icmp.read(p.payload().data(), p.payload().size()) == nullptr
+        || icmp.type() != ICMP_MSG_ECHO_REQUEST
+        || icmp.code() != 0) {
+        return;
+    }
+
+    ICMPPacket reply = makeICMPEchoReply(icmp);
+    sendICMPPacket(drv, p.srcAddr(), reply);
 }

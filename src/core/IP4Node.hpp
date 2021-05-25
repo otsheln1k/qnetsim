@@ -20,6 +20,7 @@ class IP4Node : public QObject,
     bool _hostUnreachableEnabled = false;
     size_t _icmpErrorDataLength = 8;
     bool _forwardPackets = false;
+    bool _icmpEchoRespond = false;
 
     ICMPPacket makeICMPError(ICMPMessageType mt, uint8_t code,
                              const IP4Packet &p);
@@ -27,7 +28,7 @@ class IP4Node : public QObject,
     void handleNetUnreachable(IP4Driver *drv, const IP4Packet &p);
 
 public:
-    IP4Node() {}
+    IP4Node();
 
     void addDriver(IP4Driver *drv);
     void removeDriver(IP4Driver *drv);
@@ -53,6 +54,9 @@ public:
     bool forwardingEnabled() const { return _forwardPackets; }
     void setForwardingEnabled(bool x) { _forwardPackets = x; }
 
+    bool echoEnabled() const { return _icmpEchoRespond; }
+    void setEchoEnabled(bool x) { _icmpEchoRespond = x; }
+
     IP4Driver *pickLocalRoute(IP4Address addr) const;
     IP4Driver *pickRoute(IP4Address addr) const;
 
@@ -72,6 +76,8 @@ signals:
 private slots:
     void handlePacket(const IP4Packet &);
     void handleDestUnreachable(const IP4Packet &);
+
+    void handleICMPEcho(IP4Driver *, const IP4Packet &);
 };
 
 #endif
