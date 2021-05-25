@@ -83,7 +83,8 @@ void IP4NodeTest::testDestUnreachable()
                                            p.payload().size()) != nullptr);
                          QCOMPARE(icmp.type(),
                                   ICMP_MSG_DESTINATION_UNREACHEBLE);
-                         QCOMPARE(icmp.code(), 3);
+                         QCOMPARE(icmp.code(),
+                                  ICMP_DU_CODE_HOST_UNREACHABLE);
 
                          ++duCount;
                      });
@@ -109,4 +110,52 @@ void IP4NodeTest::testDestUnreachable()
     QCOMPARE(badCount, 1);
     QCOMPARE(count, 1);
     QCOMPARE(duCount, 1);
+}
+
+void IP4NodeTest::testForwarding()
+{
+    IP4Node n {};
+    n.setForwardingEnabled(true);
+
+    // ‘n’ is a router between 192.168.1.0/24 and 192.168.2.0/24. It
+    // also of 192.168.3.0/24 which is reachable through 192.168.1.1,
+    // and is connected to the outside world through a gateway at
+    // 192.168.2.1.
+
+    DummyIP4Driver drvs[] = {
+        DummyIP4Driver{{192,168,1,0}, 24},
+        DummyIP4Driver{{192,168,2,0}, 24},
+    };
+
+    for (DummyIP4Driver &d : drvs) {
+        n.addDriver(&d);
+    }
+
+    n.routingTable()->addEntry({192,168,3,0}, 24, {192,168,1,1});
+    n.routingTable()->addDefaultRoute({192,168,2,1});
+
+    // Packets:
+    // - 192.168.1.5 -> 192.168.2.8 (local)
+    // - 192.168.1.5 -> 192.168.3.15 (forward via 192.168.1.1)
+    // - 192.168.1.5 -> 10.1.2.3 (default gw)
+
+    IP4Packet p {};
+    p.setSrcAddr({192,168,1,5});
+    p.setProtocol(IPPROTO_TEST1);
+    p.setTtl(255);
+
+    p.setDstAddr({192,168,2,8});
+    n.sendPacket(p);
+    QCOMPARE(drvs[0].counter, 0);
+    QCOMPARE(drvs[1].counter, 1);
+
+    p.setDstAddr({192,168,3,15});
+    n.sendPacket(p);
+    QCOMPARE(drvs[0].counter, 1);
+    QCOMPARE(drvs[1].counter, 1);
+
+    p.setDstAddr({10,1,2,3});
+    n.sendPacket(p);
+    QCOMPARE(drvs[0].counter, 1);
+    QCOMPARE(drvs[1].counter, 2);
 }
