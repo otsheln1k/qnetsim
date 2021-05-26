@@ -16,13 +16,21 @@ void SwitchNode::addInterface(GenericNetworkInterface *iface){
 void SwitchNode::removeInterface(GenericNetworkInterface *iface){
     EthernetInterface *eiface = dynamic_cast<EthernetInterface *>(iface);
 
+    MACAddr delMAC;
     if(eiface == nullptr){
         return;
     }else{
         // удаление записи из таблицы
         for(auto i: table){
-            if(i.second.first == eiface){
+            if(i.second == eiface){
+                delMAC = i.first;
                 table.erase(i.first);
+            }
+        }
+
+        for(auto j: numberTable){
+            if(j.second == delMAC){
+                numberTable.erase(j.first);
             }
         }
         NetworkNode::removeInterface(iface);
@@ -43,34 +51,29 @@ void SwitchNode::redirection(const EthernetFrame *f){
     //2 - Unicast
     else{
         if(!table.empty()){
-            int maxNumber = 0;
-            for(it = table.begin(); it != table.end(); it++){
-                if(it->second.second > maxNumber)
-                    maxNumber = it->second.second;
+            auto check = table.insert({(f->srcAddr()), interface});
+            if(check.second){
+                numberTable.insert({(numberTable.cend()->first)+1,f->srcAddr()});
             }
-            table.insert({(f->srcAddr()), {interface, maxNumber + 1}});
-            if(this->tableSize == 0){
-                table.clear();
-            }
-            else{
-                if(this->tableSize != -1){ //если tablesize == -1, значит отключили
-                    if(maxNumber+1 == this->tableSize){
-                        cleanTable();
-                    }
+            if(tableSize > 0){
+                if(table.size() > tableSize){
+                    cleanTable();
                 }
             }
         }
         else {
-            table.insert({(f->srcAddr()), {interface,0}});
-            if(this->tableSize == 0){
+            table.insert({(f->srcAddr()), interface});
+            numberTable.insert({0,f->srcAddr()});
+            if(tableSize == 0){
                 table.clear();
+                numberTable.clear();
             }
         }
 
         const MACAddr a = f->dstAddr();
         auto path = table.find(a);
         if(path != table.end()){
-            path->second.first->sendFrame(*f);
+            path->second->sendFrame(*f);
         }
         else {
             for(auto *i: *this){
@@ -80,28 +83,15 @@ void SwitchNode::redirection(const EthernetFrame *f){
             }
         }
     }
-
 }
 
 void SwitchNode::cleanTable(){
-
-    MACAddr MACRecord;
-    EthernetInterface* interfaceRecord;
-    int numRecord = 0;
-
-    for(it = table.begin(); it != table.end(); it++){
-        if(it->second.second > numRecord){
-            numRecord = it->second.second;
-            MACRecord = it->first;
-            interfaceRecord = it->second.first;
-        }
-    }
-
-    table.clear();
-    table.insert({MACRecord,{interfaceRecord,0}});
+    auto delRecord = numberTable.cbegin();
+    table.erase(delRecord->second);
+    numberTable.erase(delRecord->first);
 }
 
-std::map<MACAddr, std::pair<EthernetInterface*,int>> SwitchNode::getTable(){
+std::map<MACAddr, EthernetInterface*> SwitchNode::getTable(){
     return table;
 }
 
