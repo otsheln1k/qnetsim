@@ -100,8 +100,13 @@ void NSWindow::onLoggerMessage(const SimulationLoggerMessage &msg)
 
     ui->logTable->setItem(row, 0, i0);
 
-    auto *gnode = ui->graphicsView->lookupGraphicsNode(node);
-    QString ifacename = gnode->interfaceName(iface);
+    QString ifacename;
+    if (iface != nullptr) {
+        auto *gnode = ui->graphicsView->lookupGraphicsNode(node);
+        ifacename = gnode->interfaceName(iface);
+    } else {
+        ifacename = "-";
+    }
     auto *i1 = new QTableWidgetItem{ifacename};
     i1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 

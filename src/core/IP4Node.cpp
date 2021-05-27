@@ -1,3 +1,4 @@
+#include "SimulationLogger.hpp"
 #include "ICMPPacket.hpp"
 #include "IP4Node.hpp"
 
@@ -101,6 +102,13 @@ IP4Packet IP4Node::makePacket(IPProtocol proto,
 
 void IP4Node::sendPacket(IP4Driver *drv, const IP4Packet &p)
 {
+
+    SimulationLogger::currentLogger()->log(
+        this,
+        QString{"Asking driver to send packet from %1 to %2"}
+        .arg(p.srcAddr())
+        .arg(p.dstAddr()));
+
     drv->sendPacket(p);
 }
 
@@ -136,9 +144,22 @@ IP4Driver *IP4Node::pickForwardRoute(IP4Driver *from, const IP4Packet &p)
 void IP4Node::forwardPacket(IP4Driver *from, IP4Driver *to, IP4Packet &p)
 {
     if (p.decrementTtl()) {
+
+        SimulationLogger::currentLogger()->log(
+            this,
+            QString{"Forwarding packet from %1 to %2"}
+            .arg(p.srcAddr())
+            .arg(p.dstAddr()));
+
         sendPacket(to, p);
+
         emit forwardedPacket(from, to, p);
     } else {
+
+        SimulationLogger::currentLogger()->log(
+            this,
+            QString{"Refusing to forward a packet with TTL zero"});
+
         emit outOfTtl(from, to, p);
     }
 }
@@ -146,6 +167,12 @@ void IP4Node::forwardPacket(IP4Driver *from, IP4Driver *to, IP4Packet &p)
 void IP4Node::handlePacket(const IP4Packet &p)
 {
     auto *drv = dynamic_cast<IP4Driver *>(sender());
+
+    SimulationLogger::currentLogger()->log(
+        this,
+        QString{"Received packet from %1 to %2 from driver"}
+        .arg(p.srcAddr())
+        .arg(p.dstAddr()));
 
     // TODO: packet reassembly
     if ((p.flags() & IP4Packet::FLAG_MORE_FRAGMENTS) != 0
@@ -235,6 +262,11 @@ void IP4Node::handleICMPEcho(IP4Driver *drv, const IP4Packet &p)
         || icmp.code() != 0) {
         return;
     }
+
+    SimulationLogger::currentLogger()->log(
+        this,
+        QString{"Received ICMP Echo Request from %1"}
+        .arg(p.srcAddr()));
 
     ICMPPacket reply = makeICMPEchoReply(icmp);
     sendICMPPacket(drv, p.srcAddr(), reply);
