@@ -4,7 +4,7 @@
 
 NodeRoute::NodeRoute()
 {
-
+    getIP4Node()->setParent(this);
 }
 
 MACAddr NodeRoute::createMac(){

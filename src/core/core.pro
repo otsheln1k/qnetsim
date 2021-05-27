@@ -25,7 +25,6 @@ SOURCES += IP4RoutingTable.cpp
 SOURCES += MACAddr.cpp
 SOURCES += NetworkModel.cpp
 SOURCES += NetworkNode.cpp
-SOURCES += PCNode.cpp
 SOURCES += SimulationLogger.cpp
 SOURCES += SimulationStepper.cpp
 SOURCES += SwitchNode.cpp

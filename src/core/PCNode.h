@@ -8,7 +8,7 @@ class PCNode : public NodeRoute
     Q_OBJECT;
 
 public:
-    PCNode();
+    PCNode() {}
 };
 
 #endif // PC_H
