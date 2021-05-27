@@ -44,7 +44,7 @@
          <string>Новая схема</string>
         </property>
         <property name="icon">
-         <iconset resource="icons.qrc">
+         <iconset resource="iconsAndModels.qrc">
           <normaloff>:/svg/res/icons/020-paper.svg</normaloff>:/svg/res/icons/020-paper.svg</iconset>
         </property>
         <property name="iconSize">
@@ -90,7 +90,7 @@ padding: 3px;</string>
            <string>Открыть</string>
           </property>
           <property name="icon">
-           <iconset resource="icons.qrc">
+           <iconset resource="iconsAndModels.qrc">
             <normaloff>:/svg/res/icons/015-file storage.svg</normaloff>:/svg/res/icons/015-file storage.svg</iconset>
           </property>
          </widget>
@@ -110,7 +110,7 @@ padding: 3px;</string>
            <string>Сохранить</string>
           </property>
           <property name="icon">
-           <iconset resource="icons.qrc">
+           <iconset resource="iconsAndModels.qrc">
             <normaloff>:/svg/res/icons/007-floppy disk.svg</normaloff>:/svg/res/icons/007-floppy disk.svg</iconset>
           </property>
          </widget>
@@ -173,7 +173,7 @@ padding: 3px;</string>
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>124</height>
+              <height>99</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
@@ -186,44 +186,6 @@ padding: 3px;</string>
              <property name="spacing">
               <number>3</number>
              </property>
-             <item row="7" column="0">
-              <widget class="QLabel" name="label_2">
-               <property name="text">
-                <string>Соединители</string>
-               </property>
-              </widget>
-             </item>
-             <item row="8" column="0">
-              <widget class="GraphicsNodeButton" name="toolButton_3">
-               <property name="text">
-                <string>Провод</string>
-               </property>
-               <property name="icon">
-                <iconset>
-                 <normaloff>res/icons/wire.svg</normaloff>res/icons/wire.svg</iconset>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="0">
-              <widget class="Line" name="line_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Устройства</string>
-               </property>
-              </widget>
-             </item>
              <item row="3" column="0" alignment="Qt::AlignLeft|Qt::AlignTop">
               <widget class="QWidget" name="widget_2" native="true">
                <layout class="QGridLayout" name="gridLayout_3">
@@ -248,7 +210,7 @@ padding: 3px;</string>
                    <string>ПК</string>
                   </property>
                   <property name="icon">
-                   <iconset resource="icons.qrc">
+                   <iconset resource="iconsAndModels.qrc">
                     <normaloff>:/svg/res/icons/018-monitor screen.svg</normaloff>:/svg/res/icons/018-monitor screen.svg</iconset>
                   </property>
                   <property name="checked">
@@ -265,22 +227,71 @@ padding: 3px;</string>
                    <string>Хаб</string>
                   </property>
                   <property name="icon">
-                   <iconset resource="icons.qrc">
+                   <iconset resource="iconsAndModels.qrc">
                     <normaloff>:/svg/res/icons/017-hub.svg</normaloff>:/svg/res/icons/017-hub.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="3">
+                 <widget class="GraphicsNodeButton" name="toolButton">
+                  <property name="text">
+                   <string>Маршрутизатор</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="iconsAndModels.qrc">
+                    <normaloff>:/svg/res/icons/018-wireless-router.svg</normaloff>:/svg/res/icons/018-wireless-router.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="GraphicsNodeButton" name="addSwitchButton">
+                  <property name="text">
+                   <string>Коммутатор</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="iconsAndModels.qrc">
+                    <normaloff>:/svg/res/icons/016-switch.svg</normaloff>:/svg/res/icons/016-switch.svg</iconset>
                   </property>
                  </widget>
                 </item>
                </layout>
               </widget>
              </item>
-             <item row="4" column="0">
-              <widget class="GraphicsNodeButton" name="addSwitchButton">
+             <item row="7" column="0">
+              <widget class="QLabel" name="label_2">
                <property name="text">
-                <string>Коммутатор</string>
+                <string>Соединители</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Устройства</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0">
+              <widget class="GraphicsNodeButton" name="toolButton_3">
+               <property name="text">
+                <string>Провод</string>
                </property>
                <property name="icon">
-                <iconset resource="icons.qrc">
-                 <normaloff>:/svg/res/icons/016-switch.svg</normaloff>:/svg/res/icons/016-switch.svg</iconset>
+                <iconset>
+                 <normaloff>res/icons/wire.svg</normaloff>res/icons/wire.svg</iconset>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="Line" name="line_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>
@@ -489,7 +500,7 @@ padding: 3px;</string>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="icons.qrc"/>
+  <include location="iconsAndModels.qrc"/>
  </resources>
  <connections/>
 </ui>

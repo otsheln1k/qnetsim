@@ -19,7 +19,7 @@ NSGraphicsRouterNode::NSGraphicsRouterNode(QObject *parent,
                                                    QPointF position,
                                                    QSize size,
                                                    QString *name)
-    : NSGraphicsNode(parent, new QPixmap("models/018-monitor screen.png"),
+    : NSGraphicsNode(parent, new QPixmap(":/png/res/models/018-wireless-router.png"),
                      position, size, name),
       node{node}
 {
@@ -79,19 +79,14 @@ void NSGraphicsRouterNode::populateMenu(QMenu *menu, QWidget *widget)
             [this, action, widget]()
             {
                 auto *iface = action->data().value<GenericNetworkInterface *>();
-                auto *drv = node->getDriver(dynamic_cast<EthernetInterface *>(iface));
-                auto *ipdrv = node->getIP4Driver(dynamic_cast<EthernetInterface *>(iface));
+                auto *eiface = dynamic_cast<EthernetInterface *>(iface);
+                auto *drv = node->getDriver(eiface);
+                auto *ipdrv = node->getIP4Driver(eiface);
+                auto *ip4ethdrv = dynamic_cast<IP4OnEthernetDriver*>(ipdrv);
                 auto *dialog = new EthernetInterfaceSettingsDialog {
-                    drv->address(),
-                    ipdrv->address(),
-                    ipdrv->cidr(),
+                    drv,
+                    ip4ethdrv,
                     widget->window()};
-                QObject::connect(
-                    dialog, &EthernetInterfaceSettingsDialog::info,
-                    [iface, this](MACAddr hw, IP4Address ip, uint8_t cidr)
-                    {
-                        node->setInterfaceSettings(iface, hw, ip, cidr);
-                    });
                 dialog->open();
             });
     }
