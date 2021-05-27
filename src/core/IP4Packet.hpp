@@ -76,6 +76,7 @@ public:
 
     uint8_t ttl() const { return _ttl; }
     void setTtl(uint8_t x) { _ttl = x; }
+    bool decrementTtl();
 
     IPProtocol protocol() const { return _proto; }
     void setProtocol(IPProtocol x) { _proto = x; }

@@ -32,6 +32,16 @@ uint16_t IP4Checksum::ofBytes(const uint8_t *start, size_t n)
     return cs.result();
 }
 
+bool IP4Packet::decrementTtl()
+{
+    if (_ttl == 0) {
+        return false;
+    }
+
+    --_ttl;
+    return true;
+}
+
 size_t IP4Packet::headerSize() const
 {
     // TODO: Options

@@ -109,6 +109,16 @@ IP4Driver *IP4Node::pickForwardRoute(IP4Driver *from, const IP4Packet &p)
     return nullptr;
 }
 
+void IP4Node::forwardPacket(IP4Driver *from, IP4Driver *to, IP4Packet &p)
+{
+    if (p.decrementTtl()) {
+        sendPacket(to, p);
+        emit forwardedPacket(from, to, p);
+    } else {
+        emit outOfTtl(from, to, p);
+    }
+}
+
 void IP4Node::handlePacket(const IP4Packet &p)
 {
     auto *drv = dynamic_cast<IP4Driver *>(sender());
@@ -122,8 +132,8 @@ void IP4Node::handlePacket(const IP4Packet &p)
     if (p.dstAddr() != drv->address()) {
         if (_forwardPackets) {
             if (IP4Driver *to = pickForwardRoute(drv, p)) {
-                sendPacket(to, p);
-                emit forwardedPacket(drv, to, p);
+                IP4Packet p_copy = p;
+                forwardPacket(drv, to, p_copy);
             } else {
                 handleNetUnreachable(drv, p);
             }

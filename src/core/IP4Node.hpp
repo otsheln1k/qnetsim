@@ -21,6 +21,7 @@ class IP4Node : public QObject,
     size_t _icmpErrorDataLength = 8;
     bool _forwardPackets = false;
     bool _icmpEchoRespond = false;
+    uint8_t _defaultTtl = 255;
 
     ICMPPacket makeICMPError(ICMPMessageType mt, uint8_t code,
                              const IP4Packet &p);
@@ -57,6 +58,9 @@ public:
     bool echoEnabled() const { return _icmpEchoRespond; }
     void setEchoEnabled(bool x) { _icmpEchoRespond = x; }
 
+    uint8_t defaultTtl() const { return _defaultTtl; }
+    void setDefaultTtl(uint8_t x) { _defaultTtl = x; }
+
     IP4Driver *pickLocalRoute(IP4Address addr) const;
     IP4Driver *pickRoute(IP4Address addr) const;
 
@@ -66,12 +70,15 @@ public:
     bool sendPacket(const IP4Packet &);
     IP4Driver *pickForwardRoute(IP4Driver *from, const IP4Packet &);
 
+    void forwardPacket(IP4Driver *from, IP4Driver *to, IP4Packet &p);
+
     bool sendICMPPacket(IP4Driver *drv, IP4Address dst, const ICMPPacket &p);
 
 signals:
     void receivedPacket(IP4Driver *, const IP4Packet &);
     void droppedForeignPacket(IP4Driver *, const IP4Packet &);
     void forwardedPacket(IP4Driver *from, IP4Driver *to, const IP4Packet &);
+    void outOfTtl(IP4Driver *from, IP4Driver *to, const IP4Packet &);
 
 private slots:
     void handlePacket(const IP4Packet &);
