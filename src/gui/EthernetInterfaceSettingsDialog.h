@@ -26,13 +26,13 @@ private:
     EthernetDriver* drv;
     IP4OnEthernetDriver* ip4drv;
 
-signals:
-    void info(MACAddr hw, IP4Address ip, uint8_t cidr, bool arpEnabled, ARPForIP4OnEthernetDriver* table);
+    void setArpTableRow(int i, IP4Address ip, MACAddr mac, int lt);
 
 private slots:
-    void on_checkBox_stateChanged(int arg1);
-    void on_checkBox_2_stateChanged(int arg1);
+    void on_lifetimeCheckbox_stateChanged(int arg1);
+    void on_sizeLimitCheckbox_stateChanged(int arg1);
     void on_arpSwitch_stateChanged(int arg1);
+    void on_arpAddButton_clicked();
 };
 
 #endif // ETHERNETINTERFACESETTINGSDIALOG_H

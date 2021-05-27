@@ -81,12 +81,6 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
                     drv,
                     ipdrv,
                     widget->window()};
-                QObject::connect(
-                    dialog, &EthernetInterfaceSettingsDialog::info,
-                    [iface, this](MACAddr hw, IP4Address ip, uint8_t cidr)
-                    {
-                        node->setInterfaceSettings(iface, hw, ip, cidr);
-                    });
                 dialog->open();
             });
     }
