@@ -15,7 +15,7 @@
 
 NSGraphicsPCNode::NSGraphicsPCNode(QObject *parent, PCNode *node,
                                    QPointF position, QSize size, QString *name)
-    : NSGraphicsNode(parent, new QPixmap("models/018-monitor screen.png"),
+    : NSGraphicsNode(parent, new QPixmap(":/png/res/models/018-monitor screen.png"),
                      position, size, name),
       node{node}
 {

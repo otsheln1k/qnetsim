@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/svg">
+        <file>res/icons/007-floppy disk.svg</file>
+        <file>res/icons/015-file storage.svg</file>
+        <file>res/icons/016-switch.svg</file>
+        <file>res/icons/017-hub.svg</file>
+        <file>res/icons/018-monitor screen.svg</file>
+        <file>res/icons/020-paper.svg</file>
+        <file>res/icons/wire.svg</file>
+    </qresource>
+    <qresource prefix="/png">
+        <file>res/models/016-switch.png</file>
+        <file>res/models/017-hub.png</file>
+        <file>res/models/018-monitor screen.png</file>
+    </qresource>
+</RCC>

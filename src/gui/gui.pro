@@ -70,3 +70,6 @@ FORMS += NSWindow.ui
 
 DISTFILES += \
     win_deploy_script.bat
+
+RESOURCES += \
+    iconsAndModels.qrc \
