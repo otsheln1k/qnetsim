@@ -38,7 +38,7 @@ const uint8_t *EthernetFrame::DotQTag::read(const uint8_t *src)
 size_t EthernetFrame::size() const
 {
     return 6 + 6 + (_dotq ? 4 : 0) + 2
-        + std::max(_payload.size(), ETHERNET_PAYLOAD_MIN) + 4;
+        + std::max(_payload.size(), static_cast<size_t>(ETHERNET_PAYLOAD_MIN)) + 4;
 }
 
 uint8_t *EthernetFrame::writeHeader(uint8_t *dest) const
