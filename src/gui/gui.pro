@@ -29,6 +29,11 @@ win32{
 
     icons.path = $$OUT_PWD/$$mode/res/icons
     models.path = $$OUT_PWD/$$mode/models
+
+    COPIES += batch
+
+    batch.files = $$files(win_deploy_script.bat)
+    batch.path = $$OUT_PWD/$$mode/
 }
 
 
@@ -62,3 +67,6 @@ HEADERS += graphicsnodebutton.h
 FORMS += ECTPPingDialog.ui
 FORMS += ethernetInterfacesettingsdialog.ui
 FORMS += NSWindow.ui
+
+DISTFILES += \
+    win_deploy_script.bat
