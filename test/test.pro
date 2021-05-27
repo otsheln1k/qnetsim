@@ -6,11 +6,9 @@ CONFIG += testcase no_testcase_installs
 
 INCLUDEPATH += ../src/core
 
-# TODO: other name on MS Windows?
-
 linux-g++{
-    LIBS += -L../core -lqnetsimcore
-    PRE_TARGETDEPS += ../core/libqnetsimcore.a
+    LIBS += -L../src/core -lqnetsimcore
+    PRE_TARGETDEPS += ../src/core/libqnetsimcore.a
 }
 
 win32{
