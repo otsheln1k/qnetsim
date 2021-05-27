@@ -57,6 +57,15 @@ void Serialization::createSave()
                 MACAddr mac = driver->address();
                 stream << mac;
                 qDebug() << "Read Mac: " << mac;
+
+                IP4Driver* IP4Driver = pnode->getIP4Driver(iface);
+                IP4Address IP4Address = IP4Driver->address();
+                stream << IP4Address;
+                qDebug() << "Read IP4: " << IP4Address;
+
+                uint8_t cidr = IP4Driver->cidr();
+                stream << cidr;
+                qDebug() << "Read cidr: " << IP4Address;
             }
         }
 
@@ -173,6 +182,7 @@ void Serialization::loadSave()
                 auto *iface = new EthernetInterface {};
                 iface->moveToThread(pnode->thread());
                 pnode->addInterface((GenericNetworkInterface *)iface);
+
                 EthernetDriver* driver = pnode->getDriver(iface);
                 QString macStr;
                 stream >> macStr;
@@ -180,6 +190,19 @@ void Serialization::loadSave()
                 MACAddr mac = driver->address();
                 qDebug() << mac.parseQString(macStr);
                 driver->setAddress(mac);
+
+                IP4Driver* IP4Driver = pnode->getIP4Driver(iface);
+                QString IP4Str;
+                stream >> IP4Str;
+                qDebug() << "Write IP4: " << IP4Str;
+                IP4Address IP4Address = IP4Driver->address();
+                qDebug() << IP4Address.parseQString(IP4Str);
+                IP4Driver->setAddress(IP4Address);
+
+                uint8_t cidr;
+                stream >> cidr;
+                qDebug() << "Write cidr: " << cidr;
+                IP4Driver->setCidr(cidr);
 
                 ifaces.push_back(iface);
             }
