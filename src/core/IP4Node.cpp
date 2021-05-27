@@ -85,6 +85,20 @@ IP4Driver *IP4Node::pickRoute(IP4Address addr) const
     return pickLocalRoute(dest);
 }
 
+IP4Packet IP4Node::makePacket(IPProtocol proto,
+                              IP4Address dest,
+                              IP4Address src)
+{
+    IP4Packet p {};
+    p.setSrcAddr(src);
+    p.setDstAddr(dest);
+    p.setProtocol(proto);
+    p.setTtl(_defaultTtl);
+    p.setIdentification(++_ident);
+
+    return p;
+}
+
 void IP4Node::sendPacket(IP4Driver *drv, const IP4Packet &p)
 {
     drv->sendPacket(p);
@@ -148,10 +162,7 @@ void IP4Node::handlePacket(const IP4Packet &p)
 bool IP4Node::sendICMPPacket(IP4Driver *drv, IP4Address dst,
                              const ICMPPacket &icmp)
 {
-    IP4Packet p {};
-    p.setSrcAddr(drv->address());
-    p.setDstAddr(dst);
-    p.setProtocol(IPPROTO_ICMP);
+    IP4Packet p = makePacket(IPPROTO_ICMP, dst, drv->address());
 
     p.payload().resize(icmp.size());
     icmp.write(p.payload().data());
