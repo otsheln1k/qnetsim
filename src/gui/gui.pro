@@ -3,12 +3,24 @@ TEMPLATE = app
 QT = core gui widgets
 
 INCLUDEPATH += ../core
-linux-g++: LIBS += -L../core -lqnetsimcore
-win-32:LIBS += -L../core/debug -lqnetsimcore
 
-# TODO: other name on MS Windows?
-linux-g++: PRE_TARGETDEPS += ../core/libqnetsimcore.a
-win-32: PRE_TARGETDEPS += ../core/debug/libqnetsimcore.a
+linux-g++{
+    LIBS += -L../core -lqnetsimcore
+    PRE_TARGETDEPS += ../core/libqnetsimcore.a
+}
+
+win-32{
+    CONFIG(debug){
+        mode="debug"
+    }
+    CONFIG(release){
+        mode="release"
+    }
+    LIBS += -L../core/$$mode/ -lqnetsimcore
+    PRE_TARGETDEPS += ../core/$$mode/libqnetsimcore.a
+}
+
+
 
 TARGET = qnetsim
 CONFIG += c++17 strict_c++ warn_on
