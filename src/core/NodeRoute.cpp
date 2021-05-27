@@ -5,6 +5,7 @@
 NodeRoute::NodeRoute()
 {
     getIP4Node()->setParent(this);
+    ipNode.setEchoEnabled(true);
 }
 
 MACAddr NodeRoute::createMac(){
