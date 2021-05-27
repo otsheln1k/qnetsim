@@ -250,7 +250,7 @@ void EthernetInterfaceTest::testHalting() {
     }
     payload.insert(payload.end(), pfinal.begin(), pfinal.end());
 
-    size_t pbytes = std::max(payload.size(), ETHERNET_PAYLOAD_MIN);
+    size_t pbytes = std::max(payload.size(),  static_cast<size_t>(ETHERNET_PAYLOAD_MIN));
     f.payload() = std::move(payload);
 
     auto iface_by_mac =

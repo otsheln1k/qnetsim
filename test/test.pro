@@ -5,10 +5,24 @@ QT += testlib
 CONFIG += testcase no_testcase_installs
 
 INCLUDEPATH += ../src/core
-LIBS += -L../src/core -lqnetsimcore
 
 # TODO: other name on MS Windows?
-PRE_TARGETDEPS += ../src/core/libqnetsimcore.a
+
+linux-g++{
+    LIBS += -L../core -lqnetsimcore
+    PRE_TARGETDEPS += ../core/libqnetsimcore.a
+}
+
+win32{
+    Debug {
+        mode="debug"
+    }
+    Release {
+        mode="release"
+    }
+    LIBS += -L../src/core/$$mode/ -lqnetsimcore
+    PRE_TARGETDEPS += ../src/core/$$mode/libqnetsimcore.a
+}
 
 SOURCES = test.cpp
 

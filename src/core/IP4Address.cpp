@@ -28,7 +28,7 @@ size_t IP4Address::displaySize() const
 char *IP4Address::display(char *p) const
 {
     char buf[16];
-    int n = sprintf(buf, "%hhu.%hhu.%hhu.%hhu",
+    int n = sprintf(buf, "%u.%u.%u.%u",
                     octet(0), octet(1), octet(2), octet(3));
     memcpy(p, buf, n);
     return p + n;

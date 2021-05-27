@@ -9,11 +9,11 @@ linux-g++{
     PRE_TARGETDEPS += ../core/libqnetsimcore.a
 }
 
-win-32{
-    CONFIG(debug){
+win32{
+    Debug {
         mode="debug"
     }
-    CONFIG(release){
+    Release {
         mode="release"
     }
     LIBS += -L../core/$$mode/ -lqnetsimcore
