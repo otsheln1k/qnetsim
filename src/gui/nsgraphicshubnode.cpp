@@ -10,7 +10,7 @@
 
 NSGraphicsHubNode::NSGraphicsHubNode(QObject *parent, HubNode *node,
                                      QPointF position, QSize size, QString *name)
-    : NSGraphicsNode(parent, new QPixmap("models/017-hub.png"),
+    : NSGraphicsNode(parent, new QPixmap(":/png/res/models/017-hub.png"),
                      position, size, name),
       node{node}
 {

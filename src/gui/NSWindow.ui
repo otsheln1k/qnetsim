@@ -44,9 +44,8 @@
          <string>Новая схема</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normalon>res/icons/020-paper.svg</normalon>
-         </iconset>
+         <iconset resource="icons.qrc">
+          <normaloff>:/svg/res/icons/020-paper.svg</normaloff>:/svg/res/icons/020-paper.svg</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -91,9 +90,8 @@ padding: 3px;</string>
            <string>Открыть</string>
           </property>
           <property name="icon">
-           <iconset>
-            <normalon>res/icons/015-file storage.svg</normalon>
-           </iconset>
+           <iconset resource="icons.qrc">
+            <normaloff>:/svg/res/icons/015-file storage.svg</normaloff>:/svg/res/icons/015-file storage.svg</iconset>
           </property>
          </widget>
         </item>
@@ -112,9 +110,8 @@ padding: 3px;</string>
            <string>Сохранить</string>
           </property>
           <property name="icon">
-           <iconset>
-            <normalon>res/icons/007-floppy disk.svg</normalon>
-           </iconset>
+           <iconset resource="icons.qrc">
+            <normaloff>:/svg/res/icons/007-floppy disk.svg</normaloff>:/svg/res/icons/007-floppy disk.svg</iconset>
           </property>
          </widget>
         </item>
@@ -175,8 +172,8 @@ padding: 3px;</string>
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>229</width>
-              <height>135</height>
+              <width>241</width>
+              <height>124</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
@@ -251,8 +248,8 @@ padding: 3px;</string>
                    <string>ПК</string>
                   </property>
                   <property name="icon">
-                   <iconset>
-                    <normaloff>res/icons/018-monitor screen.svg</normaloff>res/icons/018-monitor screen.svg</iconset>
+                   <iconset resource="icons.qrc">
+                    <normaloff>:/svg/res/icons/018-monitor screen.svg</normaloff>:/svg/res/icons/018-monitor screen.svg</iconset>
                   </property>
                   <property name="checked">
                    <bool>false</bool>
@@ -268,8 +265,8 @@ padding: 3px;</string>
                    <string>Хаб</string>
                   </property>
                   <property name="icon">
-                   <iconset>
-                    <normaloff>res/icons/017-hub.svg</normaloff>res/icons/017-hub.svg</iconset>
+                   <iconset resource="icons.qrc">
+                    <normaloff>:/svg/res/icons/017-hub.svg</normaloff>:/svg/res/icons/017-hub.svg</iconset>
                   </property>
                  </widget>
                 </item>
@@ -282,8 +279,8 @@ padding: 3px;</string>
                 <string>Коммутатор</string>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>res/icons/016-switch.svg</normaloff>res/icons/016-switch.svg</iconset>
+                <iconset resource="icons.qrc">
+                 <normaloff>:/svg/res/icons/016-switch.svg</normaloff>:/svg/res/icons/016-switch.svg</iconset>
                </property>
               </widget>
              </item>
@@ -338,7 +335,7 @@ padding: 3px;</string>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -385,7 +382,7 @@ padding: 3px;</string>
    </property>
    <property name="minimumSize">
     <size>
-     <width>88</width>
+     <width>89</width>
      <height>200</height>
     </size>
    </property>
@@ -491,6 +488,8 @@ padding: 3px;</string>
    <header>graphicsnodebutton.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
