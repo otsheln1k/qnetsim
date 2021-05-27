@@ -1,5 +1,6 @@
 #include <QDebug>
 
+#include "EthernetInterface.hpp"
 #include "nsgraphicsnode.h"
 
 
@@ -52,16 +53,22 @@ QRectF NSGraphicsNode::boundingRect() const
     };
 }
 
-void NSGraphicsNode::fillInterfacesMenu(QMenu *menu, NetworkNode *node)
+QString NSGraphicsNode::interfaceName(GenericNetworkInterface *iface)
 {
+    auto *n = networkNode();
+    int idx = -1;
     int i = 0;
-    for (GenericNetworkInterface *iface : *node) {
-        QString text = QString{"Интерфейс %1"}.arg(i++);
-
-        auto *action = menu->addAction(text);
-
-        action->setData(QVariant::fromValue(iface));
+    for (auto iter = n->begin(); iter != n->end(); ++iter, ++i) {
+        if (iface == *iter) {
+            idx = i;
+            break;
+        }
     }
+    if (idx < 0) {
+        return "?";
+    }
+
+    return QString{"Интерфейс №%1"}.arg(idx + 1);
 }
 
 QString* NSGraphicsNode::getName()
@@ -72,4 +79,53 @@ QString* NSGraphicsNode::getName()
 QSize NSGraphicsNode::getSize()
 {
     return size;
+}
+
+void NSGraphicsNode::addMenuItemRemove(QMenu *menu)
+{
+    QObject::connect(menu->addAction("Удалить"), &QAction::triggered,
+                     [this]()
+                     {
+                         emit removingNode();
+                     });
+}
+
+void NSGraphicsNode::addMenuItemAddEthernet(QMenu *menu)
+{
+    QObject::connect(menu->addAction("Добавить порт Ethernet"),
+                     &QAction::triggered,
+                     [this]()
+                     {
+                         auto *iface = new EthernetInterface {};
+                         iface->moveToThread(networkNode()->thread());
+                         emit addingInterface((GenericNetworkInterface *)iface);
+                     });
+}
+
+QMenu *NSGraphicsNode::fillInterfacesSubmenu(QMenu *menu)
+{
+    menu->setEnabled(networkNode()->interfacesCount() > 0);
+
+    for (GenericNetworkInterface *iface : *networkNode()) {
+        QString text = interfaceName(iface);
+        auto *action = menu->addAction(text);
+        action->setData(QVariant::fromValue(iface));
+    }
+
+    return menu;
+}
+
+void NSGraphicsNode::addSubmenuRemoveIface(QMenu *menu)
+{
+    QMenu *submenu = fillInterfacesSubmenu(
+        menu->addMenu("Удалить интерфейс…"));
+
+    for (QAction *action : submenu->actions()) {
+        auto *iface = action->data().value<GenericNetworkInterface *>();
+        QObject::connect(action, &QAction::triggered,
+                         [this, iface]()
+                         {
+                             emit removingInterface(iface);
+                         });
+    }
 }

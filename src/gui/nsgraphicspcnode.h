@@ -4,6 +4,8 @@
 #include "PCNode.h"
 #include "NetworkNode.h"
 #include "nsgraphicsnode.h"
+#include "IP4OnEthernetDriver.hpp"
+
 
 class NSGraphicsPCNode : public NSGraphicsNode
 {
@@ -20,8 +22,6 @@ public:
     virtual void populateMenu(QMenu *menu, QWidget *widget) override;
     virtual NetworkNode *networkNode() const override;
 
-    static void fillPCInterfacesMenu(QMenu *menu, PCNode *node);
-
 signals:
     void sendingFrame(EthernetInterface *eiface,
                       MACAddr dest,
@@ -30,6 +30,9 @@ signals:
 
 private slots:
     void onNodeDestroyed();
+
+protected:
+    virtual QString interfaceName(GenericNetworkInterface *iface) override;
 };
 
 #endif // NSGRAPHICSPCNODE_H

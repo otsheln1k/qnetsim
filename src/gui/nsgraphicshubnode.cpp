@@ -34,18 +34,7 @@ void NSGraphicsHubNode::onNodeDestroyed()
 
 void NSGraphicsHubNode::populateMenu(QMenu *menu, QWidget *)
 {
-    QObject::connect(menu->addAction("Удалить"), &QAction::triggered,
-                     [this]()
-                     {
-                        emit removingNode();
-                     });
-
-    QObject::connect(menu->addAction("Добавить порт Ethernet"),
-                     &QAction::triggered,
-                     [this]()
-                     {
-                         auto *iface = new EthernetInterface {};
-                         iface->moveToThread(node->thread());
-                         emit addingInterface((GenericNetworkInterface *)iface);
-                     });
+    addMenuItemRemove(menu);
+    addMenuItemAddEthernet(menu);
+    addSubmenuRemoveIface(menu);
 }
