@@ -1,6 +1,8 @@
 #ifndef NSGRAPHICSNODE_H
 #define NSGRAPHICSNODE_H
 
+#include <functional>
+
 #include <QPoint>
 #include <QString>
 #include <QPixmap>
@@ -16,7 +18,7 @@
 class NSGraphicsNode : public QObject,
                        public QGraphicsItem,
                        public SerializationInterfaceNode
-                       {
+{
     Q_OBJECT;
     Q_INTERFACES(QGraphicsItem);
 
@@ -34,11 +36,12 @@ public:
     virtual void populateMenu(QMenu *menu, QWidget *widget) =0;
     virtual NetworkNode *networkNode() const =0;
 
+    virtual QString interfaceName(GenericNetworkInterface *iface);
+    QMenu *fillInterfacesSubmenu(QMenu *menu);
+
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-
-    static void fillInterfacesMenu(QMenu *menu, NetworkNode *node);
 
 signals:
     void addingInterface(GenericNetworkInterface *iface);
@@ -54,6 +57,11 @@ protected:
     QPixmap *image;
     QSize size;
     QString *name;
+
+    void addMenuItemRemove(QMenu *menu);
+    void addMenuItemAddEthernet(QMenu *menu);
+
+    void addSubmenuRemoveIface(QMenu *menu);
 };
 
 #endif // NSGRAPHICSNODE_H
