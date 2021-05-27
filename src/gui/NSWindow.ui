@@ -283,8 +283,8 @@ padding: 3px;</string>
                 <string>Провод</string>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>res/icons/wire.svg</normaloff>res/icons/wire.svg</iconset>
+                <iconset resource="iconsAndModels.qrc">
+                 <normaloff>:/svg/res/icons/wire.svg</normaloff>:/svg/res/icons/wire.svg</iconset>
                </property>
               </widget>
              </item>
