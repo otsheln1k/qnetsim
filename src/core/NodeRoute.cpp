@@ -63,18 +63,18 @@ EthernetDriver* NodeRoute::getDriver(EthernetInterface *iface){
 }
 
 void NodeRoute::sendEthernetFrame(EthernetInterface *eiface,
-                               MACAddr dest,
-                               EtherType etherType,
-                               const QVector<uint8_t> &payload)
+                                  MACAddr dest,
+                                  EtherType etherType,
+                                  const QVector<uint8_t> &payload)
 {
     auto *drv = getDriver(eiface);
     drv->sendFrame(dest, etherType, payload.begin(), payload.end());
 }
 
 void NodeRoute::sendECTPLoopback(GenericNetworkInterface *iface,
-                              uint16_t seq,
-                              MACAddr through,
-                              const QVector<uint8_t> &payload)
+                                 uint16_t seq,
+                                 MACAddr through,
+                                 const QVector<uint8_t> &payload)
 {
     auto *eiface = dynamic_cast<EthernetInterface *>(iface);
     auto *drv = getDriver(eiface);
@@ -94,9 +94,9 @@ void NodeRoute::sendECTPLoopback(GenericNetworkInterface *iface,
 }
 
 void NodeRoute::sendICMPEchoRequest(IP4Address dest,
-                                 uint16_t ident,
-                                 uint16_t seq,
-                                 const QVector<uint8_t> &payload)
+                                    uint16_t ident,
+                                    uint16_t seq,
+                                    const QVector<uint8_t> &payload)
 {
     ICMPPacket icmp = makeICMPEchoRequest(ident, seq);
     icmp.payload().assign(payload.begin(), payload.end());
@@ -109,9 +109,9 @@ void NodeRoute::sendICMPEchoRequest(IP4Address dest,
 }
 
 void NodeRoute::setInterfaceSettings(GenericNetworkInterface *iface,
-                                  MACAddr hw,
-                                  IP4Address ip,
-                                  uint8_t cidr)
+                                     MACAddr hw,
+                                     IP4Address ip,
+                                     uint8_t cidr)
 {
     auto *eiface = dynamic_cast<EthernetInterface *>(iface);
     if (eiface == nullptr) {
