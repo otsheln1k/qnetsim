@@ -76,6 +76,7 @@ public:
                          IP4Address src = {});
 
     void sendPacket(IP4Driver *, const IP4Packet &);
+    bool sendPacketAndFillSource(IP4Packet &);
     bool sendPacket(const IP4Packet &);
     IP4Driver *pickForwardRoute(IP4Driver *from, const IP4Packet &);
 

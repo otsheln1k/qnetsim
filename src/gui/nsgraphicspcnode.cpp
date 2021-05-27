@@ -4,6 +4,7 @@
 #include <QMenu>
 #include <QGraphicsScene>
 
+#include "ICMPEchoRequestDialog.h"
 #include "EthernetInterfaceSettingsDialog.h"
 #include "NetworkModel.h"
 #include "SimulationStepper.hpp"
@@ -51,6 +52,18 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
             auto *dialog = new ECTPPingDialog(widget->window(), node);
             QObject::connect(dialog, &ECTPPingDialog::info,
                              node, &PCNode::sendECTPLoopback);
+            dialog->open();
+        });
+
+    auto *pingAction = menu->addAction("Отправить ICMP пинг…");
+    QObject::connect(
+        pingAction,
+        &QAction::triggered,
+        [this, widget]()
+        {
+            auto *dialog = new ICMPEchoRequestDialog {widget->window()};
+            QObject::connect(dialog, &ICMPEchoRequestDialog::info,
+                             node, &PCNode::sendICMPEchoRequest);
             dialog->open();
         });
 

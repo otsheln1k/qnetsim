@@ -104,6 +104,16 @@ void IP4Node::sendPacket(IP4Driver *drv, const IP4Packet &p)
     drv->sendPacket(p);
 }
 
+bool IP4Node::sendPacketAndFillSource(IP4Packet &p)
+{
+    if (IP4Driver *drv = pickRoute(p.dstAddr())) {
+        p.setSrcAddr(drv->address());
+        sendPacket(drv, p);
+        return true;
+    }
+    return false;
+}
+
 bool IP4Node::sendPacket(const IP4Packet &p)
 {
     if (IP4Driver *drv = pickRoute(p.dstAddr())) {

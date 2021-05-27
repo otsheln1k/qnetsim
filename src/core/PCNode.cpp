@@ -93,6 +93,21 @@ void PCNode::sendECTPLoopback(GenericNetworkInterface *iface,
     sendEthernetFrame(eiface, through, ETHERTYPE_ECTP, bytes);
 }
 
+void PCNode::sendICMPEchoRequest(IP4Address dest,
+                                 uint16_t ident,
+                                 uint16_t seq,
+                                 const QVector<uint8_t> &payload)
+{
+    ICMPPacket icmp = makeICMPEchoRequest(ident, seq);
+    icmp.payload().assign(payload.begin(), payload.end());
+
+    IP4Packet p = ipNode.makePacket(IPPROTO_ICMP, dest);
+    p.payload().resize(icmp.size());
+    icmp.write(p.payload().data());
+
+    ipNode.sendPacketAndFillSource(p);
+}
+
 void PCNode::setInterfaceSettings(GenericNetworkInterface *iface,
                                   MACAddr hw,
                                   IP4Address ip,
