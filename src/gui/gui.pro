@@ -4,17 +4,9 @@ QT = core gui widgets
 
 INCLUDEPATH += ../core
 
-COPIES += icons models
-
-icons.files = $$files(res/icons/*)
-models.files = $$files(res/models/*)
-
 linux-g++{
     LIBS += -L../core -lqnetsimcore
     PRE_TARGETDEPS += ../core/libqnetsimcore.a
-
-    icons.path = $$OUT_PWD/res/icons
-    models.path = $$OUT_PWD/models
 }
 
 win32{
@@ -26,9 +18,6 @@ win32{
     }
     LIBS += -L../core/$$mode/ -lqnetsimcore
     PRE_TARGETDEPS += ../core/$$mode/libqnetsimcore.a
-
-    icons.path = $$OUT_PWD/$$mode/res/icons
-    models.path = $$OUT_PWD/$$mode/models
 
     COPIES += batch
 
