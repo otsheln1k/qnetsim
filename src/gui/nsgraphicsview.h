@@ -25,6 +25,7 @@ enum NSGraphicsViewNode{
     PC=1,
     HUB=2,
     SWITCH=3,
+    ROUTER=4,
 };
 
 class NSGraphicsView : public QGraphicsView, public SerializationInterfaceView

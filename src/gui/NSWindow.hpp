@@ -35,6 +35,7 @@ private slots:
     void on_addPCButton_clicked();
     void on_addHubButton_clicked();
     void on_addSwitchButton_clicked();
+    void on_addRouterButton_clicked();
     void on_toolButton_3_clicked();
 
     void onLoggerMessage(const SimulationLoggerMessage &msg);

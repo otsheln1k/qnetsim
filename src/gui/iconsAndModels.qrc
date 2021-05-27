@@ -13,7 +13,6 @@
         <file>res/models/016-switch.png</file>
         <file>res/models/017-hub.png</file>
         <file>res/models/018-monitor screen.png</file>
-        <file>res/icons/018-wireless-router.svg</file>
         <file>res/models/018-wireless-router.png</file>
     </qresource>
 </RCC>

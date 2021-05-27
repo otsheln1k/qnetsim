@@ -4,18 +4,18 @@
 #include <QMenu>
 #include <QGraphicsScene>
 
+#include "ICMPEchoRequestDialog.h"
 #include "EthernetInterfaceSettingsDialog.h"
 #include "NetworkModel.h"
 #include "SimulationStepper.hpp"
 #include "SimulationLogger.hpp"
 #include "EthernetInterface.hpp"
-#include "PCNode.h"
 #include "ECTPPingDialog.h"
 #include "nsgraphicsrouternode.h"
 
 
 NSGraphicsRouterNode::NSGraphicsRouterNode(QObject *parent,
-                                                   PCNode *node,
+                                                   Router *node,
                                                    QPointF position,
                                                    QSize size,
                                                    QString *name)
@@ -42,22 +42,10 @@ void NSGraphicsRouterNode::onNodeDestroyed()
 
 void NSGraphicsRouterNode::populateMenu(QMenu *menu, QWidget *widget)
 {
-    QObject::connect(menu->addAction("Удалить"), &QAction::triggered,
-                     [this]()
-                     {
-                         emit removingNode();
-                     });
+    addMenuItemRemove(menu);
+    addMenuItemAddEthernet(menu);
 
-    QObject::connect(menu->addAction("Добавить порт Ethernet"),
-                     &QAction::triggered,
-                     [this]()
-                     {
-                         auto *iface = new EthernetInterface {};
-                         iface->moveToThread(node->thread());
-                         emit addingInterface((GenericNetworkInterface *)iface);
-                     });
-
-    auto *ectpAction = menu->addAction("Отправить проверку связи…");
+    auto *ectpAction = menu->addAction("Отправить эхо-запрос ECTP…");
     ectpAction->setEnabled(node->interfacesCount() > 0);
     QObject::connect(
         ectpAction,
@@ -66,13 +54,23 @@ void NSGraphicsRouterNode::populateMenu(QMenu *menu, QWidget *widget)
         {
             auto *dialog = new ECTPPingDialog(widget->window(), node);
             QObject::connect(dialog, &ECTPPingDialog::info,
-                             node, &PCNode::sendECTPLoopback);
+                             node, &Router::sendECTPLoopback);
             dialog->open();
         });
 
-    QMenu *cfgmenu = menu->addMenu("Настроить интерфейс…");
-    cfgmenu->setEnabled(node->interfacesCount() > 0);
-    fillPCInterfacesMenu(cfgmenu, node);
+    auto *pingAction = menu->addAction("Отправить ICMP пинг…");
+    QObject::connect(
+        pingAction,
+        &QAction::triggered,
+        [this, widget]()
+        {
+            auto *dialog = new ICMPEchoRequestDialog {widget->window()};
+            QObject::connect(dialog, &ICMPEchoRequestDialog::info,
+                             node, &Router::sendICMPEchoRequest);
+            dialog->open();
+        });
+
+    QMenu *cfgmenu = fillInterfacesSubmenu(menu->addMenu("Настроить интерфейс…"));
     for (QAction *action : cfgmenu->actions()) {
         QObject::connect(
             action, &QAction::triggered,
@@ -91,18 +89,7 @@ void NSGraphicsRouterNode::populateMenu(QMenu *menu, QWidget *widget)
             });
     }
 
-    QMenu *ifmenu = menu->addMenu("Удалить интерфейс…");
-    ifmenu->setEnabled(node->interfacesCount() > 0);
-    fillPCInterfacesMenu(ifmenu, node);
-    for (QAction *action : ifmenu->actions()) {
-        QObject::connect(
-            action, &QAction::triggered,
-            [this, action]()
-            {
-                auto *iface = action->data().value<GenericNetworkInterface *>();
-                emit removingInterface(iface);
-            });
-    }
+    addSubmenuRemoveIface(menu);
 }
 
 NetworkNode *NSGraphicsRouterNode::networkNode() const
@@ -110,7 +97,7 @@ NetworkNode *NSGraphicsRouterNode::networkNode() const
     return node;
 }
 
-void NSGraphicsRouterNode::fillPCInterfacesMenu(QMenu *menu, PCNode *node)
+void NSGraphicsRouterNode::fillPCInterfacesMenu(QMenu *menu, Router *node)
 {
     for (GenericNetworkInterface *iface : *node) {
         QString text;

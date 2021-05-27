@@ -1,7 +1,7 @@
 #ifndef NSGRAPHICSROUTERNODE_H
 #define NSGRAPHICSROUTERNODE_H
 
-#include "PCNode.h"
+#include "Router.h"
 #include "NetworkNode.h"
 #include "nsgraphicsnode.h"
 
@@ -9,10 +9,10 @@ class NSGraphicsRouterNode : public NSGraphicsNode
 {
     Q_OBJECT;
 
-    PCNode *node;
+    Router *node;
 public:
     NSGraphicsRouterNode(QObject *parent,
-                             PCNode *node,
+                             Router *node,
                              QPointF position = {0, 0},
                              QSize size= {64, 64},
                              QString *name= nullptr);
@@ -20,7 +20,7 @@ public:
     virtual void populateMenu(QMenu *menu, QWidget *widget) override;
     virtual NetworkNode *networkNode() const override;
 
-    static void fillPCInterfacesMenu(QMenu *menu, PCNode *node);
+    static void fillPCInterfacesMenu(QMenu *menu, Router *node);
 
 signals:
     void sendingFrame(EthernetInterface *eiface,

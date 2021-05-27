@@ -233,7 +233,7 @@ padding: 3px;</string>
                  </widget>
                 </item>
                 <item row="0" column="3">
-                 <widget class="GraphicsNodeButton" name="toolButton">
+                 <widget class="GraphicsNodeButton" name="addRouterButton">
                   <property name="text">
                    <string>Маршрутизатор</string>
                   </property>

@@ -4,10 +4,12 @@
 #include "HubNode.h"
 #include "SwitchNode.h"
 #include "NetworkModel.h"
+#include "Router.h"
 
 #include "nsgraphicspcnode.h"
 #include "nsgraphicshubnode.h"
 #include "NSGraphicsSwitchNode.h"
+#include "nsgraphicsrouternode.h"
 #include "nsgraphicsview.h"
 
 #include "EthernetInterfaceSettingsDialog.h"
@@ -184,6 +186,13 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
                 auto *hnode = new SwitchNode {};
                 nd = hnode;
                 gnode = new NSGraphicsSwitchNode(this, hnode, scn);
+                break;
+            }
+
+            case NSGraphicsViewNode::ROUTER: {
+                auto *rnode = new Router {};
+                nd = rnode;
+                gnode = new NSGraphicsRouterNode(this, rnode, scn);
                 break;
             }
             }
