@@ -7,7 +7,9 @@ TARGET = qnetsimcore
 
 CONFIG += c++17 strict_c++ warn_on
 
-SOURCES += ARPForIP4OnEthernetDriver.cpp
+SOURCES += ARPForIP4OnEthernetDriver.cpp \
+    NodeRoute.cpp \
+    Router.cpp
 SOURCES += ARPPacket.cpp
 SOURCES += ECTPDriver.cpp
 SOURCES += EthernetDriver.cpp
@@ -29,7 +31,9 @@ SOURCES += SimulationStepper.cpp
 SOURCES += SwitchNode.cpp
 SOURCES += util.cpp
 
-HEADERS += ARPForIP4OnEthernetDriver.hpp
+HEADERS += ARPForIP4OnEthernetDriver.hpp \
+    NodeRoute.h \
+    Router.h
 HEADERS += ARPPacket.hpp
 HEADERS += ARPTable.hpp
 HEADERS += ECTPDriver.hpp

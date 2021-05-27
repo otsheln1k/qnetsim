@@ -64,7 +64,6 @@ void SwitchNodeTest::testSwitch(){
 
     sim.start();
 
-
     QCOMPARE(f, 1);
     QCOMPARE(k, 2);
 }
@@ -133,5 +132,5 @@ void SwitchNodeTest::testCleanTable(){
 
     int k = sw.getTable().size();
 
-    QCOMPARE(k, 3);
+    QCOMPARE(k, 4);
 }
