@@ -39,6 +39,8 @@ public:
     void setMode(NSGraphicsViewMode);
     void setNode(NSGraphicsViewNode);
 
+    NSGraphicsNode *lookupGraphicsNode(NetworkNode *node);
+
 public slots:
     void resetModel();
     void stopSimulation();

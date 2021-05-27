@@ -5,6 +5,7 @@
 
 #include "MACAddr.hpp"
 #include "IP4Address.hpp"
+#include "IP4OnEthernetDriver.hpp"
 
 namespace Ui {
 class EthernetInterfaceSettingsDialog;
@@ -15,18 +16,23 @@ class EthernetInterfaceSettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit EthernetInterfaceSettingsDialog(MACAddr, IP4Address, uint8_t, QWidget *parent = nullptr);
+    explicit EthernetInterfaceSettingsDialog(EthernetDriver*, IP4OnEthernetDriver*, QWidget *parent = nullptr);
     ~EthernetInterfaceSettingsDialog();
 
     virtual void accept() override;
 
 private:
     Ui::EthernetInterfaceSettingsDialog *ui;
+    EthernetDriver* drv;
+    IP4OnEthernetDriver* ip4drv;
 
-signals:
-    void info(MACAddr hw, IP4Address ip, uint8_t cidr);
+    void setArpTableRow(int i, IP4Address ip, MACAddr mac, int lt);
+
 private slots:
-    void on_arpSwith_stateChanged(int arg1);
+    void on_lifetimeCheckbox_stateChanged(int arg1);
+    void on_sizeLimitCheckbox_stateChanged(int arg1);
+    void on_arpSwitch_stateChanged(int arg1);
+    void on_arpAddButton_clicked();
 };
 
 #endif // ETHERNETINTERFACESETTINGSDIALOG_H

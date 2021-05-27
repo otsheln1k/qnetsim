@@ -4,6 +4,7 @@
 #include <QMenu>
 #include <QGraphicsScene>
 
+#include "ICMPEchoRequestDialog.h"
 #include "EthernetInterfaceSettingsDialog.h"
 #include "NetworkModel.h"
 #include "SimulationStepper.hpp"
@@ -38,22 +39,10 @@ void NSGraphicsPCNode::onNodeDestroyed()
 
 void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
 {
-    QObject::connect(menu->addAction("Удалить"), &QAction::triggered,
-                     [this]()
-                     {
-                         emit removingNode();
-                     });
+    addMenuItemRemove(menu);
+    addMenuItemAddEthernet(menu);
 
-    QObject::connect(menu->addAction("Добавить порт Ethernet"),
-                     &QAction::triggered,
-                     [this]()
-                     {
-                         auto *iface = new EthernetInterface {};
-                         iface->moveToThread(node->thread());
-                         emit addingInterface((GenericNetworkInterface *)iface);
-                     });
-
-    auto *ectpAction = menu->addAction("Отправить проверку связи…");
+    auto *ectpAction = menu->addAction("Отправить эхо-запрос ECTP…");
     ectpAction->setEnabled(node->interfacesCount() > 0);
     QObject::connect(
         ectpAction,
@@ -66,44 +55,38 @@ void NSGraphicsPCNode::populateMenu(QMenu *menu, QWidget *widget)
             dialog->open();
         });
 
-    QMenu *cfgmenu = menu->addMenu("Настроить интерфейс…");
-    cfgmenu->setEnabled(node->interfacesCount() > 0);
-    fillPCInterfacesMenu(cfgmenu, node);
+    auto *pingAction = menu->addAction("Отправить ICMP пинг…");
+    QObject::connect(
+        pingAction,
+        &QAction::triggered,
+        [this, widget]()
+        {
+            auto *dialog = new ICMPEchoRequestDialog {widget->window()};
+            QObject::connect(dialog, &ICMPEchoRequestDialog::info,
+                             node, &PCNode::sendICMPEchoRequest);
+            dialog->open();
+        });
+
+    QMenu *cfgmenu = fillInterfacesSubmenu(menu->addMenu("Настроить интерфейс…"));
     for (QAction *action : cfgmenu->actions()) {
         QObject::connect(
             action, &QAction::triggered,
             [this, action, widget]()
             {
                 auto *iface = action->data().value<GenericNetworkInterface *>();
-                auto *drv = node->getDriver(dynamic_cast<EthernetInterface *>(iface));
-                auto *ipdrv = node->getIP4Driver(dynamic_cast<EthernetInterface *>(iface));
+                auto *eiface = dynamic_cast<EthernetInterface *>(iface);
+                auto *drv = node->getDriver(eiface);
+                auto *ipdrv = node->getIP4Driver(eiface);
+                auto *ip4ethdrv = dynamic_cast<IP4OnEthernetDriver*>(ipdrv);
                 auto *dialog = new EthernetInterfaceSettingsDialog {
-                    drv->address(),
-                    ipdrv->address(),
-                    ipdrv->cidr(),
+                    drv,
+                    ip4ethdrv,
                     widget->window()};
-                QObject::connect(
-                    dialog, &EthernetInterfaceSettingsDialog::info,
-                    [iface, this](MACAddr hw, IP4Address ip, uint8_t cidr)
-                    {
-                        node->setInterfaceSettings(iface, hw, ip, cidr);
-                    });
                 dialog->open();
             });
     }
 
-    QMenu *ifmenu = menu->addMenu("Удалить интерфейс…");
-    ifmenu->setEnabled(node->interfacesCount() > 0);
-    fillPCInterfacesMenu(ifmenu, node);
-    for (QAction *action : ifmenu->actions()) {
-        QObject::connect(
-            action, &QAction::triggered,
-            [this, action]()
-            {
-                auto *iface = action->data().value<GenericNetworkInterface *>();
-                emit removingInterface(iface);
-            });
-    }
+    addSubmenuRemoveIface(menu);
 }
 
 NetworkNode *NSGraphicsPCNode::networkNode() const
@@ -111,20 +94,13 @@ NetworkNode *NSGraphicsPCNode::networkNode() const
     return node;
 }
 
-void NSGraphicsPCNode::fillPCInterfacesMenu(QMenu *menu, PCNode *node)
+QString NSGraphicsPCNode::interfaceName(GenericNetworkInterface *iface)
 {
-    for (GenericNetworkInterface *iface : *node) {
-        QString text;
-        if (auto *eiface = dynamic_cast<EthernetInterface *>(iface)) {
-            auto drv = node->getDriver(eiface);
-            auto addr = drv->address();
-            text = QString{"Ethernet %1"}.arg(addr);
-        } else {
-            text = QString{"?"};
-        }
-
-        auto *action = menu->addAction(text);
-
-        action->setData(QVariant::fromValue(iface));
+    if (auto *eiface = dynamic_cast<EthernetInterface *>(iface)) {
+        auto drv = node->getDriver(eiface);
+        auto addr = drv->address();
+        return QString{"Ethernet %1"}.arg(addr);
+    } else {
+        return QString{"?"};
     }
 }

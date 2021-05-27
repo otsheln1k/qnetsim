@@ -36,6 +36,11 @@ public slots:
                           MACAddr through,
                           const QVector<uint8_t> &payload);
 
+    void sendICMPEchoRequest(IP4Address dest,
+                             uint16_t ident,
+                             uint16_t seq,
+                             const QVector<uint8_t> &payload);
+
     void setInterfaceSettings(GenericNetworkInterface *iface,
                               MACAddr hw,
                               IP4Address ip,

@@ -149,6 +149,11 @@ public:
         emit packetSent(p);
     }
 
+    void receivePacket(const IP4Packet &p)
+    {
+        emit receivedPacket(p);
+    }
+
 signals:
     void packetSent(const IP4Packet &);
 };

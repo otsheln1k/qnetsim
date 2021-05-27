@@ -222,8 +222,8 @@ void NSGraphicsView::mousePressEvent(QMouseEvent *ev)
                 break;
             }
 
-            auto menu = std::make_unique<QMenu>();
-            NSGraphicsNode::fillInterfacesMenu(&*menu, node->networkNode());
+            std::unique_ptr<QMenu> menu {
+                node->fillInterfacesSubmenu(new QMenu {})};
             auto *action = menu->exec(ev->globalPos());
 
             if (action == nullptr) {
@@ -271,6 +271,11 @@ void NSGraphicsView::setMode(NSGraphicsViewMode nmode)
 void NSGraphicsView::setNode(NSGraphicsViewNode nnode)
 {
     node = nnode;
+}
+
+NSGraphicsNode *NSGraphicsView::lookupGraphicsNode(NetworkNode *node)
+{
+    return nodetab[node];
 }
 
 void NSGraphicsView::stopSimulation()
@@ -337,4 +342,3 @@ std::map<std::pair<QObject *, QObject *>, QGraphicsLineItem *>* NSGraphicsView::
 {
     return &edgetab;
 }
-

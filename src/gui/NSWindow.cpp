@@ -100,9 +100,14 @@ void NSWindow::onLoggerMessage(const SimulationLoggerMessage &msg)
 
     ui->logTable->setItem(row, 0, i0);
 
-    auto *i1 = new QTableWidgetItem{
-        QString{"Интерфейс @ 0x%1"}
-        .arg((size_t)iface, sizeof(size_t)*2, 16, QChar{'0'})};
+    QString ifacename;
+    if (iface != nullptr) {
+        auto *gnode = ui->graphicsView->lookupGraphicsNode(node);
+        ifacename = gnode->interfaceName(iface);
+    } else {
+        ifacename = "-";
+    }
+    auto *i1 = new QTableWidgetItem{ifacename};
     i1->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     ui->logTable->setItem(row, 1, i1);

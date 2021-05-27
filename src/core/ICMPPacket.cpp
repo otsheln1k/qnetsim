@@ -93,3 +93,13 @@ std::vector<uint8_t> takePacketHead(const IP4Packet &p, size_t size)
 
     return buf;
 }
+
+uint16_t getICMPEchoIdent(const ICMPPacket &p)
+{
+    return (p.restOfHeader() >> 16) & 0xFFFF;
+}
+
+uint16_t getICMPEchoSequence(const ICMPPacket &p)
+{
+    return p.restOfHeader() & 0xFFFF;
+}

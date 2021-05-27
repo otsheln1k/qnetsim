@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>614</width>
-    <height>309</height>
+    <width>698</width>
+    <height>325</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Настройка сетевого интерфейса</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_1">
       <attribute name="title">
@@ -92,26 +92,68 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QCheckBox" name="arpSwitch">
-         <property name="text">
-          <string>Включить ARP</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item alignment="Qt::AlignLeft">
+          <widget class="QCheckBox" name="arpSwitch">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Включить ARP</string>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignLeft">
+          <widget class="QCheckBox" name="sizeLimitCheckbox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Включить лимит записей в таблице</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="sizeLimitSpinbox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QLabel" name="label_4">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>IPv4</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit">
+          <widget class="QLineEdit" name="arpIpInput">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="inputMask">
             <string>009.009.009.009</string>
            </property>
@@ -122,15 +164,21 @@
          </item>
          <item>
           <widget class="QLabel" name="label_5">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>MAC</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit_2">
+          <widget class="QLineEdit" name="arpMacInput">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="inputMask">
-            <string>009.009.009.009</string>
+            <string>HH:HH:HH:HH:HH:HH</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -138,7 +186,42 @@
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="toolButton">
+          <widget class="QCheckBox" name="lifetimeCheckbox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Ограничение времени жизни</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="lifetimeSpinbox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>2147483647</number>
+           </property>
+           <property name="value">
+            <number>1</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="arpAddButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>+</string>
            </property>
@@ -148,6 +231,9 @@
        </item>
        <item>
         <widget class="QTableWidget" name="arpTableWidget">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="rowCount">
           <number>0</number>
          </property>
@@ -166,7 +252,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Тип записи</string>
+           <string>Время жизни</string>
           </property>
          </column>
         </widget>
