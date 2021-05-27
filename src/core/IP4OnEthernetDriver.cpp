@@ -37,10 +37,12 @@ void IP4OnEthernetDriver::sendPacket(const IP4Packet &p)
     if (_arpCacheEnabled
         && (hwopt = _table.query(p.dstAddr()))) {
         sendPacketTo(p, hwopt.value());
+        return;
     }
 
-    _arp.sendRequest(p.dstAddr(), _addr);
     _queue.insert(std::make_pair(p.dstAddr(), SendItem{p, _timeout}));
+
+    _arp.sendRequest(p.dstAddr(), _addr);
 }
 
 bool IP4OnEthernetDriver::tickQueue()
@@ -97,15 +99,13 @@ void IP4OnEthernetDriver::handleARPPacket(const ARPPacket &p)
     target_ip.read(p.targetProtocolAddr());
 
     // Note: selection can be more complex
-    if (target_ip != _addr) {
-        return;
-    }
+    if (target_ip == _addr) {
+        _arp.handlePacket(p);
 
-    _arp.handlePacket(p);
-
-    if (_arpCacheEnabled
-        && !updated) {
-        _table.addEntry(sender_ip, sender_mac);
+        if (_arpCacheEnabled
+            && !updated) {
+            _table.addEntry(sender_ip, sender_mac);
+        }
     }
 
     flushAwaitingPackets(sender_mac, sender_ip);
@@ -115,15 +115,15 @@ void IP4OnEthernetDriver::flushAwaitingPackets(MACAddr hw, IP4Address ip)
 {
     auto range = _queue.equal_range(ip);
     for (auto iter = range.first; iter != range.second;) {
-        IP4Packet &p = iter->second.packet;
+        IP4Packet p = iter->second.packet;
         if (p.dstAddr() != ip) {
             ++iter;
             continue;
         }
 
-        sendPacketTo(p, hw);
-
         _queue.erase(iter++);
+
+        sendPacketTo(p, hw);
     }
 }
 
