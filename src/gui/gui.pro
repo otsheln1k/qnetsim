@@ -30,7 +30,8 @@ win32{
 TARGET = qnetsim
 CONFIG += c++17 strict_c++ warn_on
 
-SOURCES += ECTPPingDialog.cpp
+SOURCES += ECTPPingDialog.cpp \
+    nsgraphicsrouternode.cpp
 SOURCES += EthernetInterfaceSettingsDialog.cpp
 SOURCES += graphicsnodebutton.cpp
 SOURCES += ICMPEchoRequestDialog.cpp
@@ -43,7 +44,8 @@ SOURCES += nsgraphicsview.cpp
 SOURCES += NSWindow.cpp
 SOURCES += Serialization.cpp
 
-HEADERS += ECTPPingDialog.h
+HEADERS += ECTPPingDialog.h \
+    nsgraphicsrouternode.h
 HEADERS += EthernetInterfaceSettingsDialog.h
 HEADERS += graphicsnodebutton.h
 HEADERS += ICMPEchoRequestDialog.h
