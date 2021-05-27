@@ -273,6 +273,11 @@ void NSGraphicsView::setNode(NSGraphicsViewNode nnode)
     node = nnode;
 }
 
+NSGraphicsNode *NSGraphicsView::lookupGraphicsNode(NetworkNode *node)
+{
+    return nodetab[node];
+}
+
 void NSGraphicsView::stopSimulation()
 {
     stepper.terminate();
